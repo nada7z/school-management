@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="schoolmanagement.smproject.MainController"
+      alignment="CENTER" spacing="20">
+      
+    <!-- ✅ Fixed: Use proper Insets syntax -->
+    <padding>
+        <Insets top="30" right="30" bottom="30" left="30"/>
+    </padding>
+    
+    <Label fx:id="messageLabel" text="Loading...">
+        <font>
+            <Font name="System Bold" size="20"/>
+        </font>
+    </Label>
+</VBox>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane stylesheets="@dashboard.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="schoolmanagement.smproject.classes.controller.ClassesController">
+    <left>
+        <VBox spacing="25" styleClass="sidebar">
+            <VBox alignment="CENTER" spacing="12" styleClass="logo-section">
+                <Label styleClass="logo-icon" text="🎓" />
+                <Label styleClass="logo-title" text="School MS" />
+                <Label fx:id="userRoleLabel" styleClass="user-badge" text="ADMIN" />
+            </VBox>
+            <Separator styleClass="sidebar-separator" />
+            <VBox spacing="6">
+                <Label alignment="CENTER" prefHeight="58.0" prefWidth="266.0" 
+                       style="-fx-font-family: Segoe UI; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 17;" 
+                       styleClass="menu-label" text="MENU" />
+                <Button fx:id="btnDashboard" onAction="#handleDashboard" styleClass="nav-button" text="📊 Dashboard" />
+                <Button fx:id="btnLevels" onAction="#handleLevels" styleClass="nav-button active" text="🏫 Levels" />
+                <Button fx:id="btnStudents" onAction="#handleStudents" styleClass="nav-button" text="👨‍🎓 Students" />
+                <Button fx:id="btnGrades" onAction="#handleGrades" styleClass="nav-button" text="📝 Grades" />
+            </VBox>
+            <VBox VBox.vgrow="ALWAYS" />
+            <Button onAction="#handleLogout" styleClass="logout-button" text="🚪 Logout" />
+        </VBox>
+    </left>
+
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="main-scroll">
+            <VBox spacing="28" styleClass="main-container">
+                <HBox alignment="CENTER_LEFT" spacing="16">
+                    <Button fx:id="btnBack" onAction="#handleBack" styleClass="btn-outline" text="⬅ Back to Levels" />
+                    <VBox>
+                        <Label fx:id="levelTitle" styleClass="page-title" />
+                        <Label styleClass="page-subtitle" text="Classrooms and enrollment overview" />
+                    </VBox>
+                </HBox>
+                <VBox fx:id="classesContainer" spacing="18" styleClass="classes-list" />
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

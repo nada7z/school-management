@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="schoolmanagement.smproject.auth.controller.AuthController"
+      alignment="CENTER" spacing="0" stylesheets="@auth.css">
+
+    <!-- Background Gradient is in CSS .root -->
+
+    <!-- Login Card -->
+    <VBox styleClass="login-card" alignment="CENTER" spacing="20">
+        
+        <!-- Header -->
+        <VBox alignment="CENTER" spacing="5">
+            <Label text="🎓" style="-fx-font-size: 40px;"/>
+            <Label text="School Management System" styleClass="title-label"/>
+            <Label text="Sign in to continue" styleClass="subtitle-label"/>
+        </VBox>
+
+        <!-- Form Fields -->
+        <VBox spacing="15" alignment="CENTER">
+            
+            <!-- Username -->
+            <VBox spacing="5" alignment="CENTER_LEFT">
+                <Label text="Username" style="-fx-font-size: 13px; -fx-font-weight: 500; -fx-text-fill: #555;"/>
+                <TextField fx:id="usernameField" promptText="Enter your username" styleClass="text-field"/>
+            </VBox>
+
+            <!-- Password -->
+            <VBox spacing="5" alignment="CENTER_LEFT">
+                <Label text="Password" style="-fx-font-size: 13px; -fx-font-weight: 500; -fx-text-fill: #555;"/>
+                <PasswordField fx:id="passwordField" promptText="Enter your password" styleClass="password-field"/>
+            </VBox>
+
+        </VBox>
+
+        <!-- Login Button -->
+        <Button text="Sign In" onAction="#handleLogin" styleClass="login-button"/>
+
+        <!-- Error Message -->
+        <Label fx:id="errorLabel" styleClass="error-label" visible="false" managed="false"/>
+
+        <!-- Footer -->
+        <Label text="© 2026 School Management System" styleClass="footer-label"/>
+
+    </VBox>
+
+</VBox>

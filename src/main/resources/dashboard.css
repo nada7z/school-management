@@ -1,0 +1,242 @@
+/* ===== GLOBAL ===== */
+.root {
+    -fx-font-family: "Segoe UI", "Roboto", system-ui, sans-serif;
+    -fx-background-color: #f8fafc;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+    -fx-background-color: linear-gradient(to bottom, #1e3c72, #1a335f);
+    -fx-pref-width: 280;
+    -fx-padding: 30 20 30 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 15, 0.3, 5, 0);
+}
+
+.logo-section { -fx-padding: 0 0 35 0; }
+
+.logo-icon { 
+    -fx-font-size: 52px;
+    -fx-text-fill: white;
+}
+
+.logo-title {
+    -fx-font-size: 26px;
+    -fx-font-weight: 800;
+    -fx-text-fill: white;
+}
+
+.user-badge {
+    -fx-background-color: rgba(255,255,255,0.15);
+    -fx-text-fill: #a5b4fc;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-padding: 6 18;
+    -fx-background-radius: 30;
+}
+
+/* Navigation */
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #cbd5e1;
+    -fx-font-size: 15px;
+    -fx-font-weight: 500;
+    -fx-padding: 14 20;
+    -fx-background-radius: 12;
+    -fx-alignment: CENTER_LEFT;
+    -fx-cursor: hand;
+}
+
+.nav-button:hover {
+    -fx-background-color: rgba(255,255,255,0.1);
+    -fx-text-fill: white;
+}
+
+.nav-button.active {
+    -fx-background-color: linear-gradient(to right, #3b83f683, #9495dc);
+    -fx-text-fill: white;
+}
+
+/* Logout Button - Red */
+.logout-button {
+    -fx-background-color: rgb(220, 58, 58);
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: 600;
+    -fx-padding: 14 24;
+    -fx-background-radius: 14;
+    -fx-cursor: hand;
+}
+
+.logout-button:hover {
+    -fx-background-color: rgba(239, 68, 68, 0.35);
+    -fx-text-fill: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(239, 68, 68, 0.4), 12, 0.4, 0, 4);
+}
+
+.logout-button:pressed {
+    -fx-background-color: rgba(220, 38, 38, 0.5);
+}
+
+/* MAIN AREA */
+.main-container {
+    -fx-background-color: #f8fafc;
+    -fx-padding: 40;
+}
+
+.page-title {
+    -fx-font-size: 34px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #1e2937;
+}
+
+.page-subtitle {
+    -fx-font-size: 15.5px;
+    -fx-text-fill: #64748b;
+}
+
+/* Stats Cards */
+.stat-card {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-padding: 28;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 20, 0.3, 0, 8);
+}
+
+.stat-value { -fx-font-size: 38px; -fx-font-weight: 800; -fx-text-fill: #1e2937; }
+.stat-label { -fx-font-size: 13.5px; -fx-text-fill: #64748b; }
+
+/* Quick Action Buttons */
+.action-btn {
+    -fx-background-color: white;
+    -fx-text-fill: #334155;
+    -fx-font-weight: 600;
+    -fx-padding: 16 28;
+    -fx-background-radius: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 15, 0.3, 0, 6);
+    -fx-cursor: hand;
+    -fx-min-width: 170;
+}
+
+.action-btn:hover {
+    -fx-translate-y: -3;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 20, 0.4, 0, 8);
+}
+
+.action-primary {
+    -fx-background-color: linear-gradient(to right, #1e3c72, #3b82f6);
+    -fx-text-fill: white;
+}
+
+/* Activity */
+.activity-card {
+    -fx-background-color: white;
+    -fx-background-radius: 18;
+    -fx-padding: 22;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 20, 0.3, 0, 8);
+}
+
+/* ===== LEVEL & CLASS CARDS ===== */
+.levels-grid { -fx-padding: 10 0 20 0; }
+
+.level-card, .class-card {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-padding: 26;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 20, 0.3, 0, 8);
+    -fx-cursor: hand;
+}
+
+.level-card:hover, .class-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 25, 0.4, 0, 12);
+    -fx-translate-y: -4;
+}
+
+.level-name, .class-name {
+    -fx-font-size: 24px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #1e2937;
+}
+
+.level-desc, .class-meta {
+    -fx-font-size: 13.5px;
+    -fx-text-fill: #64748b;
+}
+
+.student-count {
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #4a7bc2;
+    -fx-background-color: #e7eff9;
+    -fx-padding: 6 14;
+    -fx-background-radius: 20;
+}
+
+/* ===== PROGRESS BAR (Capacity) ===== */
+.progress-bar {
+    -fx-pref-height: 12px;
+    -fx-background-radius: 6px;
+}
+.progress-bar .bar {
+    -fx-background-color: linear-gradient(to right, #3b82f6, #1d4ed8);
+    -fx-background-radius: 6px;
+}
+.progress-bar .track {
+    -fx-background-color: #e2e8f0;
+    -fx-background-radius: 6px;
+}
+
+/* ===== MODERN TABLEVIEW ===== */
+.custom-table {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-table-cell-border-color: transparent;
+}
+.custom-table .column-header-background {
+    -fx-background-color: #f8fafc;
+    -fx-background-radius: 12 12 0 0;
+}
+.custom-table .column-header {
+    -fx-background-color: transparent;
+    -fx-padding: 14 18;
+}
+.custom-table .column-header .label {
+    -fx-text-fill: #475569;
+    -fx-font-weight: 700;
+    -fx-font-size: 13px;
+}
+.custom-table .table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent;
+    -fx-padding: 6 0;
+}
+.custom-table .table-row-cell:odd {
+    -fx-background-color: #fafbfc;
+}
+.custom-table .table-row-cell:hover {
+    -fx-background-color: #e7eff9;
+}
+.custom-table .table-row-cell:selected {
+    -fx-background-color: #dbeafe;
+}
+.custom-table .table-cell {
+    -fx-padding: 10 18;
+    -fx-text-fill: #1e2937;
+    -fx-font-size: 13.5px;
+}
+.custom-table .scroll-bar:vertical .thumb {
+    -fx-background-color: #cbd5e1;
+    -fx-background-radius: 10;
+}
+.custom-table .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #94a3b8;
+}
+
+/* ===== STATUS BADGE IN TABLE ===== */
+.status-badge {
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-padding: 5 12;
+    -fx-background-radius: 15;
+}
+.status-active { -fx-background-color: #dcfce7; -fx-text-fill: #166534; }
+.status-inactive { -fx-background-color: #fee2e2; -fx-text-fill: #991b1b; }
+.status-suspended { -fx-background-color: #fef3c7; -fx-text-fill: #92400e; }

@@ -2,6 +2,7 @@
 
 <?import java.lang.String?>
 <?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
@@ -30,64 +31,64 @@
             </VBox>
             <Separator styleClass="sidebar-separator" />
             <VBox spacing="6">
-                <Label alignment="CENTER" prefHeight="58.0" prefWidth="266.0" style="-fx-font-family: Segoe UI; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 17;" styleClass="menu-label" text="MENU" />
-                <Button fx:id="btnDashboard" onAction="#handleDashboard" style="-fx-background-color: white; -fx-text-fill: #1d386b; -fx-font-family: Segoe UI; -fx-font-weight: bold;" styleClass="nav-button" text="📊 Dashboard" />
-                <Button fx:id="btnStudents" onAction="#handleStudents" style="-fx-text-fill: white; -fx-font-family: Segoe UI;" styleClass="nav-button" text="👨‍🎓 Students" />
+                <Label alignment="CENTER" prefHeight="58.0" prefWidth="266.0" style="-fx-font-family: Segoe UI; -fx-text-fill: #EAF1FB; -fx-font-weight: bold; -fx-font-size: 18; -fx-background-color: #2F4C7A; -fx-background-radius: 20;" styleClass="menu-label" text="MENU" />
+                <Button fx:id="btnDashboard" onAction="#handleDashboard" style="-fx-text-fill: white; -fx-font-family: Segoe UI;" styleClass="nav-button" text="📊 Dashboard" />
+                <Button fx:id="btnStudents" onAction="#handleStudents" style="-fx-text-fill: #1d386b; -fx-font-family: Segoe UI; -fx-background-color: #E6EAF0; -fx-font-weight: bold;" styleClass="nav-button" text="👨‍🎓 Students" />
                 <Button fx:id="btnTeachers" onAction="#handleTeachers" style="-fx-font-family: Segoe UI; -fx-text-fill: white;" styleClass="nav-button" text="👨‍🏫 Teachers" />
                 <Button fx:id="btnCourses" onAction="#handleCourses" style="-fx-font-family: Segoe UI; -fx-text-fill: white;" styleClass="nav-button" text="📚 Courses" />
                 <Button fx:id="btnGrades" onAction="#handleGrades" style="-fx-font-family: Segoe UI; -fx-text-fill: white;" styleClass="nav-button" text="📝 Grades" />
             </VBox>
             <VBox VBox.vgrow="ALWAYS" />
-            <Button onAction="#handleLogout" styleClass="logout-button" text="🚪 Logout" />
+            <Button onAction="#handleLogout" style="-fx-font-weight: bold;" styleClass="logout-button" text="🚪 Logout" />
         </VBox>
     </left>
 
     <!-- MAIN CONTENT -->
     <center>
         <ScrollPane fitToWidth="true" styleClass="main-scroll">
-            <VBox spacing="28" style="-fx-background-color: #f2f2f2;" styleClass="main-container">
+            <VBox alignment="CENTER" fillWidth="false" spacing="28.0" style="-fx-background-color: #f2f2f2;" styleClass="main-container">
 
-                <!-- Header -->
-                <VBox spacing="8">
-                    <Label styleClass="page-title" text="➕ Add New Student" />
+                                                          <!-- Header -->
+                <VBox alignment="CENTER" spacing="8">
+                    <Label style="-fx-text-fill: #2E7D32;" styleClass="page-title" text="➕ Add New Student" />
                     <Label styleClass="page-subtitle" text="Fill in the student and parent/guardian information below" />
                 </VBox>
 
-                <!-- Student Information Section -->
-                <VBox prefHeight="687.0" prefWidth="563.0" spacing="20" styleClass="form-section">
+                                        <!-- Student Information Section -->
+                <VBox alignment="CENTER" maxHeight="687.0" maxWidth="563.0" prefHeight="687.0" prefWidth="563.0" spacing="20" style="-fx-alignment: center;" styleClass="form-section">
                     <Label alignment="CENTER" prefHeight="40.0" prefWidth="573.0" style="-fx-font-family: Segoe UI; -fx-text-fill: #4a7bc2;" styleClass="section-header" text="      📋 Student Information">
                         <graphic>
                             <Label style="-fx-background-color: #FFCCCC; -fx-text-fill: #D32F2F;" styleClass="section-badge" text="Required" />
                         </graphic>
                     </Label>
                     
-                    <GridPane alignment="CENTER" hgap="20" styleClass="form-grid" vgap="18">
+                                            <GridPane alignment="CENTER" hgap="20" styleClass="form-grid" vgap="18">
                         <columnConstraints>
                             <ColumnConstraints percentWidth="47.0" />
                             <ColumnConstraints percentWidth="53.0" />
                         </columnConstraints>
                         
-                        <!-- Row 1 -->
+                                                <!-- Row 1 -->
                         <Label styleClass="form-label" text="First Name *" />
                         <TextField fx:id="txtFirstName" promptText="Enter first name" styleClass="form-input" GridPane.columnIndex="1" />
                         
-                        <!-- Row 2 -->
+                                                <!-- Row 2 -->
                         <Label styleClass="form-label" text="Last Name *" GridPane.rowIndex="1" />
                         <TextField fx:id="txtLastName" promptText="Enter last name" styleClass="form-input" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         
-                        <!-- Row 3 -->
+                                                <!-- Row 3 -->
                         <Label styleClass="form-label" text="Email Address" GridPane.rowIndex="2" />
                         <TextField fx:id="txtEmail" promptText="student@email.com" styleClass="form-input" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         
-                        <!-- Row 4 -->
+                                                <!-- Row 4 -->
                         <Label styleClass="form-label" text="Phone Number" GridPane.rowIndex="3" />
                         <TextField fx:id="txtPhone" promptText="+212 000-0000" styleClass="form-input" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                         
-                        <!-- Row 5 -->
+                                                <!-- Row 5 -->
                         <Label styleClass="form-label" text="Date of Birth *" GridPane.rowIndex="4" />
                         <DatePicker fx:id="dpDateOfBirth" promptText="Select date" styleClass="form-input" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                         
-                        <!-- Row 6 -->
+                                                <!-- Row 6 -->
                         <Label styleClass="form-label" text="Gender *" GridPane.rowIndex="5" />
                         <ComboBox fx:id="cbGender" styleClass="form-input" GridPane.columnIndex="1" GridPane.rowIndex="5">
                             <items>
@@ -100,7 +101,7 @@
                             </items>
                         </ComboBox>
                         
-                        <!-- Row 7 -->
+                                                <!-- Row 7 -->
                         <Label styleClass="form-label" text="Grade Level *" GridPane.rowIndex="6" />
                         <ComboBox fx:id="cbGradeLevel" styleClass="form-input" GridPane.columnIndex="1" GridPane.rowIndex="6">
                             <items>
@@ -115,7 +116,7 @@
                             </items>
                         </ComboBox>
                         
-                        <!-- Row 8 - Full width -->
+                                                <!-- Row 8 - Full width -->
                         <Label styleClass="form-label" text="Home Address" GridPane.columnSpan="2" GridPane.rowIndex="7" />
                         <TextArea fx:id="txtAddress" prefHeight="80" promptText="Enter complete address" styleClass="form-input" wrapText="true" GridPane.columnSpan="2" GridPane.rowIndex="8" />
                   <rowConstraints>
@@ -130,31 +131,34 @@
                      <RowConstraints />
                   </rowConstraints>
                     </GridPane>
+               <VBox.margin>
+                  <Insets left="35.0" />
+               </VBox.margin>
                 </VBox>
 
-                <!-- Primary Parent/Guardian Section -->
-                <VBox spacing="20" styleClass="form-section">
-               <Label alignment="CENTER" prefHeight="40.0" prefWidth="573.0" style="-fx-font-family: Segoe UI; -fx-text-fill: #4a7bc2;" styleClass="section-header" text="👨‍👩‍👧 Primary Parent/Guardian">
+                                        <!-- Primary Parent/Guardian Section -->
+                <VBox alignment="CENTER" prefWidth="563.0" spacing="20" styleClass="form-section">
+               <Label alignment="CENTER" prefWidth="573.0" style="-fx-font-family: Segoe UI; -fx-text-fill: #4a7bc2;" styleClass="section-header" text="👨‍👩‍👧 Primary Parent/Guardian">
                   <graphic>
                      <Label style="-fx-text-fill: #D32F2F; -fx-background-color: #FFCCCC;" styleClass="section-badge" text="Required" />
                   </graphic>
                </Label>
                     
-                    <GridPane hgap="20" styleClass="form-grid" vgap="18">
+                                            <GridPane hgap="20" styleClass="form-grid" vgap="18">
                         <columnConstraints>
                             <ColumnConstraints percentWidth="50" />
                             <ColumnConstraints percentWidth="50" />
                         </columnConstraints>
                         
-                        <!-- Row 1 -->
+                                                <!-- Row 1 -->
                         <Label styleClass="form-label" text="First Name *" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                         <TextField fx:id="txtParent1FirstName" promptText="Enter first name" styleClass="form-input" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                         
-                        <!-- Row 2 -->
+                                                <!-- Row 2 -->
                         <Label styleClass="form-label" text="Last Name *" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                         <TextField fx:id="txtParent1LastName" promptText="Enter last name" styleClass="form-input" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         
-                        <!-- Row 3 -->
+                                                <!-- Row 3 -->
                         <Label styleClass="form-label" text="Relationship *" GridPane.columnIndex="0" GridPane.rowIndex="2" />
                         <ComboBox fx:id="cbParent1Relationship" styleClass="form-input" GridPane.columnIndex="1" GridPane.rowIndex="2">
                             <items>
@@ -168,27 +172,27 @@
                             </items>
                         </ComboBox>
                         
-                        <!-- Row 4 -->
+                                                <!-- Row 4 -->
                         <Label styleClass="form-label" text="Email Address" GridPane.rowIndex="4" />
                         <TextField fx:id="txtParent1Email" promptText="parent@email.com" styleClass="form-input" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                         
-                        <!-- Row 5 -->
+                                                <!-- Row 5 -->
                         <Label styleClass="form-label" text="Primary Phone *" GridPane.rowIndex="5" />
                         <TextField fx:id="txtParent1Phone" promptText="+212 000-0000" styleClass="form-input" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                         
-                        <!-- Row 6 -->
+                                                <!-- Row 6 -->
                         <Label styleClass="form-label" text="Alternate Phone" GridPane.rowIndex="6" />
                         <TextField fx:id="txtParent1PhoneAlt" promptText="+212 000-0000" styleClass="form-input" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                         
-                        <!-- Row 7 -->
+                                                <!-- Row 7 -->
                         <Label styleClass="form-label" text="Occupation" GridPane.rowIndex="7" />
                         <TextField fx:id="txtParent1Occupation" promptText="e.g., Engineer, Teacher" styleClass="form-input" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                         
-                        <!-- Row 8 - Full width -->
+                                                <!-- Row 8 - Full width -->
                         <Label styleClass="form-label" text="Parent Address" GridPane.columnSpan="2" GridPane.rowIndex="8" />
                         <TextArea fx:id="txtParent1Address" prefHeight="70" promptText="Enter address (if different from student)" styleClass="form-input" wrapText="true" GridPane.columnSpan="2" GridPane.rowIndex="9" />
                         
-                        <!-- Row 9 - Primary Contact Toggle -->
+                                                <!-- Row 9 - Primary Contact Toggle -->
                         <Label styleClass="form-label" text="Primary Contact" GridPane.rowIndex="10" />
                         <CheckBox fx:id="chkParent1Primary" selected="true" styleClass="form-checkbox" text="This is the primary contact for emergencies" GridPane.columnIndex="1" GridPane.rowIndex="10" />
                   <rowConstraints>
@@ -205,31 +209,34 @@
                      <RowConstraints />
                   </rowConstraints>
                     </GridPane>
+               <VBox.margin>
+                  <Insets left="30.0" />
+               </VBox.margin>
                 </VBox>
 
-                <!-- Secondary Parent/Guardian Section (Optional) -->
-                <VBox spacing="20" styleClass="form-section">
-               <Label alignment="CENTER" prefHeight="40.0" prefWidth="573.0" style="-fx-font-family: Segoe UI; -fx-text-fill: #4a7bc2;" styleClass="section-header" text="👥 Secondary Parent/Guardian">
+                                        <!-- Secondary Parent/Guardian Section (Optional) -->
+                <VBox alignment="CENTER" prefWidth="563.0" spacing="20" styleClass="form-section">
+               <Label alignment="CENTER" prefWidth="573.0" style="-fx-font-family: Segoe UI; -fx-text-fill: #4a7bc2;" styleClass="section-header" text="👥 Secondary Parent/Guardian">
                   <graphic>
                      <Label style="-fx-background-color: #e6f4ee; -fx-text-fill: #3fa37a;" styleClass="section-badge" text="Optional" />
                   </graphic>
                </Label>
                     
-                    <GridPane hgap="20" styleClass="form-grid" vgap="18">
+                                            <GridPane hgap="20" styleClass="form-grid" vgap="18">
                         <columnConstraints>
                             <ColumnConstraints percentWidth="50" />
                             <ColumnConstraints percentWidth="50" />
                         </columnConstraints>
                         
-                        <!-- Row 1 -->
+                                                <!-- Row 1 -->
                         <Label styleClass="form-label" text="First Name" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                         <TextField fx:id="txtParent2FirstName" promptText="Enter first name" styleClass="form-input" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                         
-                        <!-- Row 2 -->
+                                                <!-- Row 2 -->
                         <Label styleClass="form-label" text="Last Name" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                         <TextField fx:id="txtParent2LastName" promptText="Enter last name" styleClass="form-input" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         
-                        <!-- Row 3 -->
+                                                <!-- Row 3 -->
                         <Label styleClass="form-label" text="Relationship" GridPane.columnIndex="0" GridPane.rowIndex="2" />
                         <ComboBox fx:id="cbParent2Relationship" styleClass="form-input" GridPane.columnIndex="1" GridPane.rowIndex="2">
                             <items>
@@ -243,15 +250,15 @@
                             </items>
                         </ComboBox>
                         
-                        <!-- Row 4 -->
+                                                <!-- Row 4 -->
                         <Label styleClass="form-label" text="Email Address" GridPane.columnIndex="0" GridPane.rowIndex="3" />
                         <TextField fx:id="txtParent2Email" promptText="parent2@email.com" styleClass="form-input" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                         
-                        <!-- Row 5 -->
+                                                <!-- Row 5 -->
                         <Label styleClass="form-label" text="Phone Number" GridPane.columnIndex="0" GridPane.rowIndex="4" />
                         <TextField fx:id="txtParent2Phone" promptText="+212 000-0000" styleClass="form-input" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                         
-                        <!-- Row 6 -->
+                                                <!-- Row 6 -->
                         <Label styleClass="form-label" text="Occupation" GridPane.columnIndex="0" GridPane.rowIndex="5" />
                         <TextField fx:id="txtParent2Occupation" promptText="e.g., Doctor, Artist" styleClass="form-input" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                   <rowConstraints>
@@ -263,9 +270,12 @@
                      <RowConstraints />
                   </rowConstraints>
                     </GridPane>
+               <VBox.margin>
+                  <Insets left="30.0" />
+               </VBox.margin>
                 </VBox>
 
-                <!-- Emergency Contact Section -->
+                                        <!-- Emergency Contact Section -->
                 <VBox spacing="20" styleClass="form-section">
                <Label alignment="CENTER" prefHeight="40.0" prefWidth="573.0" style="-fx-font-family: Segoe UI; -fx-text-fill: #4a7bc2;" styleClass="section-header" text="🚨 Emergency Contact">
                   <graphic>
@@ -273,20 +283,20 @@
                   </graphic>
                </Label>
                     
-                    <GridPane hgap="20" styleClass="form-grid" vgap="18">
+                                            <GridPane hgap="20" styleClass="form-grid" vgap="18">
                         <columnConstraints>
                             <ColumnConstraints percentWidth="33.0" />
                             <ColumnConstraints percentWidth="34.0" />
                             <ColumnConstraints percentWidth="33.0" />
                         </columnConstraints>
                         
-                        <Label styleClass="form-label" text="Contact Name *" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                                <Label styleClass="form-label" text="Contact Name *" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                         <TextField fx:id="txtEmergencyName" promptText="Full name" styleClass="form-input" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="0" />
                         
-                        <Label styleClass="form-label" text="Phone Number *" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                                <Label styleClass="form-label" text="Phone Number *" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                         <TextField fx:id="txtEmergencyPhone" promptText="+212 000-0000" styleClass="form-input" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
                         
-                        <Label styleClass="form-label" text="Relationship *" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                                <Label styleClass="form-label" text="Relationship *" GridPane.columnIndex="0" GridPane.rowIndex="2" />
                         <ComboBox fx:id="cbEmergencyRelationship" styleClass="form-input" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2">
                             <items>
                                 <FXCollections fx:factory="observableArrayList">
@@ -305,20 +315,20 @@
                   </rowConstraints>
                     </GridPane>
                     
-                    <HBox alignment="CENTER_LEFT" spacing="10" styleClass="info-box">
+                                            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="info-box">
                         <Label styleClass="info-icon" text="ℹ️" />
                         <Label styleClass="info-text" text="This contact will be notified first in case of emergency if primary parent is unreachable." />
                     </HBox>
                 </VBox>
 
-                <!-- Action Buttons -->
+                                        <!-- Action Buttons -->
                 <HBox alignment="CENTER_RIGHT" spacing="16" styleClass="form-actions">
-                    <Button onAction="#handleCancel" styleClass="btn-secondary" text="❌ Cancel" />
-                    <Button onAction="#handleReset" styleClass="btn-outline" text="🔄 Reset Form" />
-                    <Button onAction="#handleSaveStudent" style="-fx-background-color: #3fa37a; -fx-effect: null;" styleClass="btn-primary" text="💾 Save Student" />
+                    <Button alignment="CENTER" onAction="#handleCancel" style="-fx-background-radius: 20; -fx-font-weight: bold;" styleClass="btn-secondary" text="❌ Cancel" />
+                    <Button onAction="#handleReset" style="-fx-border-radius: 20; -fx-font-weight: bold;" styleClass="btn-outline" text="🔄 Reset Form" />
+                    <Button onAction="#handleSaveStudent" style="-fx-background-color: #2E7D32; -fx-effect: null; -fx-background-radius: 20; -fx-font-weight: bold;" styleClass="btn-primary" text="💾 Save Student" />
                 </HBox>
 
-            </VBox>
+                                    </VBox>
         </ScrollPane>
     </center>
 </BorderPane>

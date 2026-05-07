@@ -2,7 +2,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane stylesheets="@dashboard.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="schoolmanagement.smproject.classes.controller.ClassesController">
+<BorderPane prefWidth="1100" prefHeight="750" stylesheets="@dashboard.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="schoolmanagement.smproject.classes.controller.ClassesController">
     <left>
         <VBox spacing="25" styleClass="sidebar">
             <VBox alignment="CENTER" spacing="12" styleClass="logo-section">
@@ -12,9 +12,7 @@
             </VBox>
             <Separator styleClass="sidebar-separator" />
             <VBox spacing="6">
-                <Label alignment="CENTER" prefHeight="58.0" prefWidth="266.0" 
-                       style="-fx-font-family: Segoe UI; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 17;" 
-                       styleClass="menu-label" text="MENU" />
+                <Label alignment="CENTER" prefHeight="58.0" prefWidth="266.0" style="-fx-font-family: Segoe UI; -fx-text-fill: #EAF1FB; -fx-font-weight: bold; -fx-font-size: 18; -fx-background-color: #2F4C7A; -fx-background-radius: 20;" styleClass="menu-label" text="MENU" />
                 <Button fx:id="btnDashboard" onAction="#handleDashboard" styleClass="nav-button" text="📊 Dashboard" />
                 <Button fx:id="btnLevels" onAction="#handleLevels" styleClass="nav-button active" text="🏫 Levels" />
                 <Button fx:id="btnStudents" onAction="#handleStudents" styleClass="nav-button" text="👨‍🎓 Students" />

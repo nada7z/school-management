@@ -1,33 +1,37 @@
-package schoolmanagement.smproject.parents.controller;
+package schoolmanagement.smproject.students.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.stage.Stage;
-import schoolmanagement.smproject.parents.entity.Parent;
-import schoolmanagement.smproject.parents.repository.ParentRepository;
+import schoolmanagement.smproject.students.entity.Student;
+import schoolmanagement.smproject.students.repository.StudentRepository;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ParentsController {
+public class StudentsController {
 
     // === FXML ELEMENTS ===
     @FXML private TextField txtSearch;
-    @FXML private ComboBox<String> cbRelationshipFilter;
-    @FXML private TableView<Parent> parentsTable;
-    @FXML private TableColumn<Parent, Integer> colId;
-    @FXML private TableColumn<Parent, String> colName;
-    @FXML private TableColumn<Parent, String> colEmail;
-    @FXML private TableColumn<Parent, String> colPhone;
-    @FXML private TableColumn<Parent, String> colRelationship;
-    @FXML private TableColumn<Parent, String> colOccupation;
-    @FXML private TableColumn<Parent, String> colStatus;
-    @FXML private TableColumn<Parent, Void> colActions;
-    @FXML private Label lblParentCount;
+    @FXML private ComboBox<String> cbGradeFilter;
+    @FXML private ComboBox<String> cbStatusFilter;
+    @FXML private TableView<Student> studentsTable;
+    @FXML private TableColumn<Student, Integer> colId;
+    @FXML private TableColumn<Student, String> colName;
+    @FXML private TableColumn<Student, String> colEmail;
+    @FXML private TableColumn<Student, String> colPhone;
+    @FXML private TableColumn<Student, String> colGrade;
+    @FXML private TableColumn<Student, String> colClassroom;
+    @FXML private TableColumn<Student, String> colParent;
+    @FXML private TableColumn<Student, String> colStatus;
+    @FXML private TableColumn<Student, Void> colActions;
+    @FXML private Label lblStudentCount;
     @FXML private Label lblPageInfo;
     @FXML private Button btnPrevious;
     @FXML private Button btnNext;
@@ -36,8 +40,8 @@ public class ParentsController {
     @FXML private Button btnDashboard, btnStudents, btnTeachers, btnCourses, btnLevels, btnGrades;
 
     // === STATE VARIABLES ===
-    private List<Parent> allParents = List.of();
-    private List<Parent> filteredParents = List.of();
+    private List<Student> allStudents = List.of();
+    private List<Student> filteredStudents = List.of();
     private int currentPage = 1;
     private final int pageSize = 15;
 
@@ -48,28 +52,30 @@ public class ParentsController {
     public void initialize() {
         setupTableColumns();
         setupFilters();
-        loadParents();
+        loadStudents();
         setupRealtimeSearch();
         updatePaginationUI();
     }
 
     /**
-     * Configures TableView columns and cell factories.
+     * Configures TableView columns, cell factories, and status badges.
      */
     private void setupTableColumns() {
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colName.setCellValueFactory(new PropertyValueFactory<>("fullName"));
         colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
         colPhone.setCellValueFactory(new PropertyValueFactory<>("phone"));
-        colRelationship.setCellValueFactory(new PropertyValueFactory<>("relationship"));
-        colOccupation.setCellValueFactory(new PropertyValueFactory<>("occupation"));
+        colGrade.setCellValueFactory(new PropertyValueFactory<>("gradeLevel"));
         
-        // Status badge column (Primary/Secondary based on isPrimaryContact)
-        colStatus.setCellValueFactory(cell -> {
-            Parent p = cell.getValue();
-            String status = p.isPrimaryContact() ? "Primary" : "Secondary";
-            return new ReadOnlyStringWrapper(status);
+        // Classroom might not be in Student entity yet. Safely fallback to N/A
+        colClassroom.setCellValueFactory(cell -> new ReadOnlyStringWrapper("N/A"));
+        
+        colParent.setCellValueFactory(cell -> {
+            Student s = cell.getValue();
+            String parent = (s.getPrimaryParent() != null) ? s.getPrimaryParent().getFullName() : "N/A";
+            return new ReadOnlyStringWrapper(parent);
         });
+        colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
 
         // Status Badge Cell Factory
         colStatus.setCellFactory(col -> new TableCell<>() {
@@ -80,8 +86,7 @@ public class ParentsController {
                     setText(null); setGraphic(null);
                 } else {
                     Label badge = new Label(status.toUpperCase());
-                    badge.getStyleClass().addAll("status-badge", 
-                        status.equalsIgnoreCase("Primary") ? "status-active" : "status-inactive");
+                    badge.getStyleClass().addAll("status-badge", "status-" + status.toLowerCase());
                     setText(null); setGraphic(badge);
                 }
             }
@@ -95,11 +100,11 @@ public class ParentsController {
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    Button btnEdit = new Button("✏️");
+                    Button btnEdit = new Button("✎");
                     btnEdit.getStyleClass().addAll("action-btn-small", "action-edit");
                     btnEdit.setOnAction(e -> handleEdit(getTableView().getItems().get(getIndex())));
 
-                    Button btnDelete = new Button("🗑️");
+                    Button btnDelete = new Button("✖");
                     btnDelete.getStyleClass().addAll("action-btn-small", "action-delete");
                     btnDelete.setOnAction(e -> handleDelete(getTableView().getItems().get(getIndex())));
 
@@ -110,86 +115,91 @@ public class ParentsController {
     }
 
     /**
-     * Populates filter dropdowns.
+     * Populates filter dropdowns with default options.
      */
     private void setupFilters() {
-        cbRelationshipFilter.getItems().addAll("All", "Father", "Mother", "Guardian", "Step-Parent", "Other");
-        cbRelationshipFilter.getSelectionModel().selectFirst();
+        cbGradeFilter.getItems().addAll("All Grades", "CE1", "CE2", "CE3", "CE4", "CE5", "CE6");
+        cbGradeFilter.getSelectionModel().selectFirst();
+
+        cbStatusFilter.getItems().addAll("All Status", "Active", "Inactive", "Suspended");
+        cbStatusFilter.getSelectionModel().selectFirst();
     }
 
     /**
-     * Enables real-time filtering as user types.
+     * Enables real-time filtering as user types in search box.
      */
     private void setupRealtimeSearch() {
         txtSearch.textProperty().addListener((obs, oldVal, newVal) -> applyFilters());
-        cbRelationshipFilter.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> applyFilters());
+        cbGradeFilter.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> applyFilters());
+        cbStatusFilter.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> applyFilters());
     }
 
     /**
-     * Fetches parents from database.
+     * Fetches students from database and applies initial filters.
      */
-    private void loadParents() {
+    private void loadStudents() {
         try {
-            ParentRepository repo = new ParentRepository();
-            allParents = repo.findAll();
+            StudentRepository repo = new StudentRepository();
+            allStudents = repo.findAll();
             applyFilters();
         } catch (Exception e) {
             e.printStackTrace();
-            allParents = List.of();
-            filteredParents = List.of();
-            parentsTable.getItems().clear();
-            lblParentCount.setText("Showing 0 parents (Database unavailable)");
+            allStudents = List.of();
+            filteredStudents = List.of();
+            studentsTable.getItems().clear();
+            lblStudentCount.setText("Showing 0 students (Database unavailable)");
         }
     }
 
     /**
-     * Applies search and filter criteria.
+     * Applies search text, grade filter, and status filter to the dataset.
      */
     private void applyFilters() {
         String searchTerm = txtSearch.getText().toLowerCase().trim();
-        String relationshipFilter = cbRelationshipFilter.getValue();
+        String gradeFilter = cbGradeFilter.getValue();
+        String statusFilter = cbStatusFilter.getValue();
 
-        filteredParents = allParents.stream()
-            .filter(p -> {
+        filteredStudents = allStudents.stream()
+            .filter(s -> {
                 boolean matchesSearch = searchTerm.isEmpty() || 
-                    p.getFullName().toLowerCase().contains(searchTerm) ||
-                    p.getEmail().toLowerCase().contains(searchTerm) ||
-                    p.getPhone().contains(searchTerm) ||
-                    String.valueOf(p.getId()).contains(searchTerm);
+                    s.getFullName().toLowerCase().contains(searchTerm) ||
+                    s.getEmail().toLowerCase().contains(searchTerm) ||
+                    String.valueOf(s.getId()).contains(searchTerm);
                 
-                boolean matchesRelationship = "All".equals(relationshipFilter) || 
-                    relationshipFilter.equals(p.getRelationship());
+                boolean matchesGrade = "All Grades".equals(gradeFilter) || gradeFilter.equals(s.getGradeLevel());
+                boolean matchesStatus = "All Status".equals(statusFilter) || statusFilter.equals(s.getStatus());
                 
-                return matchesSearch && matchesRelationship;
+                return matchesSearch && matchesGrade && matchesStatus;
             })
             .collect(Collectors.toList());
 
         currentPage = 1;
         updateTablePage();
         updatePaginationUI();
-        lblParentCount.setText("Showing " + filteredParents.size() + " parent" + (filteredParents.size() != 1 ? "s" : ""));
+        lblStudentCount.setText("Showing " + filteredStudents.size() + " student" + (filteredStudents.size() != 1 ? "s" : ""));
     }
 
     /**
-     * Updates table with current page data.
+     * Updates the TableView to show only the current page's data.
      */
     private void updateTablePage() {
         int start = (currentPage - 1) * pageSize;
-        int end = Math.min(start + pageSize, filteredParents.size());
+        int end = Math.min(start + pageSize, filteredStudents.size());
         
-        if (start >= filteredParents.size()) {
-            parentsTable.getItems().clear();
+        if (start >= filteredStudents.size()) {
+            studentsTable.getItems().clear();
         } else {
-            parentsTable.getItems().setAll(filteredParents.subList(start, end));
+            studentsTable.getItems().setAll(filteredStudents.subList(start, end));
         }
     }
 
     /**
-     * Updates pagination UI state.
+     * Updates pagination labels and enables/disables navigation buttons.
      */
     private void updatePaginationUI() {
-        int totalPages = Math.max(1, (int) Math.ceil(filteredParents.size() / (double) pageSize));
+        int totalPages = Math.max(1, (int) Math.ceil(filteredStudents.size() / (double) pageSize));
         lblPageInfo.setText("Page " + currentPage + " of " + totalPages);
+        
         btnPrevious.setDisable(currentPage <= 1);
         btnNext.setDisable(currentPage >= totalPages);
     }
@@ -202,11 +212,12 @@ public class ParentsController {
     @FXML
     private void handleClearFilters() {
         txtSearch.clear();
-        cbRelationshipFilter.getSelectionModel().selectFirst();
+        cbGradeFilter.getSelectionModel().selectFirst();
+        cbStatusFilter.getSelectionModel().selectFirst();
     }
 
     @FXML
-    private void handleAddParent() { loadView("/createParent.fxml"); }
+    private void handleAddStudent() { loadView("/studentsform.fxml"); }
 
     @FXML
     private void handleExport() {
@@ -224,7 +235,7 @@ public class ParentsController {
 
     @FXML
     private void handleNext() {
-        int totalPages = (int) Math.ceil(filteredParents.size() / (double) pageSize);
+        int totalPages = (int) Math.ceil(filteredStudents.size() / (double) pageSize);
         if (currentPage < totalPages) {
             currentPage++;
             updateTablePage();
@@ -232,32 +243,24 @@ public class ParentsController {
         }
     }
 
-    private void handleEdit(Parent parent) {
-        showAlert(Alert.AlertType.INFORMATION, "Edit Parent", 
-            "Edit form for " + parent.getFullName() + " coming soon!\n\nID: " + parent.getId());
-        // TODO: Navigate to edit form with parent data pre-filled
+    private void handleEdit(Student student) {
+        showAlert(Alert.AlertType.INFORMATION, "Edit Student", "Edit form for " + student.getFullName() + " coming soon!");
+        // TODO: Navigate to edit form with student data
     }
 
-    private void handleDelete(Parent parent) {
+    private void handleDelete(Student student) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Delete Parent");
-        alert.setHeaderText("Remove " + parent.getFullName() + "?");
-        alert.setContentText("This will NOT delete linked students, but will remove parent contact info.");
+        alert.setTitle("Delete Student");
+        alert.setHeaderText("Remove " + student.getFullName() + "?");
+        alert.setContentText("This action cannot be undone.");
         
         if (alert.showAndWait().get() == ButtonType.OK) {
             try {
-                ParentRepository repo = new ParentRepository();
-                boolean deleted = repo.deleteById(parent.getId());
-                
-                if (deleted) {
-                    loadParents(); // Refresh list
-                    showAlert(Alert.AlertType.INFORMATION, "Success", "Parent deleted successfully.");
-                } else {
-                    showAlert(Alert.AlertType.WARNING, "Not Found", "Parent record not found.");
-                }
+                new StudentRepository().deleteById(student.getId());
+                loadStudents(); // Refresh list
+                showAlert(Alert.AlertType.INFORMATION, "Success", "Student deleted successfully.");
             } catch (Exception e) {
-                e.printStackTrace();
-                showAlert(Alert.AlertType.ERROR, "Error", "Failed to delete: " + e.getMessage());
+                showAlert(Alert.AlertType.ERROR, "Error", "Failed to delete student: " + e.getMessage());
             }
         }
     }
@@ -265,7 +268,7 @@ public class ParentsController {
     // === NAVIGATION ===
 
     @FXML private void handleDashboard() { loadView("/dashboard.fxml"); }
-    @FXML private void handleStudents() { loadView("/students.fxml"); }
+    @FXML private void handleStudents() { /* Already here */ }
     @FXML private void handleTeachers() { loadView("/teachers.fxml"); }
     @FXML private void handleCourses() { loadView("/courses.fxml"); }
     @FXML private void handleLevels() { loadView("/levels.fxml"); }
@@ -284,7 +287,7 @@ public class ParentsController {
     private void loadView(String fxmlPath) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            javafx.scene.Parent root = loader.load();
+            Parent root = loader.load();
             Stage stage = (Stage) btnDashboard.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.centerOnScreen();

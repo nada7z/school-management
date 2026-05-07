@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane stylesheets="@dashboard.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="schoolmanagement.smproject.dashboard.controller.DashboardController">
+<BorderPane prefHeight="750" prefWidth="1100" stylesheets="@dashboard.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="schoolmanagement.smproject.dashboard.controller.DashboardController">
 
     <!-- LEFT SIDEBAR -->
     <left>
@@ -28,10 +28,10 @@
             <Separator styleClass="sidebar-separator" />
 
             <!-- Navigation -->
-            <VBox spacing="6">
-                <Label alignment="CENTER" prefHeight="58.0" prefWidth="266.0" style="-fx-font-family: Segoe UI; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 17;" styleClass="menu-label" text="MENU" />
+            <VBox prefHeight="393.0" prefWidth="240.0" spacing="6">
+                <Label alignment="CENTER" prefHeight="58.0" prefWidth="266.0" style="-fx-font-family: Segoe UI; -fx-text-fill: #263F6B; -fx-font-weight: bold; -fx-font-size: 18; -fx-background-color: #DCE6F5; -fx-background-radius: 23;" styleClass="menu-label" text="MENU" />
 
-                <Button fx:id="btnDashboard" onAction="#handleDashboard" style="-fx-background-color: white; -fx-text-fill: #1d386b; -fx-font-family: Segoe UI; -fx-font-weight: bold;" styleClass="nav-button" text="📊 Dashboard" />
+                <Button fx:id="btnDashboard" onAction="#handleDashboard" style="-fx-background-color: #2F4C7A; -fx-text-fill: white; -fx-font-family: Segoe UI; -fx-font-weight: bold; -fx-background-radius: 23;" styleClass="nav-button" text="📊 Dashboard" />
 
                 <Button fx:id="btnStudents" onAction="#handleStudents" style="-fx-text-fill: white; -fx-font-family: Segoe UI;" styleClass="nav-button" text="👨‍🎓 Students" />
 
@@ -111,25 +111,25 @@
                      <Font name="Agency FB" size="17.0" />
                   </font></Label>
                     <HBox alignment="CENTER" prefHeight="54.0" prefWidth="790.0" spacing="18">
-                        <Button onAction="#handleAddStudent" prefHeight="51.0" prefWidth="290.0" style="-fx-background-color: #e7eff9; -fx-font-family: Segoe UI; -fx-font-weight: bold; -fx-font-size: 13; -fx-background-radius: 10; -fx-effect: null;" styleClass="action-btn" text="Add Student">
+                        <Button onAction="#handleAddStudent" prefHeight="51.0" prefWidth="290.0" style="-fx-background-color: #e7eff9; -fx-font-family: Segoe UI; -fx-font-weight: bold; -fx-font-size: 13; -fx-background-radius: 10; -fx-effect: null;" styleClass="action-btn" text="      Add Student">
                             <graphic>
                         <Label style="-fx-text-fill: #4a7bc2;" styleClass="action-icon" text="➕" />
                      </graphic>
                         </Button>
-                        <Button onAction="#handleAddTeacher" prefHeight="51.0" prefWidth="290.0" style="-fx-background-color: #e6f4ee; -fx-font-family: Segoe UI; -fx-font-weight: bold; -fx-font-size: 13; -fx-background-radius: 10; -fx-effect: null;" styleClass="action-btn" text="Add Teacher">
+                        <Button onAction="#handleAddTeacher" prefHeight="51.0" prefWidth="290.0" style="-fx-background-color: #e6f4ee; -fx-font-family: Segoe UI; -fx-font-weight: bold; -fx-font-size: 13; -fx-background-radius: 10; -fx-effect: null;" styleClass="action-btn" text="     Add Teacher">
                             <graphic><Label style="-fx-text-fill: #3fa37a;" styleClass="action-icon" text="➕" /></graphic>
                         </Button>
                     </HBox>
                <HBox alignment="CENTER" prefHeight="54.0" prefWidth="790.0" spacing="18">
                   <children>
-                     <Button onAction="#handleCreateCourse" prefHeight="84.0" prefWidth="290.0" style="-fx-background-color: #efe9fb; -fx-font-family: Segoe UI; -fx-font-weight: bold; -fx-font-size: 13; -fx-background-radius: 10; -fx-effect: null;" styleClass="action-btn" text="Create Course">
+                     <Button onAction="#handleCreateCourse" prefHeight="84.0" prefWidth="290.0" style="-fx-background-color: #efe9fb; -fx-font-family: Segoe UI; -fx-font-weight: bold; -fx-font-size: 13; -fx-background-radius: 10; -fx-effect: null;" styleClass="action-btn" text="     Create Course">
                         <graphic>
                            <Label style="-fx-text-fill: #7a6ccf;" styleClass="action-icon" text="📝" />
                         </graphic>
                      </Button>
-                     <Button onAction="#handleReport" prefHeight="84.0" prefWidth="290.0" style="-fx-background-color: #f9f1e3; -fx-font-family: Segoe UI; -fx-font-weight: bold; -fx-font-size: 12; -fx-background-radius: 10; -fx-effect: null;" styleClass="action-btn" text="Generate Report">
+                     <Button alignment="CENTER" onAction="#handleReport" prefHeight="84.0" prefWidth="290.0" style="-fx-background-color: #f9f1e3; -fx-font-family: Segoe UI; -fx-font-weight: bold; -fx-font-size: 12; -fx-background-radius: 10; -fx-effect: null;" styleClass="action-btn" text="    Generate Report">
                         <graphic>
-                           <Label style="-fx-text-fill: c49a3a;" styleClass="action-icon" text="📄" />
+                           <Label style="-fx-text-fill: #c49a3a;" styleClass="action-icon" text="📄" />
                         </graphic>
                      </Button>
                   </children>

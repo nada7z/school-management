@@ -1,6 +1,6 @@
 /* ===== GLOBAL ===== */
 .root {
-    -fx-font-family: "Segoe UI", "Roboto", system-ui, sans-serif;
+    -fx-font-family: "Segoe UI", "Roboto";
     -fx-background-color: #f8fafc;
 }
 
@@ -240,3 +240,68 @@
 .status-active { -fx-background-color: #dcfce7; -fx-text-fill: #166534; }
 .status-inactive { -fx-background-color: #fee2e2; -fx-text-fill: #991b1b; }
 .status-suspended { -fx-background-color: #fef3c7; -fx-text-fill: #92400e; }
+
+.combo-box {
+    -fx-background-color:  #e7eff9;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-padding: 4 8 4 8;
+}
+
+.combo-box .list-cell {
+    -fx-text-fill: #263F6B;
+    -fx-font-family: "Segoe UI";
+    -fx-font-weight: bold;
+}
+
+/* TextFields */
+.text-field {
+    -fx-background-color: white;
+    -fx-border-color: #D6D6D6;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 8 12 8 12;
+    -fx-font-size: 13px;
+}
+
+.text-field:focused {
+    -fx-border-color: #722F37;
+    -fx-effect: dropshadow(gaussian, rgba(114,47,55,0.25), 8, 0.2, 0, 0);
+}
+
+/* Base button */
+.action-btn-small {
+    -fx-background-radius: 8px;
+    -fx-padding: 5 10;
+    -fx-font-size: 13px;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+}
+
+/* EDIT (green) */
+.action-edit {
+    -fx-background-color:  #e6f4ee;
+    -fx-text-fill:  #3fa37a; /* modern green */
+}
+
+.action-edit:hover {
+    -fx-background-color: #c9f1e0;
+}
+
+.action-edit:pressed {
+    -fx-background-color: #1B5E20;
+}
+
+/* DELETE (red) */
+.action-delete {
+    -fx-background-color:  #FFCCCC;
+    -fx-text-fill:  #D32F2F;   /* modern red */
+}
+
+.action-delete:hover {
+    -fx-background-color: #f7b2b2;
+}
+
+.action-delete:pressed {
+    -fx-background-color: #B71C1C;
+}

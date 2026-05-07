@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefWidth="1100" stylesheets="@studentsform.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="schoolmanagement.smproject.courses.controller.CreateCourseController">
+
+    <!-- LEFT SIDEBAR -->
+    <left>
+        <VBox spacing="25" styleClass="sidebar">
+            <VBox alignment="CENTER" spacing="12" styleClass="logo-section">
+                <Label styleClass="logo-icon" text="🎓" />
+                <Label styleClass="logo-title" text="School MS" />
+                <Label fx:id="userRoleLabel" styleClass="user-badge" text="ADMIN" />
+            </VBox>
+            <Separator styleClass="sidebar-separator" />
+            <VBox spacing="6">
+                <Label alignment="CENTER" prefHeight="58.0" prefWidth="266.0" style="-fx-font-family: Segoe UI; -fx-text-fill: #EAF1FB; -fx-font-weight: bold; -fx-font-size: 18; -fx-background-color: #2F4C7A; -fx-background-radius: 20;" styleClass="menu-label" text="MENU" />
+                
+                <Button fx:id="btnDashboard" onAction="#handleDashboard" styleClass="nav-button" text="📊 Dashboard" />
+                <Button fx:id="btnCourses" onAction="#handleCourses" style="-fx-background-color: white; -fx-text-fill: #1d386b; -fx-font-weight: bold;" styleClass="nav-button" text="📚 Courses" />
+                <Button fx:id="btnStudents" onAction="#handleStudents" styleClass="nav-button" text="👨‍🎓 Students" />
+                <Button fx:id="btnTeachers" onAction="#handleTeachers" styleClass="nav-button" text="👨‍🏫 Teachers" />
+                <Button fx:id="btnLevels" onAction="#handleLevels" styleClass="nav-button" text="📝 Grades" />
+            </VBox>
+            <VBox VBox.vgrow="ALWAYS" />
+            <Button onAction="#handleLogout" styleClass="logout-button" text="🚪 Logout" />
+        </VBox>
+    </left>
+
+    <!-- MAIN CONTENT -->
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="main-scroll">
+            <StackPane>
+                <children>
+                    <VBox alignment="CENTER" fillWidth="false" spacing="28" style="-fx-background-color: #f2f2f2;" styleClass="main-container">
+
+                        <!-- Header -->
+                        <VBox alignment="CENTER" spacing="8">
+                            <Label style="-fx-text-fill: #2E7D32;" styleClass="page-title" text="➕ Create New Course" />
+                            <Label alignment="CENTER" contentDisplay="CENTER" styleClass="page-subtitle" text="Fill in the course details below" />
+                        </VBox>
+
+                        <!-- Course Information -->
+                        <VBox alignment="CENTER" maxWidth="563.0" spacing="20" styleClass="form-section">
+                            <Label alignment="CENTER" prefWidth="573.0" style="-fx-text-fill: #4a7bc2;" styleClass="section-header" text="📋 Course Information">
+                                <graphic>
+                                    <Label style="-fx-background-color: #FFCCCC; -fx-text-fill: #D32F2F;" styleClass="section-badge" text="Required" />
+                                </graphic>
+                            </Label>
+                            
+                            <GridPane hgap="20" styleClass="form-grid" vgap="18">
+                                <columnConstraints>
+                                    <ColumnConstraints percentWidth="47.0" />
+                                    <ColumnConstraints percentWidth="53.0" />
+                                </columnConstraints>
+                                
+                                <Label styleClass="form-label" text="Course Code *" />
+                                <TextField fx:id="txtCourseCode" promptText="e.g., MATH-CE3" styleClass="form-input" GridPane.columnIndex="1" />
+                                
+                                <Label styleClass="form-label" text="Course Name *" GridPane.rowIndex="1" />
+                                <TextField fx:id="txtCourseName" promptText="e.g., Mathematics" styleClass="form-input" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                
+                                <Label styleClass="form-label" text="Academic Level *" GridPane.rowIndex="2" />
+                                <ComboBox fx:id="cbLevel" styleClass="form-input" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                
+                                <Label styleClass="form-label" text="Teacher" GridPane.rowIndex="3" />
+                                <ComboBox fx:id="cbTeacher" styleClass="form-input" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                
+                                <Label styleClass="form-label" text="Hours Per Week" GridPane.rowIndex="4" />
+                                <Spinner fx:id="spnHours" styleClass="form-input" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                
+                                <Label styleClass="form-label" text="Max Capacity" GridPane.rowIndex="5" />
+                                <Spinner fx:id="spnCapacity" styleClass="form-input" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                
+                                <Label styleClass="form-label" text="Status" GridPane.rowIndex="6" />
+                                <ComboBox fx:id="cbStatus" styleClass="form-input" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                                    <items>
+                                        <FXCollections fx:factory="observableArrayList">
+                                            <String fx:value="Active" />
+                                            <String fx:value="Inactive" />
+                                            <String fx:value="Archived" />
+                                        </FXCollections>
+                                    </items>
+                                </ComboBox>
+                                
+                                <Label styleClass="form-label" text="Description" GridPane.columnSpan="2" GridPane.rowIndex="7" />
+                                <TextArea fx:id="txtDescription" prefHeight="100" promptText="Enter course description" styleClass="form-input" wrapText="true" GridPane.columnSpan="2" GridPane.rowIndex="8" />
+                        <rowConstraints>
+                           <RowConstraints />
+                           <RowConstraints />
+                           <RowConstraints />
+                           <RowConstraints />
+                           <RowConstraints />
+                           <RowConstraints />
+                           <RowConstraints />
+                           <RowConstraints />
+                           <RowConstraints />
+                        </rowConstraints>
+                            </GridPane>
+                        </VBox>
+
+                        <!-- Action Buttons -->
+                        <HBox alignment="CENTER_RIGHT" spacing="16" styleClass="form-actions">
+                            <Button onAction="#handleCancel" style="-fx-font-weight: bold; -fx-background-radius: 20;" styleClass="btn-secondary" text="❌ Cancel" />
+                            <Button onAction="#handleReset" style="-fx-border-radius: 20; -fx-background-radius: 20; -fx-font-weight: bold;" styleClass="btn-outline" text="🔄 Reset Form" />
+                            <Button onAction="#handleSaveCourse" style="-fx-effect: null; -fx-background-color: #2E7D32; -fx-background-radius: 20; -fx-font-weight: bold;" styleClass="btn-primary" text="💾  Save Course" />
+                        </HBox>
+
+                    </VBox>
+                </children>
+            </StackPane>
+        </ScrollPane>
+    </center>
+</BorderPane>

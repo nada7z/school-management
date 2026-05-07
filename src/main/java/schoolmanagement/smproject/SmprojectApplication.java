@@ -119,9 +119,9 @@ public class SmprojectApplication extends Application {
         
         // 4. Set up Logout functionality
         DashboardController controller = loader.getController();
-        controller.setOnLogout(() -> {
-            Platform.runLater(this::showLoginScreen);
-        });
+     //   controller.setOnLogout(() -> {
+      //      Platform.runLater(this::showLoginScreen);
+      //  });
 
         // 5. Set Scene and Show
         Scene dashboardScene = new Scene(dashboardRoot, 1100, 700);

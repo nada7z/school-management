@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane stylesheets="@dashboard.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="schoolmanagement.smproject.levels.controller.LevelsController">
+<BorderPane prefWidth="1100" prefHeight="750" stylesheets="@dashboard.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="schoolmanagement.smproject.levels.controller.LevelsController">
     <left>
         <VBox spacing="25" styleClass="sidebar">
             <VBox alignment="CENTER" spacing="12" styleClass="logo-section">
@@ -18,7 +18,7 @@
             </VBox>
             <Separator styleClass="sidebar-separator" />
             <VBox spacing="6">
-                <Label alignment="CENTER" prefHeight="58.0" prefWidth="266.0" style="-fx-font-family: Segoe UI; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 17;" styleClass="menu-label" text="MENU" />
+                <Label alignment="CENTER" prefHeight="58.0" prefWidth="266.0" style="-fx-font-family: Segoe UI; -fx-text-fill: #EAF1FB; -fx-font-weight: bold; -fx-font-size: 18; -fx-background-color: #2F4C7A; -fx-background-radius: 20;" styleClass="menu-label" text="MENU" />
                 <Button fx:id="btnDashboard" onAction="#handleDashboard" styleClass="nav-button" text="📊 Dashboard" />
                 <Button fx:id="btnStudents" onAction="#handleStudents" styleClass="nav-button" text="👨‍🎓 Students" />
                 <Button fx:id="btnLevels" onAction="#handleLevels" styleClass="nav-button" text="🏫 Levels" />
@@ -32,10 +32,10 @@
     </left>
 
     <center>
-        <ScrollPane fitToWidth="true" styleClass="main-scroll">
+        <ScrollPane fitToWidth="true" prefHeight="774.0" prefWidth="905.0" styleClass="main-scroll">
             <VBox spacing="30" styleClass="main-container">
                 <VBox spacing="8">
-                    <Label styleClass="page-title" text="🏫 Academic Levels" />
+                    <Label alignment="CENTER" styleClass="page-title" text="🏫 Academic Levels" />
                     <Label styleClass="page-subtitle" text="Select a level to view its classrooms and students" />
                 </VBox>
                 <GridPane fx:id="levelsGrid" hgap="22" styleClass="levels-grid" vgap="22" />

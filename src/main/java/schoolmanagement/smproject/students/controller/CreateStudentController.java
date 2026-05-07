@@ -4,17 +4,19 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.time.LocalDate;
+
+// ✅ CORRECT IMPORTS - Use .model package
 import schoolmanagement.smproject.students.entity.Student;
 import schoolmanagement.smproject.parents.entity.Parent;
+import schoolmanagement.smproject.students.repository.StudentRepository;
+import schoolmanagement.smproject.parents.repository.ParentRepository;
 
 public class CreateStudentController {
 
-    // ===== NAVIGATION BUTTONS =====
+    // ===== NAVIGATION BUTTONS (from sidebar) =====
     @FXML private Label userRoleLabel;
     @FXML private Button btnDashboard;
     @FXML private Button btnStudents;
@@ -56,31 +58,50 @@ public class CreateStudentController {
     @FXML private TextField txtEmergencyPhone;
     @FXML private ComboBox<String> cbEmergencyRelationship;
 
+    // ===== STATE =====
+    private Stage dashboardStage;
+
+    // ===== INITIALIZATION =====
+    @FXML
+    public void initialize() {
+        // Populate ComboBoxes (FXML already has items, but this ensures fallback)
+        if (cbGender.getItems().isEmpty()) {
+            cbGender.getItems().addAll("Male", "Female");
+        }
+        if (cbGradeLevel.getItems().isEmpty()) {
+            cbGradeLevel.getItems().addAll("CE1", "CE2", "CE3", "CE4", "CE5", "CE6");
+        }
+        if (cbParent1Relationship.getItems().isEmpty()) {
+            cbParent1Relationship.getItems().addAll("Father", "Mother", "Guardian", "Step-Parent", "Other");
+        }
+        if (cbParent2Relationship.getItems().isEmpty()) {
+            cbParent2Relationship.getItems().addAll("Father", "Mother", "Guardian", "Step-Parent", "Other");
+        }
+        if (cbEmergencyRelationship.getItems().isEmpty()) {
+            cbEmergencyRelationship.getItems().addAll("Parent", "Relative", "Family Friend", "Neighbor", "Other");
+        }
+        
+        // Set defaults
+        cbGender.getSelectionModel().selectFirst();
+        cbGradeLevel.getSelectionModel().selectFirst();
+        cbParent1Relationship.getSelectionModel().select("Father");
+        cbParent2Relationship.getSelectionModel().select("Mother");
+        cbEmergencyRelationship.getSelectionModel().select("Parent");
+        chkParent1Primary.setSelected(true);
+        
+        addValidationListeners();
+    }
+
+    public void setDashboardStage(Stage stage) {
+        this.dashboardStage = stage;
+    }
+
     // ===== NAVIGATION HANDLERS =====
-    @FXML
-    private void handleDashboard() {
-        loadView("/dashboard/dashboard.fxml");
-    }
-
-    @FXML
-    private void handleStudents() {
-        loadView("/students/studentsList.fxml");
-    }
-
-    @FXML
-    private void handleTeachers() {
-        loadView("/teachers/teachersList.fxml");
-    }
-
-    @FXML
-    private void handleCourses() {
-        loadView("/courses/coursesList.fxml");
-    }
-
-    @FXML
-    private void handleGrades() {
-        loadView("/grades/gradesList.fxml");
-    }
+    @FXML private void handleDashboard() { loadView("/dashboard.fxml"); }
+    @FXML private void handleStudents() { loadView("/students.fxml"); }
+    @FXML private void handleTeachers() { loadView("/teachers.fxml"); }
+    @FXML private void handleCourses() { loadView("/courses.fxml"); }
+    @FXML private void handleGrades() { loadView("/grades.fxml"); }
 
     @FXML
     private void handleLogout() {
@@ -91,72 +112,96 @@ public class CreateStudentController {
         alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
         
         if (alert.showAndWait().get() == ButtonType.YES) {
-            loadView("/login/login.fxml");
+            loadView("/login.fxml");
         }
     }
 
     // ===== FORM ACTIONS =====
     @FXML
     private void handleSaveStudent() {
-        if (!validateForm()) {
-            return;
-        }
+        if (!validateForm()) return;
 
-        // Create Student Object
-        Student student = new Student();
-        student.setFirstName(txtFirstName.getText().trim());
-        student.setLastName(txtLastName.getText().trim());
-        student.setEmail(txtEmail.getText().trim());
-        student.setPhone(txtPhone.getText().trim());
-        student.setDateOfBirth(dpDateOfBirth.getValue());
-        student.setGender(cbGender.getValue());
-        student.setAddress(txtAddress.getText().trim());
-        student.setGradeLevel(cbGradeLevel.getValue());
+        try {
+            // 1️⃣ Create Student Object
+            Student student = new Student();
+            student.setFirstName(txtFirstName.getText().trim());
+            student.setLastName(txtLastName.getText().trim());
+            student.setEmail(txtEmail.getText().trim());
+            student.setPhone(txtPhone.getText().trim());
+            student.setDateOfBirth(dpDateOfBirth.getValue());
+            student.setGender(cbGender.getValue());
+            student.setAddress(txtAddress.getText().trim());
+            student.setGradeLevel(cbGradeLevel.getValue());
+            student.setEnrollmentDate(LocalDate.now());
+            student.setStatus("Active");
 
-        // Create Primary Parent
-        Parent primaryParent = new Parent();
-        primaryParent.setFirstName(txtParent1FirstName.getText().trim());
-        primaryParent.setLastName(txtParent1LastName.getText().trim());
-        primaryParent.setRelationship(cbParent1Relationship.getValue());
-        primaryParent.setEmail(txtParent1Email.getText().trim());
-        primaryParent.setPhone(txtParent1Phone.getText().trim());
-        primaryParent.setPhoneAlternate(txtParent1PhoneAlt.getText().trim());
-        primaryParent.setOccupation(txtParent1Occupation.getText().trim());
-        primaryParent.setAddress(txtParent1Address.getText().trim());
-        primaryParent.setPrimaryContact(chkParent1Primary.isSelected());
-        student.setPrimaryParent(primaryParent);
+            // 2️⃣ Create & Save Primary Parent
+            Parent primaryParent = new Parent();
+            primaryParent.setFirstName(txtParent1FirstName.getText().trim());
+            primaryParent.setLastName(txtParent1LastName.getText().trim());
+            primaryParent.setRelationship(cbParent1Relationship.getValue());
+            primaryParent.setEmail(txtParent1Email.getText().trim());
+            primaryParent.setPhone(txtParent1Phone.getText().trim());
+            primaryParent.setPhoneAlternate(txtParent1PhoneAlt.getText().trim());
+            primaryParent.setOccupation(txtParent1Occupation.getText().trim());
+            primaryParent.setAddress(txtParent1Address.getText().trim());
+            primaryParent.setPrimaryContact(chkParent1Primary.isSelected());
 
-        // Create Secondary Parent (if filled)
-        if (!txtParent2FirstName.getText().trim().isEmpty()) {
-            Parent secondaryParent = new Parent();
-            secondaryParent.setFirstName(txtParent2FirstName.getText().trim());
-            secondaryParent.setLastName(txtParent2LastName.getText().trim());
-            secondaryParent.setRelationship(cbParent2Relationship.getValue());
-            secondaryParent.setEmail(txtParent2Email.getText().trim());
-            secondaryParent.setPhone(txtParent2Phone.getText().trim());
-            secondaryParent.setOccupation(txtParent2Occupation.getText().trim());
-            student.setSecondaryParent(secondaryParent);
-        }
+            ParentRepository parentRepo = new ParentRepository();
+            
+            // Check if parent already exists by email to avoid duplicates
+            var existingPrimary = parentRepo.findByEmail(primaryParent.getEmail());
+            if (existingPrimary.isPresent() && !existingPrimary.get().getEmail().isEmpty()) {
+                primaryParent = existingPrimary.get();
+            } else {
+                primaryParent = parentRepo.save(primaryParent);
+            }
+            student.setPrimaryParent(primaryParent);
 
-        // Emergency Contact
-        student.setEmergencyContactName(txtEmergencyName.getText().trim());
-        student.setEmergencyContactPhone(txtEmergencyPhone.getText().trim());
-        student.setEmergencyContactRelationship(cbEmergencyRelationship.getValue());
+            // 3️⃣ Save Secondary Parent (if provided)
+            if (!txtParent2FirstName.getText().trim().isEmpty()) {
+                Parent secondaryParent = new Parent();
+                secondaryParent.setFirstName(txtParent2FirstName.getText().trim());
+                secondaryParent.setLastName(txtParent2LastName.getText().trim());
+                secondaryParent.setRelationship(cbParent2Relationship.getValue());
+                secondaryParent.setEmail(txtParent2Email.getText().trim());
+                secondaryParent.setPhone(txtParent2Phone.getText().trim());
+                secondaryParent.setOccupation(txtParent2Occupation.getText().trim());
+                
+                var existingSecondary = parentRepo.findByEmail(secondaryParent.getEmail());
+                if (existingSecondary.isPresent() && !existingSecondary.get().getEmail().isEmpty()) {
+                    secondaryParent = existingSecondary.get();
+                } else {
+                    secondaryParent = parentRepo.save(secondaryParent);
+                }
+                student.setSecondaryParent(secondaryParent);
+            }
 
-        // TODO: Save to database via service layer
-        // studentService.saveStudent(student);
+            // 4️⃣ Set Emergency Contact
+            student.setEmergencyContactName(txtEmergencyName.getText().trim());
+            student.setEmergencyContactPhone(txtEmergencyPhone.getText().trim());
+            student.setEmergencyContactRelationship(cbEmergencyRelationship.getValue());
 
-        // Show Success Alert
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Success");
-        alert.setHeaderText("Student Added Successfully!");
-        alert.setContentText(student.getFullName() + " has been registered.");
-        alert.getButtonTypes().setAll(ButtonType.OK);
-        
-        if (alert.showAndWait().get() == ButtonType.OK) {
+            // 5️⃣ Save Student
+            StudentRepository studentRepo = new StudentRepository();
+            Student savedStudent = studentRepo.save(student);
+
+            // 6️⃣ Show Success
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Success ✅");
+            alert.setHeaderText("Student Registered!");
+            alert.setContentText(savedStudent.getFullName() + " (ID: " + savedStudent.getId() + ") has been saved to database.");
+            alert.showAndWait();
+            
             handleReset();
-            // Optionally navigate to student list
-            // handleStudents();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Database Error ❌");
+            alert.setHeaderText("Failed to save student");
+            alert.setContentText("Error: " + e.getMessage() + "\n\nCheck console for details.");
+            alert.showAndWait();
         }
     }
 
@@ -175,213 +220,133 @@ public class CreateStudentController {
 
     @FXML
     private void handleReset() {
-        // Student Fields
-        txtFirstName.clear();
-        txtLastName.clear();
-        txtEmail.clear();
-        txtPhone.clear();
+        // Student
+        txtFirstName.clear(); txtLastName.clear(); txtEmail.clear(); txtPhone.clear();
         dpDateOfBirth.setValue(null);
         cbGender.getSelectionModel().clearSelection();
         cbGradeLevel.getSelectionModel().clearSelection();
         txtAddress.clear();
 
         // Primary Parent
-        txtParent1FirstName.clear();
-        txtParent1LastName.clear();
+        txtParent1FirstName.clear(); txtParent1LastName.clear();
         cbParent1Relationship.getSelectionModel().clearSelection();
-        txtParent1Email.clear();
-        txtParent1Phone.clear();
-        txtParent1PhoneAlt.clear();
-        txtParent1Occupation.clear();
-        txtParent1Address.clear();
+        txtParent1Email.clear(); txtParent1Phone.clear(); txtParent1PhoneAlt.clear();
+        txtParent1Occupation.clear(); txtParent1Address.clear();
         chkParent1Primary.setSelected(true);
 
         // Secondary Parent
-        txtParent2FirstName.clear();
-        txtParent2LastName.clear();
+        txtParent2FirstName.clear(); txtParent2LastName.clear();
         cbParent2Relationship.getSelectionModel().clearSelection();
-        txtParent2Email.clear();
-        txtParent2Phone.clear();
-        txtParent2Occupation.clear();
+        txtParent2Email.clear(); txtParent2Phone.clear(); txtParent2Occupation.clear();
 
-        // Emergency Contact
-        txtEmergencyName.clear();
-        txtEmergencyPhone.clear();
+        // Emergency
+        txtEmergencyName.clear(); txtEmergencyPhone.clear();
         cbEmergencyRelationship.getSelectionModel().clearSelection();
 
-        // Focus first field
         txtFirstName.requestFocus();
     }
 
     // ===== VALIDATION =====
     private boolean validateForm() {
         StringBuilder errors = new StringBuilder();
+        clearErrorStyles();
 
-        // Student Required Fields
-        if (txtFirstName.getText().trim().isEmpty()) {
-            errors.append("• First Name is required\n");
-            txtFirstName.setStyle("-fx-border-color: #ef4444;");
-        } else {
-            txtFirstName.setStyle("");
-        }
+        // Student Required
+        if (isEmpty(txtFirstName)) { errors.append("• First Name is required\n"); setError(txtFirstName); }
+        if (isEmpty(txtLastName)) { errors.append("• Last Name is required\n"); setError(txtLastName); }
+        if (dpDateOfBirth.getValue() == null) { errors.append("• Date of Birth is required\n"); setError(dpDateOfBirth); }
+        if (cbGender.getValue() == null) { errors.append("• Gender is required\n"); setError(cbGender); }
+        if (cbGradeLevel.getValue() == null) { errors.append("• Grade Level is required\n"); setError(cbGradeLevel); }
 
-        if (txtLastName.getText().trim().isEmpty()) {
-            errors.append("• Last Name is required\n");
-            txtLastName.setStyle("-fx-border-color: #ef4444;");
-        } else {
-            txtLastName.setStyle("");
-        }
+        // Primary Parent Required
+        if (isEmpty(txtParent1FirstName)) { errors.append("• Parent First Name is required\n"); setError(txtParent1FirstName); }
+        if (isEmpty(txtParent1LastName)) { errors.append("• Parent Last Name is required\n"); setError(txtParent1LastName); }
+        if (cbParent1Relationship.getValue() == null) { errors.append("• Parent Relationship is required\n"); setError(cbParent1Relationship); }
+        if (isEmpty(txtParent1Phone)) { errors.append("• Parent Phone is required\n"); setError(txtParent1Phone); }
 
-        if (dpDateOfBirth.getValue() == null) {
-            errors.append("• Date of Birth is required\n");
-            dpDateOfBirth.setStyle("-fx-border-color: #ef4444;");
-        } else {
-            dpDateOfBirth.setStyle("");
-        }
+        // Emergency Required
+        if (isEmpty(txtEmergencyName)) { errors.append("• Emergency Name is required\n"); setError(txtEmergencyName); }
+        if (isEmpty(txtEmergencyPhone)) { errors.append("• Emergency Phone is required\n"); setError(txtEmergencyPhone); }
+        if (cbEmergencyRelationship.getValue() == null) { errors.append("• Emergency Relationship is required\n"); setError(cbEmergencyRelationship); }
 
-        if (cbGender.getValue() == null) {
-            errors.append("• Gender is required\n");
-            cbGender.setStyle("-fx-border-color: #ef4444;");
-        } else {
-            cbGender.setStyle("");
-        }
-
-        if (cbGradeLevel.getValue() == null) {
-            errors.append("• Grade Level is required\n");
-            cbGradeLevel.setStyle("-fx-border-color: #ef4444;");
-        } else {
-            cbGradeLevel.setStyle("");
-        }
-
-        // Primary Parent Required Fields
-        if (txtParent1FirstName.getText().trim().isEmpty()) {
-            errors.append("• Parent First Name is required\n");
-            txtParent1FirstName.setStyle("-fx-border-color: #ef4444;");
-        } else {
-            txtParent1FirstName.setStyle("");
-        }
-
-        if (txtParent1LastName.getText().trim().isEmpty()) {
-            errors.append("• Parent Last Name is required\n");
-            txtParent1LastName.setStyle("-fx-border-color: #ef4444;");
-        } else {
-            txtParent1LastName.setStyle("");
-        }
-
-        if (cbParent1Relationship.getValue() == null) {
-            errors.append("• Parent Relationship is required\n");
-            cbParent1Relationship.setStyle("-fx-border-color: #ef4444;");
-        } else {
-            cbParent1Relationship.setStyle("");
-        }
-
-        if (txtParent1Phone.getText().trim().isEmpty()) {
-            errors.append("• Parent Primary Phone is required\n");
-            txtParent1Phone.setStyle("-fx-border-color: #ef4444;");
-        } else {
-            txtParent1Phone.setStyle("");
-        }
-
-        // Emergency Contact Required Fields
-        if (txtEmergencyName.getText().trim().isEmpty()) {
-            errors.append("• Emergency Contact Name is required\n");
-            txtEmergencyName.setStyle("-fx-border-color: #ef4444;");
-        } else {
-            txtEmergencyName.setStyle("");
-        }
-
-        if (txtEmergencyPhone.getText().trim().isEmpty()) {
-            errors.append("• Emergency Contact Phone is required\n");
-            txtEmergencyPhone.setStyle("-fx-border-color: #ef4444;");
-        } else {
-            txtEmergencyPhone.setStyle("");
-        }
-
-        if (cbEmergencyRelationship.getValue() == null) {
-            errors.append("• Emergency Relationship is required\n");
-            cbEmergencyRelationship.setStyle("-fx-border-color: #ef4444;");
-        } else {
-            cbEmergencyRelationship.setStyle("");
-        }
-
-        // Show errors if any
         if (errors.length() > 0) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Validation Error");
-            alert.setHeaderText("Please fix the following errors:");
-            alert.setContentText(errors.toString());
-            alert.showAndWait();
+            showAlert(Alert.AlertType.WARNING, "Validation Error", errors.toString());
             return false;
         }
 
-        // Email validation (optional)
+        // Email format check
         if (!txtEmail.getText().trim().isEmpty() && !isValidEmail(txtEmail.getText())) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Invalid Email");
-            alert.setContentText("Please enter a valid email address.");
-            alert.showAndWait();
-            txtEmail.setStyle("-fx-border-color: #ef4444;");
+            showAlert(Alert.AlertType.WARNING, "Invalid Email", "Please enter a valid email address.");
+            setError(txtEmail);
             return false;
         }
 
         return true;
     }
 
+    private boolean isEmpty(TextField field) {
+        return field.getText() == null || field.getText().trim().isEmpty();
+    }
+
+    private void setError(TextField field) {
+        field.setStyle("-fx-border-color: #ef4444; -fx-border-width: 2px;");
+    }
+
+    private void setError(DatePicker field) {
+        field.setStyle("-fx-border-color: #ef4444; -fx-border-width: 2px;");
+    }
+
+    private void setError(ComboBox<?> field) {
+        field.setStyle("-fx-border-color: #ef4444; -fx-border-width: 2px;");
+    }
+
+    private void clearErrorStyles() {
+        txtFirstName.setStyle(""); txtLastName.setStyle(""); txtEmail.setStyle(""); txtPhone.setStyle("");
+        dpDateOfBirth.setStyle(""); cbGender.setStyle(""); cbGradeLevel.setStyle("");
+        txtParent1FirstName.setStyle(""); txtParent1LastName.setStyle(""); cbParent1Relationship.setStyle("");
+        txtParent1Phone.setStyle(""); txtEmergencyName.setStyle(""); txtEmergencyPhone.setStyle("");
+        cbEmergencyRelationship.setStyle("");
+    }
+
     private boolean isValidEmail(String email) {
         return email != null && email.matches("^[A-Za-z0-9+_.-]+@(.+)$");
     }
 
-    // ===== HELPER METHOD =====
-    private void loadView(String fxmlPath) {
-        try {
-            // TODO: Implement proper scene switching via MainApp or NavigationService
-            // FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            // Parent root = loader.load();
-            // Scene scene = new Scene(root);
-            // MainApp.getPrimaryStage().setScene(scene);
-            System.out.println("Navigate to: " + fxmlPath);
-        } catch (Exception e) {
-            e.printStackTrace();
-            showError("Navigation Error", "Could not load: " + fxmlPath);
-        }
-    }
-
-    private void showError(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
+    private void showAlert(Alert.AlertType type, String title, String message) {
+        Alert alert = new Alert(type);
         alert.setTitle(title);
+        alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
     }
 
-    // ===== INITIALIZATION =====
-    @FXML
-    public void initialize() {
-        // Set default selections
-        cbGender.getSelectionModel().selectFirst();
-        cbGradeLevel.getSelectionModel().selectFirst();
-        cbParent1Relationship.getSelectionModel().select("Father");
-        cbParent2Relationship.getSelectionModel().select("Mother");
-        cbEmergencyRelationship.getSelectionModel().select("Parent");
-        
-        // Add listeners for real-time validation styling
-        addValidationListeners();
-    }
-
+    // ===== REAL-TIME VALIDATION LISTENERS =====
     private void addValidationListeners() {
-        // Student fields
-        txtFirstName.textProperty().addListener((obs, old, newVal) -> {
-            if (!newVal.trim().isEmpty()) txtFirstName.setStyle("");
-        });
-        txtLastName.textProperty().addListener((obs, old, newVal) -> {
-            if (!newVal.trim().isEmpty()) txtLastName.setStyle("");
-        });
-        // Add similar listeners for other required fields...
+        txtFirstName.textProperty().addListener((obs, old, val) -> { if (!val.trim().isEmpty()) txtFirstName.setStyle(""); });
+        txtLastName.textProperty().addListener((obs, old, val) -> { if (!val.trim().isEmpty()) txtLastName.setStyle(""); });
+        txtParent1FirstName.textProperty().addListener((obs, old, val) -> { if (!val.trim().isEmpty()) txtParent1FirstName.setStyle(""); });
+        txtParent1LastName.textProperty().addListener((obs, old, val) -> { if (!val.trim().isEmpty()) txtParent1LastName.setStyle(""); });
+        txtParent1Phone.textProperty().addListener((obs, old, val) -> { if (!val.trim().isEmpty()) txtParent1Phone.setStyle(""); });
+        txtEmergencyName.textProperty().addListener((obs, old, val) -> { if (!val.trim().isEmpty()) txtEmergencyName.setStyle(""); });
+        txtEmergencyPhone.textProperty().addListener((obs, old, val) -> { if (!val.trim().isEmpty()) txtEmergencyPhone.setStyle(""); });
     }
 
-    public void setDashboardStage(Stage stage) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setDashboardStage'");
+    // ===== NAVIGATION HELPER (FIXED) =====
+    private void loadView(String fxmlPath) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            javafx.scene.Parent root = loader.load();
+            
+            Stage stage = (Stage) (btnDashboard != null ? btnDashboard.getScene().getWindow() : 
+                                  (userRoleLabel != null ? userRoleLabel.getScene().getWindow() : null));
+            
+            if (stage != null) {
+                stage.setScene(new Scene(root));
+                stage.centerOnScreen();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Navigation Error", "Could not load: " + fxmlPath + "\n\n" + e.getMessage());
+        }
     }
-
-
 }

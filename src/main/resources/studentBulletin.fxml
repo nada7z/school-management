@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="850" prefWidth="1150" stylesheets="@bulletin.css, @dashboard.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="schoolmanagement.smproject.students.controller.StudentBulletinController">
+    <left>
+        <VBox spacing="25" styleClass="sidebar">
+            <VBox alignment="CENTER" spacing="12" styleClass="logo-section">
+                <Label styleClass="logo-icon" text="🎓" />
+                <Label styleClass="logo-title" text="School MS" />
+                <Label fx:id="userRoleLabel" styleClass="user-badge" text="ADMIN" />
+            </VBox>
+            <Separator styleClass="sidebar-separator" />
+            <VBox spacing="6">
+                <Label alignment="CENTER" prefHeight="58.0" prefWidth="266.0" style="-fx-font-family: Segoe UI; -fx-text-fill: #EAF1FB; -fx-font-weight: bold; -fx-font-size: 18; -fx-background-color: #2F4C7A; -fx-background-radius: 20;" styleClass="menu-label" text="MENU" />
+                <Button fx:id="btnDashboard" onAction="#handleDashboard" styleClass="nav-button" text="📊 Dashboard" />
+                <Button fx:id="btnStudents" onAction="#handleStudents" styleClass="nav-button" text="👨‍🎓 Students" />
+                <Button fx:id="btnLevels" onAction="#handleLevels" styleClass="nav-button" text="🏫 Levels" />
+                <Button fx:id="btnGrades" onAction="#handleGrades" styleClass="nav-button" text="📝 Grades" />
+            </VBox>
+            <VBox VBox.vgrow="ALWAYS" />
+            <Button onAction="#handleLogout" styleClass="logout-button" text="🚪 Logout" />
+        </VBox>
+    </left>
+
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="bulletin-scroll">
+            <VBox alignment="CENTER" spacing="24" styleClass="bulletin-container">
+
+                <!-- HEADER CARD -->
+                <HBox alignment="CENTER_LEFT" spacing="40" styleClass="header-card">
+                    <VBox spacing="6">
+                        <Label styleClass="label-title" text="NOM &amp; PRÉNOM" />
+                        <Label fx:id="lblStudentName" styleClass="label-value" text="Student Name" />
+                    </VBox>
+                    <VBox spacing="6">
+                        <Label styleClass="label-title" text="MATRICULE" />
+                        <Label fx:id="lblStudentId" styleClass="label-value" text="MAT-000" />
+                    </VBox>
+                    <VBox spacing="6">
+                        <Label styleClass="label-title" text="CLASSE" />
+                        <Label fx:id="lblClassroom" styleClass="label-value" text="CE1-A" />
+                    </VBox>
+                    <VBox spacing="6">
+                        <Label styleClass="label-title" text="ANNÉE ACADÉMIQUE" />
+                        <Label fx:id="lblAcademicYear" styleClass="label-value" text="2025 - 2026" />
+                    </VBox>
+                    <Region HBox.hgrow="ALWAYS" />
+                    <HBox spacing="10">
+                        <Button onAction="#handlePrint" styleClass="btn-outline-light" text="🖨️ Imprimer" />
+                        <Button onAction="#handleExport" styleClass="btn-primary-purple" text="➕ Ajouter une matière" />
+                    </HBox>
+                </HBox>
+
+                <!-- SUMMARY CARDS -->
+                <HBox alignment="CENTER" spacing="20">
+                    <VBox alignment="CENTER" spacing="8" styleClass="summary-card">
+                        <Label style="-fx-font-size: 20;" text="📚" />
+                        <Label styleClass="summary-label" text="Total Coefficients" />
+                        <Label fx:id="lblTotalCoeff" styleClass="summary-value" text="0" />
+                    </VBox>
+                    <VBox alignment="CENTER" spacing="8" styleClass="summary-card">
+                        <Label style="-fx-font-size: 20;" text="📊" />
+                        <Label styleClass="summary-label" text="Total Points" />
+                        <Label fx:id="lblTotalPoints" styleClass="summary-value" text="0.00" />
+                    </VBox>
+                    <VBox alignment="CENTER" spacing="8" styleClass="summary-card">
+                        <Label style="-fx-font-size: 20;" text="⭐" />
+                        <Label styleClass="summary-label" text="Moyenne Générale" />
+                        <Label fx:id="lblOverallAverage" styleClass="summary-value highlight" text="0.00 / 20" />
+                    </VBox>
+                </HBox>
+
+                <!-- GRADES TABLE -->
+                <VBox styleClass="table-card">
+                    <HBox alignment="CENTER_LEFT" spacing="12">
+                        <Label styleClass="section-title" text="Relevé des Notes" />
+                        <Label fx:id="lblSubjectCount" styleClass="badge-light" text="0 matières" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button onAction="#handleReset" styleClass="btn-outline-light" text="↻ Réinitialiser" />
+                    </HBox>
+
+                    <TableView fx:id="gradesTable" styleClass="modern-table">
+                        <columns>
+                            <TableColumn fx:id="colIndex" prefWidth="50" text="#" />
+                            <TableColumn fx:id="colSubject" prefWidth="200" text="MATIÈRE" />
+                            <TableColumn fx:id="colGrade" prefWidth="120" text="NOTE / 20" />
+                            <TableColumn fx:id="colCoefficient" prefWidth="80" text="COEF" />
+                            <TableColumn fx:id="colProduct" prefWidth="120" text="PRODUIT" />
+                            <TableColumn fx:id="colActions" prefWidth="175.19998779296873" text="ACTIONS" />
+                        </columns>
+                    </TableView>
+
+                    <HBox alignment="CENTER" styleClass="table-footer">
+                        <Button onAction="#handleAddSubject" styleClass="btn-add-subject" text="➕ Ajouter une nouvelle matière" />
+                    </HBox>
+                </VBox>
+
+                <!-- DECISION CARD -->
+                <VBox alignment="CENTER" spacing="16" styleClass="decision-card">
+                    <Label styleClass="decision-title" text="DÉCISION DU CONSEIL" />
+                    <Label fx:id="lblStatusBadge" styleClass="status-badge" text="ADMIS(E)" />
+                    <Label fx:id="lblDecisionMessage" styleClass="decision-message" text="Moyenne obtenue : 0.00 / 20" />
+                </VBox>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

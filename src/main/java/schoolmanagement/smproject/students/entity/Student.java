@@ -14,6 +14,7 @@ public class Student {
     private String address;
     private LocalDate enrollmentDate;
     private String gradeLevel;
+    private String classroom;        // ✅ ADDED - Required for bulletin page
     private String status;
     
     // Parent/Guardian Information (Primary)
@@ -77,6 +78,10 @@ public class Student {
     public String getGradeLevel() { return gradeLevel; }
     public void setGradeLevel(String gradeLevel) { this.gradeLevel = gradeLevel; }
     
+    // ✅ ADDED: Classroom getter/setter
+    public String getClassroom() { return classroom; }
+    public void setClassroom(String classroom) { this.classroom = classroom; }
+    
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
     
@@ -102,6 +107,7 @@ public class Student {
                 ", name='" + getFullName() + '\'' +
                 ", email='" + email + '\'' +
                 ", grade='" + gradeLevel + '\'' +
+                ", classroom='" + classroom + '\'' +
                 ", primaryParent='" + (primaryParent != null ? primaryParent.getFullName() : "N/A") + '\'' +
                 ", status='" + status + '\'' +
                 '}';

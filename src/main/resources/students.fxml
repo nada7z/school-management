@@ -29,7 +29,6 @@
                 <Button fx:id="btnStudents" onAction="#handleStudents" style="-fx-background-color: #E6EAF0; -fx-text-fill: #1d386b; -fx-font-weight: bold;" styleClass="nav-button" text="👨‍🎓 Students" />
                 <Button fx:id="btnTeachers" onAction="#handleTeachers" style="-fx-text-fill: white;" styleClass="nav-button" text="👨‍🏫 Teachers" />
                 <Button fx:id="btnCourses" onAction="#handleCourses" style="-fx-text-fill: white;" styleClass="nav-button" text="📚 Courses" />
-                <Button fx:id="btnLevels" onAction="#handleLevels" style="-fx-text-fill: white;" styleClass="nav-button" text="🏫 Levels" />
                 <Button fx:id="btnGrades" onAction="#handleGrades" style="-fx-text-fill: white;" styleClass="nav-button" text="📝 Grades" />
             </VBox>
             <VBox VBox.vgrow="ALWAYS" />

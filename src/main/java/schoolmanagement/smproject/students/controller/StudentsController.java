@@ -8,6 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.stage.Stage;
+import schoolmanagement.smproject.students.controller.StudentBulletinController;
 import schoolmanagement.smproject.students.entity.Student;
 import schoolmanagement.smproject.students.repository.StudentRepository;
 
@@ -274,6 +275,17 @@ public class StudentsController {
     @FXML private void handleLevels() { loadView("/levels.fxml"); }
     @FXML private void handleGrades() { loadView("/grades.fxml"); }
 
+    private void handleBulletin(Student student) {
+    try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/studentBulletin.fxml"));
+        Parent root = loader.load();
+        StudentBulletinController ctrl = loader.getController();
+        ctrl.setStudent(student);
+        Stage stage = (Stage) studentsTable.getScene().getWindow();
+        stage.setScene(new Scene(root));
+    } catch (IOException e) { e.printStackTrace(); }
+    }
+
     @FXML
     private void handleLogout() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Confirm logout?");
@@ -304,4 +316,4 @@ public class StudentsController {
         alert.setContentText(msg);
         alert.showAndWait();
     }
-}
+}  

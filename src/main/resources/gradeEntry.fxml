@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="750" prefWidth="1100" stylesheets="@dashboard.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="schoolmanagement.smproject.grades.controller.GradeEntryController">
+
+    <!-- LEFT SIDEBAR -->
+    <left>
+        <VBox spacing="25" styleClass="sidebar">
+            <VBox alignment="CENTER" spacing="12" styleClass="logo-section">
+                <Label styleClass="logo-icon" text="🎓" />
+                <Label styleClass="logo-title" text="School MS" />
+                <Label fx:id="userRoleLabel" styleClass="user-badge" text="ADMIN" />
+            </VBox>
+            <Separator styleClass="sidebar-separator" />
+            <VBox spacing="6">
+                <Label alignment="CENTER" prefHeight="58.0" prefWidth="266.0" style="-fx-font-family: Segoe UI; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 17;" styleClass="menu-label" text="MENU" />
+                <Button fx:id="btnDashboard" onAction="#handleDashboard" style="-fx-text-fill: white;" styleClass="nav-button" text="📊 Dashboard" />
+                <Button fx:id="btnStudents" onAction="#handleStudents" style="-fx-text-fill: white;" styleClass="nav-button" text="👨‍🎓 Students" />
+                <Button fx:id="btnTeachers" onAction="#handleTeachers" style="-fx-text-fill: white;" styleClass="nav-button" text="👨‍ Teachers" />
+                <Button fx:id="btnCourses" onAction="#handleCourses" style="-fx-text-fill: white;" styleClass="nav-button" text="📚 Courses" />
+                <Button fx:id="btnLevels" onAction="#handleLevels" style="-fx-text-fill: white;" styleClass="nav-button" text="🏫 Levels" />
+                <Button fx:id="btnGrades" onAction="#handleGrades" style="-fx-background-color: white; -fx-text-fill: #1d386b; -fx-font-weight: bold;" styleClass="nav-button" text="📝 Grades" />
+            </VBox>
+            <VBox VBox.vgrow="ALWAYS" />
+            <Button onAction="#handleLogout" style="-fx-font-weight: bold;" styleClass="logout-button" text="🚪  Logout" />
+        </VBox>
+    </left>
+
+    <!-- MAIN CONTENT -->
+    <center>
+        <VBox spacing="24" styleClass="main-container">
+            
+            <!-- Header -->
+            <HBox alignment="CENTER_LEFT" spacing="16">
+                <Button onAction="#handleBack" style="-fx-background-color: #263F6B; -fx-text-fill: white; -fx-background-radius: 8; -fx-padding: 8; -fx-font-weight: bold;" text="⬅ Back to Subjects" />
+                <VBox>
+                    <Label fx:id="subjectTitle" styleClass="page-title" text="CE1 - Mathematics" />
+                    <Label styleClass="page-subtitle" text="Enter grades for Test 1, Test 2, and Exam (0-20)" />
+                </VBox>
+                <Region HBox.hgrow="ALWAYS" />
+                <Button onAction="#handleSaveAll" style="-fx-background-color: #263F6B; -fx-text-fill: white; -fx-background-radius: 8; -fx-padding: 8; -fx-font-weight: bold;" text="💾 Save All Grades" />
+            </HBox>
+
+            <!-- Grade Entry Table -->
+            <VBox styleClass="form-section" VBox.vgrow="ALWAYS">
+                <TableView fx:id="gradesTable" prefHeight="400.0" prefWidth="710.0" styleClass="custom-table">
+                    <columns>
+                        <TableColumn fx:id="colStudentName" prefWidth="200" text="Student Name" />
+                        <TableColumn fx:id="colTest1" prefWidth="120" text="Test 1" />
+                        <TableColumn fx:id="colTest2" prefWidth="120" text="Test 2" />
+                        <TableColumn fx:id="colExam" prefWidth="120" text="Exam" />
+                        <TableColumn fx:id="colAverage" prefWidth="177.60003662109375" text="Average" />
+                    </columns>
+                </TableView>
+            </VBox>
+
+            <!-- Info Box -->
+            <HBox alignment="CENTER" spacing="10" styleClass="info-box">
+                <Label style="-fx-font-size: 18; -fx-text-fill: #4a7bc2;" text="ℹ️" />
+                <Label style="-fx-text-fill: #475569;" text="Average is calculated automatically: (Test 1 + Test 2 + Exam) / 3" />
+            </HBox>
+
+        </VBox>
+    </center>
+</BorderPane>

@@ -149,7 +149,7 @@ public class DashboardController {
     @FXML
     private void handleCreateCourse() {
         // Navigate to the Create Course Form
-        loadView("/coursesform.fxml");
+        loadView("/courseform.fxml");
     }
 
     @FXML

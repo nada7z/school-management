@@ -305,3 +305,38 @@
 .action-delete:pressed {
     -fx-background-color: #B71C1C;
 }
+
+/* Level Cards */
+.level-card {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-padding: 40;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 20, 0.3, 0, 8);
+    -fx-cursor: hand;
+}
+.level-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 25, 0.4, 0, 12);
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+}
+
+/* Subject Cards */
+.subject-card {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-padding: 30;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 15, 0.3, 0, 6);
+    -fx-cursor: hand;
+}
+.subject-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 20, 0.4, 0, 10);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+/* Info Box */
+.info-box {
+    -fx-background-color: #e7eff9;
+    -fx-background-radius: 12;
+    -fx-padding: 14 20;
+}

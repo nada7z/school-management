@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="750" prefWidth="1100" stylesheets="@dashboard.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="schoolmanagement.smproject.grades.controller.SubjectsController">
+
+    <!-- LEFT SIDEBAR -->
+    <left>
+        <VBox spacing="25" styleClass="sidebar">
+            <VBox alignment="CENTER" spacing="12" styleClass="logo-section">
+                <Label styleClass="logo-icon" text="🎓" />
+                <Label styleClass="logo-title" text="School MS" />
+                <Label fx:id="userRoleLabel" styleClass="user-badge" text="ADMIN" />
+            </VBox>
+            <Separator styleClass="sidebar-separator" />
+            <VBox spacing="6">
+                <Label alignment="CENTER" prefHeight="58.0" prefWidth="266.0" style="-fx-font-family: Segoe UI; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 17;" styleClass="menu-label" text="MENU" />
+                <Button fx:id="btnDashboard" onAction="#handleDashboard" style="-fx-text-fill: white;" styleClass="nav-button" text="📊 Dashboard" />
+                <Button fx:id="btnStudents" onAction="#handleStudents" style="-fx-text-fill: white;" styleClass="nav-button" text="👨‍🎓 Students" />
+                <Button fx:id="btnTeachers" onAction="#handleTeachers" style="-fx-text-fill: white;" styleClass="nav-button" text="👨‍ Teachers" />
+                <Button fx:id="btnCourses" onAction="#handleCourses" style="-fx-text-fill: white;" styleClass="nav-button" text="📚 Courses" />
+                <Button fx:id="btnGrades" onAction="#handleGrades" style="-fx-background-color: white; -fx-text-fill: #1d386b; -fx-font-weight: bold;" styleClass="nav-button" text="📝 Grades" />
+            </VBox>
+            <VBox VBox.vgrow="ALWAYS" />
+            <Button onAction="#handleLogout" style="-fx-font-weight: bold;" styleClass="logout-button" text="🚪  Logout" />
+        </VBox>
+    </left>
+
+    <!-- MAIN CONTENT -->
+    <center>
+        <VBox spacing="28" styleClass="main-container">
+            
+            <!-- Header -->
+            <HBox alignment="CENTER_LEFT" spacing="16">
+                <Button onAction="#handleBack" style="-fx-background-color: #263F6B; -fx-text-fill: white; -fx-background-radius: 8; -fx-padding: 8; -fx-font-weight: bold;" text="⬅ Back to Levels" />
+                <VBox>
+                    <Label fx:id="levelTitle" styleClass="page-title" text="CE1 - Subjects" />
+                    <Label styleClass="page-subtitle" text="Select a subject to enter grades" />
+                </VBox>
+            </HBox>
+
+            <!-- Subject Cards -->
+            <GridPane alignment="CENTER" hgap="20" styleClass="subjects-grid" vgap="20">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="33" />
+                    <ColumnConstraints percentWidth="34" />
+                    <ColumnConstraints percentWidth="33" />
+                </columnConstraints>
+
+                <!-- Math -->
+                <VBox alignment="CENTER" onMouseClicked="#handleMath" spacing="12" styleClass="subject-card" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                    <Label style="-fx-font-size: 40; -fx-text-fill: #3b82f6;" text="🔢" />
+                    <Label style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #1e2937;" text="Mathematics" />
+                </VBox>
+
+                <!-- French -->
+                <VBox alignment="CENTER" onMouseClicked="#handleFrench" spacing="12" styleClass="subject-card" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                    <Label style="-fx-font-size: 40; -fx-text-fill: #10b981;" text="📚" />
+                    <Label style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #1e2937;" text="French" />
+                </VBox>
+
+                <!-- Arabic -->
+                <VBox alignment="CENTER" onMouseClicked="#handleArabic" spacing="12" styleClass="subject-card" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                    <Label style="-fx-font-size: 40; -fx-text-fill: #f59e0b;" text="📖" />
+                    <Label style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #1e2937;" text="Arabic" />
+                </VBox>
+
+                <!-- English -->
+                <VBox alignment="CENTER" onMouseClicked="#handleEnglish" spacing="12" styleClass="subject-card" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                    <Label style="-fx-font-size: 40; -fx-text-fill: #8b5cf6;" text="🔤" />
+                    <Label style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #1e2937;" text="English" />
+                </VBox>
+
+                <!-- Science -->
+                <VBox alignment="CENTER" onMouseClicked="#handleScience" spacing="12" styleClass="subject-card" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <Label style="-fx-font-size: 40; -fx-text-fill: #ec4899;" text="🔬" />
+                    <Label style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #1e2937;" text="Science" />
+                </VBox>
+
+                <!-- History -->
+                <VBox alignment="CENTER" onMouseClicked="#handleHistory" spacing="12" styleClass="subject-card" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                    <Label style="-fx-font-size: 40; -fx-text-fill: #06b6d4;" text="🏛️" />
+                    <Label style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #1e2937;" text="History" />
+                </VBox>
+            <rowConstraints>
+               <RowConstraints />
+               <RowConstraints />
+            </rowConstraints>
+
+            </GridPane>
+
+        </VBox>
+    </center>
+</BorderPane>

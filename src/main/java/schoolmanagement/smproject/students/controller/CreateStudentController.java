@@ -5,10 +5,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+
 import java.io.IOException;
 import java.time.LocalDate;
 
-// ✅ CORRECT IMPORTS - Use .model package
+// ✅ CORRECT IMPORTS - Use .entity package
 import schoolmanagement.smproject.students.entity.Student;
 import schoolmanagement.smproject.parents.entity.Parent;
 import schoolmanagement.smproject.students.repository.StudentRepository;
@@ -60,13 +61,15 @@ public class CreateStudentController {
 
     // ===== STATE =====
     private Stage dashboardStage;
+    private Student studentToEdit;  // ✅ ADDED: Student being edited
+    private boolean isEditMode = false;  // ✅ ADDED: Edit mode flag
 
     // ===== INITIALIZATION =====
     @FXML
     public void initialize() {
         // Populate ComboBoxes (FXML already has items, but this ensures fallback)
         if (cbGender.getItems().isEmpty()) {
-            cbGender.getItems().addAll("Male", "Female");
+            cbGender.getItems().addAll("Male", "Female", "Other", "Prefer not to say");
         }
         if (cbGradeLevel.getItems().isEmpty()) {
             cbGradeLevel.getItems().addAll("CE1", "CE2", "CE3", "CE4", "CE5", "CE6");
@@ -96,6 +99,61 @@ public class CreateStudentController {
         this.dashboardStage = stage;
     }
 
+    // ✅ ADDED: Method to set student for editing
+    public void setStudentToEdit(Student student) {
+        this.studentToEdit = student;
+        this.isEditMode = student != null;
+        
+        if (isEditMode) {
+            populateFormWithStudentData();
+        }
+    }
+
+    // ✅ ADDED: Method to populate form with student data
+    private void populateFormWithStudentData() {
+        if (studentToEdit == null) return;
+        
+        // Student Info
+        txtFirstName.setText(studentToEdit.getFirstName());
+        txtLastName.setText(studentToEdit.getLastName());
+        txtEmail.setText(studentToEdit.getEmail());
+        txtPhone.setText(studentToEdit.getPhone());
+        dpDateOfBirth.setValue(studentToEdit.getDateOfBirth());
+        cbGender.setValue(studentToEdit.getGender());
+        cbGradeLevel.setValue(studentToEdit.getGradeLevel());
+        txtAddress.setText(studentToEdit.getAddress());
+        
+        // Primary Parent
+        if (studentToEdit.getPrimaryParent() != null) {
+            Parent p = studentToEdit.getPrimaryParent();
+            txtParent1FirstName.setText(p.getFirstName());
+            txtParent1LastName.setText(p.getLastName());
+            cbParent1Relationship.setValue(p.getRelationship());
+            txtParent1Email.setText(p.getEmail());
+            txtParent1Phone.setText(p.getPhone());
+            txtParent1PhoneAlt.setText(p.getPhoneAlternate());
+            txtParent1Occupation.setText(p.getOccupation());
+            txtParent1Address.setText(p.getAddress());
+            chkParent1Primary.setSelected(p.isPrimaryContact());
+        }
+        
+        // Secondary Parent
+        if (studentToEdit.getSecondaryParent() != null) {
+            Parent p = studentToEdit.getSecondaryParent();
+            txtParent2FirstName.setText(p.getFirstName());
+            txtParent2LastName.setText(p.getLastName());
+            cbParent2Relationship.setValue(p.getRelationship());
+            txtParent2Email.setText(p.getEmail());
+            txtParent2Phone.setText(p.getPhone());
+            txtParent2Occupation.setText(p.getOccupation());
+        }
+        
+        // Emergency Contact
+        txtEmergencyName.setText(studentToEdit.getEmergencyContactName());
+        txtEmergencyPhone.setText(studentToEdit.getEmergencyContactPhone());
+        cbEmergencyRelationship.setValue(studentToEdit.getEmergencyContactRelationship());
+    }
+
     // ===== NAVIGATION HANDLERS =====
     @FXML private void handleDashboard() { loadView("/dashboard.fxml"); }
     @FXML private void handleStudents() { loadView("/students.fxml"); }
@@ -122,86 +180,137 @@ public class CreateStudentController {
         if (!validateForm()) return;
 
         try {
-            // 1️⃣ Create Student Object
-            Student student = new Student();
-            student.setFirstName(txtFirstName.getText().trim());
-            student.setLastName(txtLastName.getText().trim());
-            student.setEmail(txtEmail.getText().trim());
-            student.setPhone(txtPhone.getText().trim());
-            student.setDateOfBirth(dpDateOfBirth.getValue());
-            student.setGender(cbGender.getValue());
-            student.setAddress(txtAddress.getText().trim());
-            student.setGradeLevel(cbGradeLevel.getValue());
-            student.setEnrollmentDate(LocalDate.now());
-            student.setStatus("Active");
-
-            // 2️⃣ Create & Save Primary Parent
-            Parent primaryParent = new Parent();
-            primaryParent.setFirstName(txtParent1FirstName.getText().trim());
-            primaryParent.setLastName(txtParent1LastName.getText().trim());
-            primaryParent.setRelationship(cbParent1Relationship.getValue());
-            primaryParent.setEmail(txtParent1Email.getText().trim());
-            primaryParent.setPhone(txtParent1Phone.getText().trim());
-            primaryParent.setPhoneAlternate(txtParent1PhoneAlt.getText().trim());
-            primaryParent.setOccupation(txtParent1Occupation.getText().trim());
-            primaryParent.setAddress(txtParent1Address.getText().trim());
-            primaryParent.setPrimaryContact(chkParent1Primary.isSelected());
-
+            StudentRepository studentRepo = new StudentRepository();
             ParentRepository parentRepo = new ParentRepository();
             
-            // Check if parent already exists by email to avoid duplicates
-            var existingPrimary = parentRepo.findByEmail(primaryParent.getEmail());
-            if (existingPrimary.isPresent() && !existingPrimary.get().getEmail().isEmpty()) {
-                primaryParent = existingPrimary.get();
-            } else {
-                primaryParent = parentRepo.save(primaryParent);
-            }
-            student.setPrimaryParent(primaryParent);
-
-            // 3️⃣ Save Secondary Parent (if provided)
-            if (!txtParent2FirstName.getText().trim().isEmpty()) {
-                Parent secondaryParent = new Parent();
-                secondaryParent.setFirstName(txtParent2FirstName.getText().trim());
-                secondaryParent.setLastName(txtParent2LastName.getText().trim());
-                secondaryParent.setRelationship(cbParent2Relationship.getValue());
-                secondaryParent.setEmail(txtParent2Email.getText().trim());
-                secondaryParent.setPhone(txtParent2Phone.getText().trim());
-                secondaryParent.setOccupation(txtParent2Occupation.getText().trim());
+            Student student;
+            
+            if (isEditMode && studentToEdit != null) {
+                // 🔄 UPDATE EXISTING STUDENT
+                student = studentToEdit;
+                student.setFirstName(txtFirstName.getText().trim());
+                student.setLastName(txtLastName.getText().trim());
+                student.setEmail(txtEmail.getText().trim());
+                student.setPhone(txtPhone.getText().trim());
+                student.setDateOfBirth(dpDateOfBirth.getValue());
+                student.setGender(cbGender.getValue());
+                student.setAddress(txtAddress.getText().trim());
+                student.setGradeLevel(cbGradeLevel.getValue());
                 
-                var existingSecondary = parentRepo.findByEmail(secondaryParent.getEmail());
-                if (existingSecondary.isPresent() && !existingSecondary.get().getEmail().isEmpty()) {
-                    secondaryParent = existingSecondary.get();
-                } else {
-                    secondaryParent = parentRepo.save(secondaryParent);
+                // Update Primary Parent
+                Parent primaryParent = student.getPrimaryParent();
+                if (primaryParent == null) {
+                    primaryParent = new Parent();
                 }
-                student.setSecondaryParent(secondaryParent);
+                primaryParent.setFirstName(txtParent1FirstName.getText().trim());
+                primaryParent.setLastName(txtParent1LastName.getText().trim());
+                primaryParent.setRelationship(cbParent1Relationship.getValue());
+                primaryParent.setEmail(txtParent1Email.getText().trim());
+                primaryParent.setPhone(txtParent1Phone.getText().trim());
+                primaryParent.setPhoneAlternate(txtParent1PhoneAlt.getText().trim());
+                primaryParent.setOccupation(txtParent1Occupation.getText().trim());
+                primaryParent.setAddress(txtParent1Address.getText().trim());
+                primaryParent.setPrimaryContact(chkParent1Primary.isSelected());
+                student.setPrimaryParent(primaryParent);
+                
+                // Update Secondary Parent
+                if (!txtParent2FirstName.getText().trim().isEmpty()) {
+                    Parent secondaryParent = student.getSecondaryParent();
+                    if (secondaryParent == null) {
+                        secondaryParent = new Parent();
+                    }
+                    secondaryParent.setFirstName(txtParent2FirstName.getText().trim());
+                    secondaryParent.setLastName(txtParent2LastName.getText().trim());
+                    secondaryParent.setRelationship(cbParent2Relationship.getValue());
+                    secondaryParent.setEmail(txtParent2Email.getText().trim());
+                    secondaryParent.setPhone(txtParent2Phone.getText().trim());
+                    secondaryParent.setOccupation(txtParent2Occupation.getText().trim());
+                    student.setSecondaryParent(secondaryParent);
+                }
+                
+                // Update Emergency Contact
+                student.setEmergencyContactName(txtEmergencyName.getText().trim());
+                student.setEmergencyContactPhone(txtEmergencyPhone.getText().trim());
+                student.setEmergencyContactRelationship(cbEmergencyRelationship.getValue());
+                
+                // Save to database
+                studentRepo.update(student);
+                
+                showAlert(Alert.AlertType.INFORMATION, "Success ✅", 
+                    "Student updated successfully!\n" + student.getFullName() + "'s information has been saved.");
+                
+            } else {
+                // ➕ CREATE NEW STUDENT
+                student = new Student();
+                student.setFirstName(txtFirstName.getText().trim());
+                student.setLastName(txtLastName.getText().trim());
+                student.setEmail(txtEmail.getText().trim());
+                student.setPhone(txtPhone.getText().trim());
+                student.setDateOfBirth(dpDateOfBirth.getValue());
+                student.setGender(cbGender.getValue());
+                student.setAddress(txtAddress.getText().trim());
+                student.setGradeLevel(cbGradeLevel.getValue());
+                student.setEnrollmentDate(LocalDate.now());
+                student.setStatus("Active");
+
+                // Create & Save Primary Parent
+                Parent primaryParent = new Parent();
+                primaryParent.setFirstName(txtParent1FirstName.getText().trim());
+                primaryParent.setLastName(txtParent1LastName.getText().trim());
+                primaryParent.setRelationship(cbParent1Relationship.getValue());
+                primaryParent.setEmail(txtParent1Email.getText().trim());
+                primaryParent.setPhone(txtParent1Phone.getText().trim());
+                primaryParent.setPhoneAlternate(txtParent1PhoneAlt.getText().trim());
+                primaryParent.setOccupation(txtParent1Occupation.getText().trim());
+                primaryParent.setAddress(txtParent1Address.getText().trim());
+                primaryParent.setPrimaryContact(chkParent1Primary.isSelected());
+
+                var existingPrimary = parentRepo.findByEmail(primaryParent.getEmail());
+                if (existingPrimary.isPresent() && !existingPrimary.get().getEmail().isEmpty()) {
+                    primaryParent = existingPrimary.get();
+                } else {
+                    primaryParent = parentRepo.save(primaryParent);
+                }
+                student.setPrimaryParent(primaryParent);
+
+                // Save Secondary Parent (if provided)
+                if (!txtParent2FirstName.getText().trim().isEmpty()) {
+                    Parent secondaryParent = new Parent();
+                    secondaryParent.setFirstName(txtParent2FirstName.getText().trim());
+                    secondaryParent.setLastName(txtParent2LastName.getText().trim());
+                    secondaryParent.setRelationship(cbParent2Relationship.getValue());
+                    secondaryParent.setEmail(txtParent2Email.getText().trim());
+                    secondaryParent.setPhone(txtParent2Phone.getText().trim());
+                    secondaryParent.setOccupation(txtParent2Occupation.getText().trim());
+                    
+                    var existingSecondary = parentRepo.findByEmail(secondaryParent.getEmail());
+                    if (existingSecondary.isPresent() && !existingSecondary.get().getEmail().isEmpty()) {
+                        secondaryParent = existingSecondary.get();
+                    } else {
+                        secondaryParent = parentRepo.save(secondaryParent);
+                    }
+                    student.setSecondaryParent(secondaryParent);
+                }
+
+                // Set Emergency Contact
+                student.setEmergencyContactName(txtEmergencyName.getText().trim());
+                student.setEmergencyContactPhone(txtEmergencyPhone.getText().trim());
+                student.setEmergencyContactRelationship(cbEmergencyRelationship.getValue());
+
+                // Save Student
+                Student savedStudent = studentRepo.save(student);
+
+                showAlert(Alert.AlertType.INFORMATION, "Success ✅", 
+                    "Student Registered!\n" + savedStudent.getFullName() + " (ID: " + savedStudent.getId() + ") has been saved to database.");
             }
-
-            // 4️⃣ Set Emergency Contact
-            student.setEmergencyContactName(txtEmergencyName.getText().trim());
-            student.setEmergencyContactPhone(txtEmergencyPhone.getText().trim());
-            student.setEmergencyContactRelationship(cbEmergencyRelationship.getValue());
-
-            // 5️⃣ Save Student
-            StudentRepository studentRepo = new StudentRepository();
-            Student savedStudent = studentRepo.save(student);
-
-            // 6️⃣ Show Success
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Success ✅");
-            alert.setHeaderText("Student Registered!");
-            alert.setContentText(savedStudent.getFullName() + " (ID: " + savedStudent.getId() + ") has been saved to database.");
-            alert.showAndWait();
             
             handleReset();
+            handleStudents(); // Go back to students list
 
         } catch (Exception e) {
             e.printStackTrace();
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Database Error ❌");
-            alert.setHeaderText("Failed to save student");
-            alert.setContentText("Error: " + e.getMessage() + "\n\nCheck console for details.");
-            alert.showAndWait();
+            showAlert(Alert.AlertType.ERROR, "Database Error ❌", 
+                "Failed to save student: " + e.getMessage());
         }
     }
 
@@ -338,7 +447,7 @@ public class CreateStudentController {
             javafx.scene.Parent root = loader.load();
             
             Stage stage = (Stage) (btnDashboard != null ? btnDashboard.getScene().getWindow() : 
-                                  (userRoleLabel != null ? userRoleLabel.getScene().getWindow() : null));
+                                   (userRoleLabel != null ? userRoleLabel.getScene().getWindow() : null));
             
             if (stage != null) {
                 stage.setScene(new Scene(root));

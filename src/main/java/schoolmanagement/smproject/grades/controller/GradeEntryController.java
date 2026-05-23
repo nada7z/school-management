@@ -8,7 +8,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.converter.DoubleStringConverter;
 import javafx.stage.Stage;
-
 import schoolmanagement.smproject.grades.entity.GradeEntry;
 import schoolmanagement.smproject.grades.entity.Grade;
 import schoolmanagement.smproject.grades.repository.GradeRepository;
@@ -60,42 +59,67 @@ public class GradeEntryController {
     private void setupTableColumns() {
         gradesTable.setEditable(true);
 
-        // ✅ Student Name Column (StringProperty)
         colStudentName.setCellValueFactory(data -> data.getValue().studentNameProperty());
-
-        // ✅ Test 1 Column (DoubleProperty) - FIXED
+        
+        // ✅ Test 1 Column with 0-20 validation
         colTest1.setCellValueFactory(data -> data.getValue().test1Property().asObject());
         colTest1.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
         colTest1.setOnEditCommit(event -> {
             GradeEntry entry = event.getRowValue();
-            entry.setTest1(event.getNewValue());
-            calculateAverage(entry);
-            gradesTable.refresh();
+            Double newValue = event.getNewValue();
+            if (validateGrade(newValue, "Test 1")) {
+                entry.setTest1(newValue);
+                calculateAverage(entry);
+                gradesTable.refresh();
+            } else {
+                gradesTable.refresh(); // Revert to old value
+            }
         });
 
-        // ✅ Test 2 Column (DoubleProperty) - FIXED
+        // ✅ Test 2 Column with 0-20 validation
         colTest2.setCellValueFactory(data -> data.getValue().test2Property().asObject());
         colTest2.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
         colTest2.setOnEditCommit(event -> {
             GradeEntry entry = event.getRowValue();
-            entry.setTest2(event.getNewValue());
-            calculateAverage(entry);
-            gradesTable.refresh();
+            Double newValue = event.getNewValue();
+            if (validateGrade(newValue, "Test 2")) {
+                entry.setTest2(newValue);
+                calculateAverage(entry);
+                gradesTable.refresh();
+            } else {
+                gradesTable.refresh();
+            }
         });
 
-        // ✅ Exam Column (DoubleProperty) - FIXED
+        // ✅ Exam Column with 0-20 validation
         colExam.setCellValueFactory(data -> data.getValue().examProperty().asObject());
         colExam.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
         colExam.setOnEditCommit(event -> {
             GradeEntry entry = event.getRowValue();
-            entry.setExam(event.getNewValue());
-            calculateAverage(entry);
-            gradesTable.refresh();
+            Double newValue = event.getNewValue();
+            if (validateGrade(newValue, "Exam")) {
+                entry.setExam(newValue);
+                calculateAverage(entry);
+                gradesTable.refresh();
+            } else {
+                gradesTable.refresh();
+            }
         });
 
-        // ✅ Average Column (DoubleProperty, Read-only)
+        // ✅ Average Column (Read-only)
         colAverage.setCellValueFactory(data -> data.getValue().averageProperty().asObject());
         colAverage.setEditable(false);
+    }
+
+    // ✅ VALIDATION: Ensure grade is between 0 and 20
+    private boolean validateGrade(Double grade, String fieldName) {
+        if (grade == null) return true; // Allow null (empty)
+        if (grade < 0 || grade > 20) {
+            showAlert(Alert.AlertType.WARNING, "Invalid Grade", 
+                fieldName + " must be between 0 and 20.\n\nEntered: " + grade);
+            return false;
+        }
+        return true;
     }
 
     private void calculateAverage(GradeEntry entry) {
@@ -105,7 +129,7 @@ public class GradeEntryController {
 
         if (test1 != null && test2 != null && exam != null) {
             double avg = (test1 + test2 + exam) / 3.0;
-            entry.setAverage(Math.round(avg * 10.0) / 10.0); // Round to 1 decimal
+            entry.setAverage(Math.round(avg * 10.0) / 10.0);
         } else {
             entry.setAverage(null);
         }
@@ -113,13 +137,9 @@ public class GradeEntryController {
 
     private void loadGradesFromDatabase() {
         try {
-            // 1️⃣ Get all students in this level
             List<Student> students = studentRepo.findByGradeLevel(currentLevel);
-            
-            // 2️⃣ Get existing grades for this level + subject
             List<Grade> existingGrades = gradeRepo.findByLevelAndSubject(currentLevelId, currentSubject);
             
-            // 3️⃣ Build GradeEntry list for TableView
             gradeEntries.clear();
             for (Student student : students) {
                 GradeEntry entry = new GradeEntry(student.getFullName());
@@ -127,7 +147,6 @@ public class GradeEntryController {
                 entry.setLevel(currentLevel);
                 entry.setSubject(currentSubject);
                 
-                // Find existing grade if any
                 for (Grade grade : existingGrades) {
                     if (grade.getStudentId() == student.getId()) {
                         entry.setTest1(grade.getTest1());
@@ -152,6 +171,13 @@ public class GradeEntryController {
     @FXML
     private void handleSaveAll() {
         try {
+            // Validate all grades before saving
+            for (GradeEntry entry : gradeEntries) {
+                if (!validateGrade(entry.getTest1(), "Test 1 for " + entry.getStudentName())) return;
+                if (!validateGrade(entry.getTest2(), "Test 2 for " + entry.getStudentName())) return;
+                if (!validateGrade(entry.getExam(), "Exam for " + entry.getStudentName())) return;
+            }
+
             int savedCount = 0;
             
             for (GradeEntry entry : gradeEntries) {
@@ -173,7 +199,6 @@ public class GradeEntryController {
             showAlert(Alert.AlertType.INFORMATION, "Success ✅", 
                 "Grades saved successfully!\n" + savedCount + " student(s) updated.");
             
-            // Reload to reflect any DB-calculated values
             loadGradesFromDatabase();
             
         } catch (Exception e) {

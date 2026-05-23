@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="750" prefWidth="1100" stylesheets="@dashboard.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="schoolmanagement.smproject.students.controller.StudentsController">
+<BorderPane prefHeight="750" prefWidth="1100" stylesheets="@dashboard.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="schoolmanagement.smproject.courses.controller.CoursesController">
 
     <!-- LEFT SIDEBAR -->
     <left>
@@ -24,11 +24,11 @@
             </VBox>
             <Separator styleClass="sidebar-separator" />
             <VBox spacing="6">
-                <Label alignment="CENTER" prefHeight="58.0" prefWidth="266.0" style="-fx-font-family: Segoe UI; -fx-text-fill: #EAF1FB; -fx-font-weight: bold; -fx-font-size: 18; -fx-background-radius: 20;" styleClass="menu-label" text="MENU" />
+                <Label alignment="CENTER" prefHeight="58.0" prefWidth="266.0" style="-fx-font-family: Segoe UI; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 17;" styleClass="menu-label" text="MENU" />
                 <Button fx:id="btnDashboard" onAction="#handleDashboard" style="-fx-text-fill: white;" styleClass="nav-button" text="📊 Dashboard" />
-                <Button fx:id="btnStudents" onAction="#handleStudents" style="-fx-background-color: #2F4C7A; -fx-text-fill: white; -fx-font-weight: bold;" styleClass="nav-button" text="👨‍🎓 Students" />
+                <Button fx:id="btnStudents" onAction="#handleStudents" style="-fx-text-fill: white;" styleClass="nav-button" text="👨‍🎓 Students" />
                 <Button fx:id="btnTeachers" onAction="#handleTeachers" style="-fx-text-fill: white;" styleClass="nav-button" text="👨‍🏫 Teachers" />
-                <Button fx:id="btnCourses" onAction="#handleCourses" style="-fx-text-fill: white;" styleClass="nav-button" text="📚 Courses" />
+                <Button fx:id="btnCourses" onAction="#handleCourses" style="-fx-background-color: #2F4C7A; -fx-text-fill: white; -fx-font-weight: bold;" styleClass="nav-button" text="📚 Courses" />
                 <Button fx:id="btnGrades" onAction="#handleGrades" style="-fx-text-fill: white;" styleClass="nav-button" text="📝 Grades" />
             </VBox>
             <VBox VBox.vgrow="ALWAYS" />
@@ -43,39 +43,35 @@
             <!-- Header & Actions -->
             <HBox alignment="CENTER_LEFT" spacing="16">
                 <VBox>
-                    <Label styleClass="page-title" text="👨‍🎓 All Students" />
-                    <Label styleClass="page-subtitle" text="Manage student records and enrollment" />
+                    <Label styleClass="page-title" text="📚 All Courses" />
+                    <Label styleClass="page-subtitle" text="Manage academic courses and assignments" />
                 </VBox>
                 <Region HBox.hgrow="ALWAYS" />
-                
-                <!-- ✅ TWO EXPORT BUTTONS -->
-                <HBox spacing="10" />
             <Button onAction="#handleExportExcel" style="-fx-background-color: #263F6B; -fx-text-fill: white; -fx-background-radius: 8; -fx-padding: 8 16; -fx-font-weight: bold;" styleClass="btn-outline" text="📊 Excel" />
-            <Button onAction="#handleExportPDF" prefHeight="32.0" prefWidth="70.0" style="-fx-background-color: #263F6B; -fx-text-fill: white; -fx-background-radius: 8; -fx-padding: 8 16; -fx-font-weight: bold;" styleClass="btn-primary" text="📄 PDF" />
-                
-                <Button onAction="#handleAddStudent" prefWidth="148.0" style="-fx-background-color: #263F6B; -fx-text-fill: white; -fx-background-radius: 8; -fx-padding: 8 16; -fx-font-weight: bold;" styleClass="btn-primary" text="➕ Add New Student" />
+            <Button onAction="#handleExportPDF" style="-fx-background-color: #263F6B; -fx-text-fill: white; -fx-background-radius: 8; -fx-padding: 8 16; -fx-font-weight: bold;" styleClass="btn-primary" text="📄 PDF" />
+                <Button onAction="#handleAddCourse" style="-fx-background-color: #263F6B; -fx-text-fill: white; -fx-background-radius: 8; -fx-padding: 8 16; -fx-font-weight: bold;" styleClass="btn-primary" text="➕ Add New Course" />
             </HBox>
 
             <!-- Search & Filter Bar -->
             <HBox alignment="CENTER_LEFT" spacing="12" styleClass="form-section">
-                <TextField fx:id="txtSearch" promptText="🔍 Search by name, email, or ID..." style="-fx-padding: 8; -fx-background-radius: 8;" styleClass="form-input" HBox.hgrow="ALWAYS" />
-                <ComboBox fx:id="cbGradeFilter" prefWidth="150" promptText="All Grades" styleClass="form-input" />
+                <TextField fx:id="txtSearch" promptText="🔍 Search by code, name, or teacher..." style="-fx-padding: 8; -fx-background-radius: 8;" styleClass="form-input" HBox.hgrow="ALWAYS" />
+                <ComboBox fx:id="cbLevelFilter" prefWidth="120" promptText="All Levels" styleClass="form-input" />
                 <ComboBox fx:id="cbStatusFilter" prefWidth="130" promptText="All Status" styleClass="form-input" />
                 <Button onAction="#handleSearch" style="-fx-background-color: #263F6B; -fx-background-radius: 8; -fx-padding: 8 16; -fx-font-weight: bold; -fx-text-fill: white;" styleClass="btn-primary" text="Search" />
                 <Button onAction="#handleClearFilters" style="-fx-background-color: #263F6B; -fx-background-radius: 8; -fx-padding: 8 16; -fx-text-fill: white; -fx-font-weight: bold;" styleClass="btn-outline" text="Clear" />
             </HBox>
 
-            <!-- Students Table -->
+            <!-- Courses Table -->
             <VBox styleClass="form-section" VBox.vgrow="ALWAYS">
-                <TableView fx:id="studentsTable" styleClass="custom-table">
+                <TableView fx:id="coursesTable" styleClass="custom-table">
                     <columns>
                         <TableColumn fx:id="colId" prefWidth="60" text="ID" />
-                        <TableColumn fx:id="colName" prefWidth="220" text="Full Name" />
-                        <TableColumn fx:id="colEmail" prefWidth="240" text="Email" />
-                        <TableColumn fx:id="colPhone" prefWidth="140" text="Phone" />
-                        <TableColumn fx:id="colGrade" prefWidth="120" text="Grade Level" />
-                        <TableColumn fx:id="colClassroom" prefWidth="130" text="Classroom" />
-                        <TableColumn fx:id="colParent" prefWidth="180" text="Primary Parent" />
+                        <TableColumn fx:id="colCode" prefWidth="120" text="Code" />
+                        <TableColumn fx:id="colName" prefWidth="200" text="Course Name" />
+                        <TableColumn fx:id="colLevel" prefWidth="100" text="Level" />
+                        <TableColumn fx:id="colTeacher" prefWidth="180" text="Teacher" />
+                        <TableColumn fx:id="colHours" prefWidth="80" text="Hours" />
+                        <TableColumn fx:id="colCapacity" prefWidth="100" text="Capacity" />
                         <TableColumn fx:id="colStatus" prefWidth="110" text="Status" />
                         <TableColumn fx:id="colActions" prefWidth="120" text="Actions" />
                     </columns>
@@ -84,7 +80,7 @@
 
             <!-- Pagination Info -->
             <HBox alignment="CENTER" spacing="12">
-                <Label fx:id="lblStudentCount" styleClass="page-subtitle" text="Showing 0 students" />
+                <Label fx:id="lblCourseCount" styleClass="page-subtitle" text="Showing 0 courses" />
                 <Region HBox.hgrow="ALWAYS" />
                 <Button fx:id="btnPrevious" onAction="#handlePrevious" style="-fx-background-color: #263F6B; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 16; -fx-background-radius: 8;" styleClass="btn-outline" text="⬅ Previous" />
                 <Label fx:id="lblPageInfo" style="-fx-font-weight: bold;" text="Page 1 of 1" />

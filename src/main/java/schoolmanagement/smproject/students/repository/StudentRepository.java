@@ -18,10 +18,10 @@ public class StudentRepository implements IStudentRepository {
     public Student save(Student student) {
         String sql = """
             INSERT INTO students (first_name, last_name, email, phone, date_of_birth, gender, 
-                                  address, enrollment_date, grade_level, status,
+                                  address, enrollment_date, grade_level, classroom, status,
                                   primary_parent_id, secondary_parent_id,
                                   emergency_contact_name, emergency_contact_phone, emergency_contact_relationship)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """;
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -42,7 +42,6 @@ public class StudentRepository implements IStudentRepository {
 
     @Override
     public Optional<Student> findById(int id) {
-        // Uses LEFT JOIN to fetch full parent data in one query
         String sql = """
             SELECT s.*, 
                    p1.id AS p1_id, p1.first_name AS p1_fn, p1.last_name AS p1_ln, p1.email AS p1_em, p1.phone AS p1_ph, p1.phone_alternate AS p1_pa, p1.relationship AS p1_rel, p1.occupation AS p1_occ, p1.address AS p1_addr, p1.is_primary_contact AS p1_ip,
@@ -87,7 +86,7 @@ public class StudentRepository implements IStudentRepository {
         String sql = """
             UPDATE students SET first_name = ?, last_name = ?, email = ?, phone = ?, 
                                 date_of_birth = ?, gender = ?, address = ?, 
-                                enrollment_date = ?, grade_level = ?, status = ?,
+                                enrollment_date = ?, grade_level = ?, classroom = ?, status = ?,
                                 primary_parent_id = ?, secondary_parent_id = ?,
                                 emergency_contact_name = ?, emergency_contact_phone = ?, emergency_contact_relationship = ?
             WHERE id = ?
@@ -97,7 +96,7 @@ public class StudentRepository implements IStudentRepository {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             mapStudentToStatement(stmt, student, true);
-            stmt.setInt(16, student.getId());
+            stmt.setInt(17, student.getId()); // Updated index: was 16, now 17 due to classroom field
             stmt.executeUpdate();
             return student;
 
@@ -153,14 +152,15 @@ public class StudentRepository implements IStudentRepository {
             stmt.setString(i++, student.getLastName());
             stmt.setString(i++, student.getEmail() != null ? student.getEmail() : "");
             stmt.setString(i++, student.getPhone() != null ? student.getPhone() : "");
-            stmt.setObject(i++, student.getDateOfBirth()); // LocalDate
+            stmt.setObject(i++, student.getDateOfBirth());
             stmt.setString(i++, student.getGender());
             stmt.setString(i++, student.getAddress() != null ? student.getAddress() : "");
-            stmt.setObject(i++, student.getEnrollmentDate()); // LocalDate
+            stmt.setObject(i++, student.getEnrollmentDate());
             stmt.setString(i++, student.getGradeLevel());
+            stmt.setString(i++, student.getClassroom() != null ? student.getClassroom() : ""); // ✅ ADDED
             stmt.setString(i++, student.getStatus() != null ? student.getStatus() : "Active");
             
-            // Parent IDs (handle nulls safely)
+            // Parent IDs
             stmt.setObject(i++, student.getPrimaryParent() != null ? student.getPrimaryParent().getId() : null);
             stmt.setObject(i++, student.getSecondaryParent() != null ? student.getSecondaryParent().getId() : null);
             
@@ -185,6 +185,7 @@ public class StudentRepository implements IStudentRepository {
         s.setAddress(rs.getString("address"));
         s.setEnrollmentDate(rs.getObject("enrollment_date", LocalDate.class));
         s.setGradeLevel(rs.getString("grade_level"));
+        s.setClassroom(rs.getString("classroom")); // ✅ ADDED
         s.setStatus(rs.getString("status"));
         s.setEmergencyContactName(rs.getString("emergency_contact_name"));
         s.setEmergencyContactPhone(rs.getString("emergency_contact_phone"));
@@ -197,10 +198,10 @@ public class StudentRepository implements IStudentRepository {
         return s;
     }
 
-    // 🔹 Helper: Extract Parent from prefixed columns (p1_, p2_)
+    // 🔹 Helper: Extract Parent from prefixed columns
     private Parent mapParent(ResultSet rs, String prefix) throws SQLException {
         int id = rs.getInt(prefix + "id");
-        if (rs.wasNull()) return null; // No parent linked
+        if (rs.wasNull()) return null;
         
         Parent p = new Parent();
         p.setId(id);
@@ -254,20 +255,52 @@ public class StudentRepository implements IStudentRepository {
         void apply(PreparedStatement stmt) throws SQLException;
     }
 
-    private Stage dashboardStage;
-
-    public void setDashboardStage(Stage stage) {
-    this.dashboardStage = stage;
-    }
-
+    // ✅ Classroom query method
     public List<Student> findByClassroomId(int classroomId) {
-    String sql = """
-        SELECT *
-        FROM students
-        WHERE classroom_id = ?
-        ORDER BY last_name, first_name
-        """;
-
-    return executeQueryList(sql, stmt -> stmt.setInt(1, classroomId), false);
+        String sql = "SELECT * FROM students WHERE classroom_id = ? ORDER BY last_name, first_name";
+        return executeQueryList(sql, stmt -> stmt.setInt(1, classroomId), false);
     }
+
+    // ✅ Optional: Find by grade level AND classroom
+    public List<Student> findByGradeLevelAndClassroom(String gradeLevel, String classroom) {
+        if (gradeLevel == null || gradeLevel.trim().isEmpty()) return List.of();
+        String sql = "SELECT * FROM students WHERE grade_level = ? AND classroom = ? ORDER BY last_name";
+        return executeQueryList(sql, stmt -> {
+            stmt.setString(1, gradeLevel.trim());
+            stmt.setString(2, classroom != null ? classroom.trim() : "");
+        }, false);
+    }
+
+    private Stage dashboardStage;
+    public void setDashboardStage(Stage stage) { this.dashboardStage = stage; }
+
+/**
+ * Get student enrollment count by month for the current year
+ * Returns list of [monthName, count] pairs
+ */
+public List<Object[]> getEnrollmentByMonth(String academicYear) {
+    String sql = """
+        SELECT MONTHNAME(enrollment_date) as month, COUNT(*) as count
+        FROM students
+        WHERE YEAR(enrollment_date) = YEAR(CURDATE())
+        GROUP BY MONTH(enrollment_date)
+        ORDER BY MONTH(enrollment_date)
+        """;
+    
+    List<Object[]> results = new ArrayList<>();
+    try (Connection conn = DatabaseConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql);
+         ResultSet rs = stmt.executeQuery()) {
+        
+        while (rs.next()) {
+            results.add(new Object[]{
+                rs.getString("month"),
+                rs.getInt("count")
+            });
+        }
+    } catch (SQLException e) {
+        throw new RuntimeException("Failed to fetch enrollment stats: " + e.getMessage(), e);
+    }
+    return results;
+}
 }

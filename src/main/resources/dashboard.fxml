@@ -9,6 +9,7 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -28,8 +29,8 @@
             <Separator styleClass="sidebar-separator" />
 
             <!-- Navigation -->
-            <VBox prefHeight="393.0" prefWidth="240.0" spacing="6">
-                <Label alignment="CENTER" prefHeight="58.0" prefWidth="266.0" style="-fx-font-family: Segoe UI; -fx-text-fill: #263F6B; -fx-font-weight: bold; -fx-font-size: 18; -fx-background-color: #DCE6F5; -fx-background-radius: 23;" styleClass="menu-label" text="MENU" />
+            <VBox spacing="6">
+                <Label alignment="CENTER" prefHeight="58.0" prefWidth="266.0" style="-fx-font-family: Segoe UI; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18; -fx-background-radius: 23;" styleClass="menu-label" text="MENU" />
 
                 <Button fx:id="btnDashboard" onAction="#handleDashboard" style="-fx-background-color: #2F4C7A; -fx-text-fill: white; -fx-font-family: Segoe UI; -fx-font-weight: bold; -fx-background-radius: 23;" styleClass="nav-button" text="📊 Dashboard" />
 
@@ -45,7 +46,7 @@
             <VBox VBox.vgrow="ALWAYS" />
 
             <!-- Logout -->
-            <Button onAction="#handleLogout" styleClass="logout-button" text="🚪 Logout" />
+            <Button onAction="#handleLogout" style="-fx-font-weight: bold;" styleClass="logout-button" text="🚪  Logout" />
 
         </VBox>
     </left>
@@ -105,75 +106,60 @@
                 </HBox>
 
                 <!-- Quick Actions -->
-                <VBox prefHeight="222.0" prefWidth="790.0" spacing="18" style="-fx-background-color: white; -fx-background-radius: 15;">
-                    <Label alignment="CENTER" prefHeight="34.0" prefWidth="152.0" style="-fx-font-family: Segoe UI; -fx-text-fill: #4a7bc2; -fx-font-weight: bold; -fx-padding: 15;" styleClass="section-title" text="Quick Actions">
-                  <font>
-                     <Font name="Agency FB" size="17.0" />
-                  </font></Label>
-                    <HBox alignment="CENTER" prefHeight="54.0" prefWidth="790.0" spacing="18">
+                <VBox spacing="18" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 20;">
+                    <Label alignment="CENTER" style="-fx-font-family: Segoe UI; -fx-text-fill: #4a7bc2; -fx-font-weight: bold; -fx-padding: 10;" styleClass="section-title" text="Quick Actions">
+                        <font><Font name="Agency FB" size="17.0" /></font>
+                    </Label>
+                    <HBox alignment="CENTER" spacing="18">
                         <Button onAction="#handleAddStudent" prefHeight="51.0" prefWidth="290.0" style="-fx-background-color: #e7eff9; -fx-font-family: Segoe UI; -fx-font-weight: bold; -fx-font-size: 13; -fx-background-radius: 10; -fx-effect: null;" styleClass="action-btn" text="      Add Student">
                             <graphic>
-                        <Label style="-fx-text-fill: #4a7bc2;" styleClass="action-icon" text="➕" />
-                     </graphic>
+                                <Label style="-fx-text-fill: #4a7bc2;" styleClass="action-icon" text="➕" />
+                            </graphic>
                         </Button>
                         <Button onAction="#handleAddTeacher" prefHeight="51.0" prefWidth="290.0" style="-fx-background-color: #e6f4ee; -fx-font-family: Segoe UI; -fx-font-weight: bold; -fx-font-size: 13; -fx-background-radius: 10; -fx-effect: null;" styleClass="action-btn" text="     Add Teacher">
                             <graphic><Label style="-fx-text-fill: #3fa37a;" styleClass="action-icon" text="➕" /></graphic>
                         </Button>
                     </HBox>
-               <HBox alignment="CENTER" prefHeight="54.0" prefWidth="790.0" spacing="18">
-                  <children>
-                     <Button onAction="#handleCreateCourse" prefHeight="84.0" prefWidth="290.0" style="-fx-background-color: #efe9fb; -fx-font-family: Segoe UI; -fx-font-weight: bold; -fx-font-size: 13; -fx-background-radius: 10; -fx-effect: null;" styleClass="action-btn" text="     Create Course">
-                        <graphic>
-                           <Label style="-fx-text-fill: #7a6ccf;" styleClass="action-icon" text="📝" />
-                        </graphic>
-                     </Button>
-                     <Button alignment="CENTER" onAction="#handleReport" prefHeight="84.0" prefWidth="290.0" style="-fx-background-color: #f9f1e3; -fx-font-family: Segoe UI; -fx-font-weight: bold; -fx-font-size: 12; -fx-background-radius: 10; -fx-effect: null;" styleClass="action-btn" text="    Generate Report">
-                        <graphic>
-                           <Label style="-fx-text-fill: #c49a3a;" styleClass="action-icon" text="📄" />
-                        </graphic>
-                     </Button>
-                  </children>
-               </HBox>
+                    <HBox alignment="CENTER" spacing="18">
+                        <Button onAction="#handleCreateCourse" prefHeight="51.0" prefWidth="290.0" style="-fx-background-color: #efe9fb; -fx-font-family: Segoe UI; -fx-font-weight: bold; -fx-font-size: 13; -fx-background-radius: 10; -fx-effect: null;" styleClass="action-btn" text="     Create Course">
+                            <graphic>
+                                <Label style="-fx-text-fill: #7a6ccf;" styleClass="action-icon" text="📝" />
+                            </graphic>
+                        </Button>
+                        <Button onAction="#handleReport" prefHeight="51.0" prefWidth="290.0" style="-fx-background-color: #f9f1e3; -fx-font-family: Segoe UI; -fx-font-weight: bold; -fx-font-size: 12; -fx-background-radius: 10; -fx-effect: null;" styleClass="action-btn" text="    Generate Report">
+                            <graphic>
+                                <Label style="-fx-text-fill: #c49a3a;" styleClass="action-icon" text="📄" />
+                            </graphic>
+                        </Button>
+                    </HBox>
                 </VBox>
 
-                <!-- Recent Activity -->
-                <VBox prefHeight="162.0" prefWidth="790.0" spacing="18" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 15;">
-                    <Label alignment="CENTER" prefHeight="28.0" prefWidth="122.0" style="-fx-font-family: Segoe UI; -fx-text-fill: #4a7bc2; -fx-font-weight: bold;" styleClass="section-title" text="Recent Activity">
-                  <font>
-                     <Font size="17.0" />
-                  </font></Label>
-                    <VBox alignment="CENTER" prefHeight="75.0" prefWidth="354.0" style="-fx-background-color: #f5f7fb; -fx-padding: 10;" styleClass="activity-card">
-                        <HBox alignment="CENTER_LEFT" prefHeight="18.0" prefWidth="706.0" spacing="18">
-                            <Label styleClass="activity-icon" text="🔔" />
-                            <VBox HBox.hgrow="ALWAYS">
-                                <Label styleClass="activity-title" text="System Ready" />
-                                <Label styleClass="activity-desc" text="School Management System initialized successfully" />
-                            </VBox>
-                            <Label styleClass="activity-time" text="Just now" />
-                        </HBox>
-                    </VBox>
+                <!-- Recent Activity Section -->
+                <VBox fx:id="activityContainer" spacing="18" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 20;">
+                    <Label alignment="CENTER" style="-fx-font-family: Segoe UI; -fx-text-fill: #4a7bc2; -fx-font-weight: bold;" styleClass="section-title" text="Recent Activity">
+                        <font><Font size="17.0" /></font>
+                    </Label>
+                    <!-- Activity cards will be added dynamically by DashboardController -->
                 </VBox>
-            <VBox prefHeight="326.0" prefWidth="743.0" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 20;">
-               <children>
-                  <Label alignment="CENTER" prefHeight="26.0" prefWidth="163.0" style="-fx-font-family: Segoe UI; -fx-text-fill: #4a7bc2; -fx-font-weight: bold;" styleClass="section-title" text="Global performance">
-                     <font>
-                        <Font size="17.0" />
-                     </font>
-                  </Label>
-                  <Label styleClass="page-subtitle" text="             Yearly evaluation" />
-                  <AreaChart prefHeight="286.0" prefWidth="687.0" style="-fx-padding: 20;">
-                    <xAxis>
-                      <CategoryAxis side="BOTTOM" />
-                    </xAxis>
-                    <yAxis>
-                      <NumberAxis side="LEFT" />
-                    </yAxis>
-                  </AreaChart>
-               </children>
-            </VBox>
+
+                <!-- Performance Chart Section -->
+                <VBox spacing="16" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 20;">
+                    <Label alignment="CENTER" style="-fx-font-family: Segoe UI; -fx-text-fill: #4a7bc2; -fx-font-weight: bold;" styleClass="section-title" text="Global Performance">
+                        <font><Font size="17.0" /></font>
+                    </Label>
+                    <Label styleClass="page-subtitle" text="Yearly student enrollment evaluation" />
+                    
+                    <AreaChart fx:id="performanceChart" prefHeight="280" style="-fx-padding: 10;">
+                        <xAxis>
+                            <CategoryAxis fx:id="chartXAxis" side="BOTTOM" label="Month" />
+                        </xAxis>
+                        <yAxis>
+                            <NumberAxis fx:id="chartYAxis" side="LEFT" label="Students" />
+                        </yAxis>
+                    </AreaChart>
+                </VBox>
 
             </VBox>
         </ScrollPane>
     </center>
-
 </BorderPane>

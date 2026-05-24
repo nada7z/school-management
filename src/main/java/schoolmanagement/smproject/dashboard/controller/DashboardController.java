@@ -31,24 +31,39 @@ import schoolmanagement.smproject.courses.repository.CourseRepository;
 public class DashboardController {
 
     // === UI ELEMENTS ===
-    @FXML private Label userRoleLabel;
-    @FXML private Label welcomeLabel;
-    @FXML private Label totalStudentsLabel;
-    @FXML private Label totalTeachersLabel;
-    @FXML private Label totalCoursesLabel;
-    @FXML private Label attendanceLabel;
+    @FXML
+    private Label userRoleLabel;
+    @FXML
+    private Label welcomeLabel;
+    @FXML
+    private Label totalStudentsLabel;
+    @FXML
+    private Label totalTeachersLabel;
+    @FXML
+    private Label totalCoursesLabel;
+    @FXML
+    private Label attendanceLabel;
 
-    @FXML private Button btnDashboard;
-    @FXML private Button btnStudents;
-    @FXML private Button btnTeachers;
-    @FXML private Button btnCourses;
-    @FXML private Button btnGrades;
+    @FXML
+    private Button btnDashboard;
+    @FXML
+    private Button btnStudents;
+    @FXML
+    private Button btnTeachers;
+    @FXML
+    private Button btnCourses;
+    @FXML
+    private Button btnGrades;
 
     // === RECENT ACTIVITY & CHART ===
-    @FXML private VBox activityContainer;
-    @FXML private AreaChart<String, Number> performanceChart;
-    @FXML private CategoryAxis chartXAxis;
-    @FXML private NumberAxis chartYAxis;
+    @FXML
+    private VBox activityContainer;
+    @FXML
+    private AreaChart<String, Number> performanceChart;
+    @FXML
+    private CategoryAxis chartXAxis;
+    @FXML
+    private NumberAxis chartYAxis;
 
     // === REPOSITORIES ===
     private StudentRepository studentRepo;
@@ -60,7 +75,7 @@ public class DashboardController {
         studentRepo = new StudentRepository();
         teacherRepo = new TeacherRepository();
         courseRepo = new CourseRepository();
-        
+
         loadDashboardStats();
         updateWelcomeMessage();
         loadRecentActivities();
@@ -104,7 +119,8 @@ public class DashboardController {
 
     // === RECENT ACTIVITIES ===
     private void loadRecentActivities() {
-        if (activityContainer == null) return;
+        if (activityContainer == null)
+            return;
         activityContainer.getChildren().clear();
 
         try {
@@ -115,12 +131,11 @@ public class DashboardController {
             for (int i = Math.max(0, students.size() - 3); i < students.size(); i++) {
                 var s = students.get(i);
                 activities.add(new ActivityItem(
-                    "🎓",
-                    "New Student",
-                    s.getFullName() + " enrolled in " + s.getGradeLevel(),
-                    "Today",
-                    "#4a7bc2"
-                ));
+                        "🎓",
+                        "New Student",
+                        s.getFullName() + " enrolled in " + s.getGradeLevel(),
+                        "Today",
+                        "#4a7bc2"));
             }
 
             // Recent teachers (last 1)
@@ -128,12 +143,11 @@ public class DashboardController {
             if (!teachers.isEmpty()) {
                 var t = teachers.get(teachers.size() - 1);
                 activities.add(new ActivityItem(
-                    "👨‍🏫",
-                    "New Teacher",
-                    t.getFullName() + " joined as " + t.getSubjectSpecialization(),
-                    "Yesterday",
-                    "#3fa37a"
-                ));
+                        "👨‍🏫",
+                        "New Teacher",
+                        t.getFullName() + " joined as " + t.getSubjectSpecialization(),
+                        "Yesterday",
+                        "#3fa37a"));
             }
 
             // Recent courses (last 1)
@@ -141,12 +155,11 @@ public class DashboardController {
             if (!courses.isEmpty()) {
                 var c = courses.get(courses.size() - 1);
                 activities.add(new ActivityItem(
-                    "📚",
-                    "New Course",
-                    c.getName() + " (" + c.getCourseCode() + ") created",
-                    "2 days ago",
-                    "#8b6fd6"
-                ));
+                        "📚",
+                        "New Course",
+                        c.getName() + " (" + c.getCourseCode() + ") created",
+                        "2 days ago",
+                        "#8b6fd6"));
             }
 
             // Add to UI (limit 5)
@@ -154,12 +167,14 @@ public class DashboardController {
 
             // Fallback if empty
             if (activities.isEmpty()) {
-                addActivityCard(new ActivityItem("🔔", "System Ready", "School Management System initialized", "Just now", "#4a7bc2"));
+                addActivityCard(new ActivityItem("🔔", "System Ready", "School Management System initialized",
+                        "Just now", "#4a7bc2"));
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            addActivityCard(new ActivityItem("🔔", "System Ready", "School Management System initialized", "Just now", "#4a7bc2"));
+            addActivityCard(new ActivityItem("🔔", "System Ready", "School Management System initialized", "Just now",
+                    "#4a7bc2"));
         }
     }
 
@@ -195,7 +210,8 @@ public class DashboardController {
 
     // === PERFORMANCE CHART ===
     private void loadPerformanceChart() {
-        if (performanceChart == null) return;
+        if (performanceChart == null)
+            return;
 
         try {
             XYChart.Series<String, Number> series = new XYChart.Series<>();
@@ -203,7 +219,7 @@ public class DashboardController {
 
             // Get real data from database
             List<Object[]> monthlyData = getEnrollmentByMonth();
-            
+
             if (monthlyData.isEmpty()) {
                 // Fallback sample data
                 series.getData().add(new XYChart.Data<>("Jan", 45));
@@ -242,21 +258,21 @@ public class DashboardController {
     private List<Object[]> getEnrollmentByMonth() {
         List<Object[]> results = new ArrayList<>();
         String sql = """
-            SELECT MONTHNAME(enrollment_date) as month, COUNT(*) as count
-            FROM students
-            WHERE YEAR(enrollment_date) = YEAR(CURDATE())
-            GROUP BY MONTH(enrollment_date)
-            ORDER BY MONTH(enrollment_date)
-            """;
+                    SELECT MONTHNAME(enrollment_date) as month, COUNT(*) as count
+                    FROM students
+                    WHERE YEAR(enrollment_date) = YEAR(CURDATE())
+                    GROUP BY MONTH(enrollment_date), MONTHNAME(enrollment_date)
+                    ORDER BY MONTH(enrollment_date)
+                """;
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                results.add(new Object[]{
-                    rs.getString("month"),
-                    rs.getInt("count")
+                results.add(new Object[] {
+                        rs.getString("month"),
+                        rs.getInt("count")
                 });
             }
         } catch (SQLException e) {
@@ -266,20 +282,54 @@ public class DashboardController {
     }
 
     // === NAVIGATION HANDLERS ===
-    @FXML private void handleDashboard() { loadDashboardStats(); }
-    @FXML private void handleStudents() { loadView("/students.fxml"); }
-    @FXML private void handleTeachers() { loadView("/teachers.fxml"); }
-    @FXML private void handleCourses() { loadView("/courses.fxml"); }
-    @FXML private void handleLevels() { loadView("/levels.fxml"); }
-    @FXML private void handleGrades() { loadView("/grades.fxml"); }
+    @FXML
+    private void handleDashboard() {
+        loadDashboardStats();
+    }
 
-    @FXML private void handleAddStudent() { loadView("/studentsform.fxml"); }
-    @FXML private void handleAddTeacher() { loadView("/teachersform.fxml"); }
-    @FXML private void handleCreateCourse() { loadView("/courseform.fxml"); }
+    @FXML
+    private void handleStudents() {
+        loadView("/students.fxml");
+    }
+
+    @FXML
+    private void handleTeachers() {
+        loadView("/teachers.fxml");
+    }
+
+    @FXML
+    private void handleCourses() {
+        loadView("/courses.fxml");
+    }
+
+    @FXML
+    private void handleLevels() {
+        loadView("/levels.fxml");
+    }
+
+    @FXML
+    private void handleGrades() {
+        loadView("/grades.fxml");
+    }
+
+    @FXML
+    private void handleAddStudent() {
+        loadView("/studentsform.fxml");
+    }
+
+    @FXML
+    private void handleAddTeacher() {
+        loadView("/teachersform.fxml");
+    }
+
+    @FXML
+    private void handleCreateCourse() {
+        loadView("/courseform.fxml");
+    }
 
     @FXML
     private void handleReport() {
-        showAlert(Alert.AlertType.INFORMATION, "Report Generation", "Report feature coming soon!");
+        loadView("/reports.fxml");
     }
 
     @FXML
@@ -295,37 +345,38 @@ public class DashboardController {
     }
 
     // === HELPERS ===
-    
+
     // ✅ UPDATED: This method now preserves full-screen mode
     private void loadView(String fxmlPath) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
-            
+
             // ✅ Get the current stage
-            Stage stage = (Stage) (btnDashboard != null ? btnDashboard.getScene().getWindow() : 
-                                  (userRoleLabel != null ? userRoleLabel.getScene().getWindow() : null));
-            
+            Stage stage = (Stage) (btnDashboard != null ? btnDashboard.getScene().getWindow()
+                    : (userRoleLabel != null ? userRoleLabel.getScene().getWindow() : null));
+
             if (stage != null) {
                 // ✅ Save the current full-screen state BEFORE changing the scene
                 boolean wasFullScreen = stage.isFullScreen();
-                
+
                 // Load the new scene
                 stage.setScene(new Scene(root));
                 stage.centerOnScreen();
-                
+
                 // ✅ Restore the full-screen state AFTER loading the new scene
                 stage.setFullScreen(wasFullScreen);
             }
         } catch (IOException e) {
             e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Navigation Error", 
-                 "Could not load: " + fxmlPath + "\n\nError: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Navigation Error",
+                    "Could not load: " + fxmlPath + "\n\nError: " + e.getMessage());
         }
     }
 
     private void setSafeText(Label label, String text) {
-        if (label != null) label.setText(text);
+        if (label != null)
+            label.setText(text);
     }
 
     private void showAlert(Alert.AlertType type, String title, String message) {
@@ -337,5 +388,6 @@ public class DashboardController {
     }
 
     // === ACTIVITY ITEM RECORD ===
-    private record ActivityItem(String icon, String title, String description, String time, String color) {}
+    private record ActivityItem(String icon, String title, String description, String time, String color) {
+    }
 }

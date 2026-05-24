@@ -9,7 +9,6 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -41,6 +40,7 @@
                 <Button fx:id="btnCourses" onAction="#handleCourses" style="-fx-font-family: Segoe UI; -fx-text-fill: white;" styleClass="nav-button" text="📚 Courses" />
 
                 <Button fx:id="btnGrades" onAction="#handleGrades" style="-fx-font-family: Segoe UI; -fx-text-fill: white;" styleClass="nav-button" text="📝 Grades" />
+            <Button onAction="#handleReport" style="-fx-text-fill: white;" styleClass="nav-button" text="📊 Reports" />
             </VBox>
 
             <VBox VBox.vgrow="ALWAYS" />
@@ -151,10 +151,10 @@
                     
                     <AreaChart fx:id="performanceChart" prefHeight="280" style="-fx-padding: 10;">
                         <xAxis>
-                            <CategoryAxis fx:id="chartXAxis" side="BOTTOM" label="Month" />
+                            <CategoryAxis fx:id="chartXAxis" label="Month" side="BOTTOM" />
                         </xAxis>
                         <yAxis>
-                            <NumberAxis fx:id="chartYAxis" side="LEFT" label="Students" />
+                            <NumberAxis fx:id="chartYAxis" label="Students" side="LEFT" />
                         </yAxis>
                     </AreaChart>
                 </VBox>

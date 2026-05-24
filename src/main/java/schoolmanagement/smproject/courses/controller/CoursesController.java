@@ -6,40 +6,64 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.stage.Stage;
-
+import javafx.stage.FileChooser;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.time.LocalDate;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 // ✅ Use YOUR existing entity and repository packages
 import schoolmanagement.smproject.courses.entity.Course;
 import schoolmanagement.smproject.courses.repository.CourseRepository;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class CoursesController {
 
     // === FXML ELEMENTS ===
-    @FXML private TextField txtSearch;
-    @FXML private ComboBox<String> cbLevelFilter;
-    @FXML private ComboBox<String> cbStatusFilter;
-    @FXML private TableView<Course> coursesTable;
-    @FXML private TableColumn<Course, Integer> colId;
-    @FXML private TableColumn<Course, String> colCode;
-    @FXML private TableColumn<Course, String> colName;
-    @FXML private TableColumn<Course, String> colLevel;
-    @FXML private TableColumn<Course, String> colTeacher;
-    @FXML private TableColumn<Course, Integer> colHours;
-    @FXML private TableColumn<Course, Integer> colCapacity;
-    @FXML private TableColumn<Course, String> colStatus;
-    @FXML private TableColumn<Course, Void> colActions;
-    @FXML private Label lblCourseCount;
-    @FXML private Label lblPageInfo;
-    @FXML private Button btnPrevious;
-    @FXML private Button btnNext;
+    @FXML
+    private TextField txtSearch;
+    @FXML
+    private ComboBox<String> cbLevelFilter;
+    @FXML
+    private ComboBox<String> cbStatusFilter;
+    @FXML
+    private TableView<Course> coursesTable;
+    @FXML
+    private TableColumn<Course, Integer> colId;
+    @FXML
+    private TableColumn<Course, String> colCode;
+    @FXML
+    private TableColumn<Course, String> colName;
+    @FXML
+    private TableColumn<Course, String> colLevel;
+    @FXML
+    private TableColumn<Course, String> colTeacher;
+    @FXML
+    private TableColumn<Course, Integer> colHours;
+    @FXML
+    private TableColumn<Course, Integer> colCapacity;
+    @FXML
+    private TableColumn<Course, String> colStatus;
+    @FXML
+    private TableColumn<Course, Void> colActions;
+    @FXML
+    private Label lblCourseCount;
+    @FXML
+    private Label lblPageInfo;
+    @FXML
+    private Button btnPrevious;
+    @FXML
+    private Button btnNext;
 
     // Sidebar Navigation
-    @FXML private Button btnDashboard, btnStudents, btnTeachers, btnCourses, btnLevels, btnGrades;
+    @FXML
+    private Button btnDashboard, btnStudents, btnTeachers, btnCourses, btnLevels, btnGrades;
 
     // === STATE VARIABLES ===
     private List<Course> allCourses = List.of();
@@ -78,11 +102,13 @@ public class CoursesController {
             protected void updateItem(String status, boolean empty) {
                 super.updateItem(status, empty);
                 if (empty || status == null) {
-                    setText(null); setGraphic(null);
+                    setText(null);
+                    setGraphic(null);
                 } else {
                     Label badge = new Label(status.toUpperCase());
                     badge.getStyleClass().addAll("status-badge", "status-" + status.toLowerCase());
-                    setText(null); setGraphic(badge);
+                    setText(null);
+                    setGraphic(badge);
                 }
             }
         });
@@ -155,26 +181,27 @@ public class CoursesController {
         String statusFilter = cbStatusFilter.getValue();
 
         filteredCourses = allCourses.stream()
-            .filter(c -> {
-                boolean matchesSearch = searchTerm.isEmpty() || 
-                    c.getCourseCode().toLowerCase().contains(searchTerm) ||
-                    c.getName().toLowerCase().contains(searchTerm) ||
-                    (c.getTeacherName() != null && c.getTeacherName().toLowerCase().contains(searchTerm)) ||
-                    String.valueOf(c.getId()).contains(searchTerm);
-                
-                boolean matchesLevel = "All Levels".equals(levelFilter) || 
-                    levelFilter.equals(c.getLevelName());
-                boolean matchesStatus = "All Status".equals(statusFilter) || 
-                    statusFilter.equals(c.getStatus());
-                
-                return matchesSearch && matchesLevel && matchesStatus;
-            })
-            .collect(Collectors.toList());
+                .filter(c -> {
+                    boolean matchesSearch = searchTerm.isEmpty() ||
+                            c.getCourseCode().toLowerCase().contains(searchTerm) ||
+                            c.getName().toLowerCase().contains(searchTerm) ||
+                            (c.getTeacherName() != null && c.getTeacherName().toLowerCase().contains(searchTerm)) ||
+                            String.valueOf(c.getId()).contains(searchTerm);
+
+                    boolean matchesLevel = "All Levels".equals(levelFilter) ||
+                            levelFilter.equals(c.getLevelName());
+                    boolean matchesStatus = "All Status".equals(statusFilter) ||
+                            statusFilter.equals(c.getStatus());
+
+                    return matchesSearch && matchesLevel && matchesStatus;
+                })
+                .collect(Collectors.toList());
 
         currentPage = 1;
         updateTablePage();
         updatePaginationUI();
-        lblCourseCount.setText("Showing " + filteredCourses.size() + " course" + (filteredCourses.size() != 1 ? "s" : ""));
+        lblCourseCount
+                .setText("Showing " + filteredCourses.size() + " course" + (filteredCourses.size() != 1 ? "s" : ""));
     }
 
     /**
@@ -183,7 +210,7 @@ public class CoursesController {
     private void updateTablePage() {
         int start = (currentPage - 1) * pageSize;
         int end = Math.min(start + pageSize, filteredCourses.size());
-        
+
         if (start >= filteredCourses.size()) {
             coursesTable.getItems().clear();
         } else {
@@ -203,21 +230,30 @@ public class CoursesController {
 
     // === EVENT HANDLERS ===
 
-    @FXML private void handleSearch() { applyFilters(); }
+    @FXML
+    private void handleSearch() {
+        applyFilters();
+    }
 
-    @FXML private void handleClearFilters() {
+    @FXML
+    private void handleClearFilters() {
         txtSearch.clear();
         cbLevelFilter.getSelectionModel().selectFirst();
         cbStatusFilter.getSelectionModel().selectFirst();
     }
 
-    @FXML private void handleAddCourse() { loadView("/createCourse.fxml"); }
+    @FXML
+    private void handleAddCourse() {
+        loadView("/courseform.fxml");
+    }
 
-    @FXML private void handleExport() {
+    @FXML
+    private void handleExport() {
         showAlert(Alert.AlertType.INFORMATION, "Export", "Export to Excel/PDF coming soon!");
     }
 
-    @FXML private void handlePrevious() {
+    @FXML
+    private void handlePrevious() {
         if (currentPage > 1) {
             currentPage--;
             updateTablePage();
@@ -225,7 +261,8 @@ public class CoursesController {
         }
     }
 
-    @FXML private void handleNext() {
+    @FXML
+    private void handleNext() {
         int totalPages = (int) Math.ceil(filteredCourses.size() / (double) pageSize);
         if (currentPage < totalPages) {
             currentPage++;
@@ -235,8 +272,8 @@ public class CoursesController {
     }
 
     private void handleEdit(Course course) {
-        showAlert(Alert.AlertType.INFORMATION, "Edit Course", 
-            "Edit form for " + course.getName() + " coming soon!\n\nCode: " + course.getCourseCode());
+        showAlert(Alert.AlertType.INFORMATION, "Edit Course",
+                "Edit form for " + course.getName() + " coming soon!\n\nCode: " + course.getCourseCode());
     }
 
     private void handleDelete(Course course) {
@@ -244,12 +281,12 @@ public class CoursesController {
         alert.setTitle("Delete Course");
         alert.setHeaderText("Remove " + course.getName() + "?");
         alert.setContentText("This will NOT delete enrolled students, but will remove course record.");
-        
+
         if (alert.showAndWait().get() == ButtonType.OK) {
             try {
                 CourseRepository repo = new CourseRepository();
                 boolean deleted = repo.deleteById(course.getId());
-                
+
                 if (deleted) {
                     loadCourses();
                     showAlert(Alert.AlertType.INFORMATION, "Success", "Course deleted successfully.");
@@ -265,14 +302,37 @@ public class CoursesController {
 
     // === NAVIGATION ===
 
-    @FXML private void handleDashboard() { loadView("/dashboard.fxml"); }
-    @FXML private void handleStudents() { loadView("/students.fxml"); }
-    @FXML private void handleTeachers() { loadView("/teachers.fxml"); }
-    @FXML private void handleCourses() { /* Already here */ }
-    @FXML private void handleLevels() { loadView("/levels.fxml"); }
-    @FXML private void handleGrades() { loadView("/grades.fxml"); }
+    @FXML
+    private void handleDashboard() {
+        loadView("/dashboard.fxml");
+    }
 
-    @FXML private void handleLogout() {
+    @FXML
+    private void handleStudents() {
+        loadView("/students.fxml");
+    }
+
+    @FXML
+    private void handleTeachers() {
+        loadView("/teachers.fxml");
+    }
+
+    @FXML
+    private void handleCourses() {
+        /* Already here */ }
+
+    @FXML
+    private void handleLevels() {
+        loadView("/levels.fxml");
+    }
+
+    @FXML
+    private void handleGrades() {
+        loadView("/grades.fxml");
+    }
+
+    @FXML
+    private void handleLogout() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Confirm logout?");
         if (alert.showAndWait().get() == ButtonType.YES) {
             loadView("/login.fxml");
@@ -300,5 +360,218 @@ public class CoursesController {
         alert.setHeaderText(null);
         alert.setContentText(msg);
         alert.showAndWait();
+    }
+
+    @FXML
+    private void handleExportExcel() {
+        try {
+            org.apache.poi.ss.usermodel.Workbook workbook = new org.apache.poi.xssf.usermodel.XSSFWorkbook();
+            org.apache.poi.ss.usermodel.Sheet sheet = workbook.createSheet("Courses");
+
+            // Create header style
+            org.apache.poi.ss.usermodel.CellStyle headerStyle = workbook.createCellStyle();
+            org.apache.poi.ss.usermodel.Font headerFont = workbook.createFont();
+            headerFont.setBold(true);
+            headerStyle.setFont(headerFont);
+            headerStyle.setFillForegroundColor(org.apache.poi.ss.usermodel.IndexedColors.GREY_25_PERCENT.getIndex());
+            headerStyle.setFillPattern(org.apache.poi.ss.usermodel.FillPatternType.SOLID_FOREGROUND);
+
+            // Headers
+            String[] headers = { "ID", "Code", "Course Name", "Level", "Teacher", "Hours", "Capacity", "Status" };
+            org.apache.poi.ss.usermodel.Row headerRow = sheet.createRow(0);
+            for (int i = 0; i < headers.length; i++) {
+                org.apache.poi.ss.usermodel.Cell cell = headerRow.createCell(i);
+                cell.setCellValue(headers[i]);
+                cell.setCellStyle(headerStyle);
+            }
+
+            // Data rows
+            int rowNum = 1;
+            for (Course course : filteredCourses) {
+                org.apache.poi.ss.usermodel.Row row = sheet.createRow(rowNum++);
+                row.createCell(0).setCellValue(course.getId());
+                row.createCell(1).setCellValue(course.getCourseCode());
+                row.createCell(2).setCellValue(course.getName());
+                row.createCell(3).setCellValue(course.getLevelName());
+                row.createCell(4).setCellValue(course.getTeacherName() != null ? course.getTeacherName() : "N/A");
+                row.createCell(5).setCellValue(course.getHoursPerWeek());
+                row.createCell(6).setCellValue(course.getMaxCapacity());
+                row.createCell(7).setCellValue(course.getStatus());
+            }
+
+            // Auto-size columns
+            for (int i = 0; i < headers.length; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            // Save dialog
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Export Courses to Excel");
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel Files", "*.xlsx"));
+            fileChooser.setInitialFileName("courses_" + java.time.LocalDate.now() + ".xlsx");
+
+            java.io.File file = fileChooser.showSaveDialog(coursesTable.getScene().getWindow());
+            if (file != null) {
+                try (FileOutputStream fos = new FileOutputStream(file)) {
+                    workbook.write(fos);
+                }
+                showAlert(Alert.AlertType.INFORMATION, "Success",
+                        "Exported " + filteredCourses.size() + " courses to Excel!");
+            }
+            workbook.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Export Error", "Failed to export Excel: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleExportPDF() {
+        try {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Export Courses to PDF");
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
+            fileChooser.setInitialFileName("courses_" + LocalDate.now() + ".pdf");
+
+            java.io.File file = fileChooser.showSaveDialog(coursesTable.getScene().getWindow());
+            if (file == null)
+                return;
+
+            PDDocument document = new PDDocument();
+            PDPage page = new PDPage(PDRectangle.A4);
+            document.addPage(page);
+
+            PDPageContentStream contentStream = new PDPageContentStream(document, page);
+
+            // Title
+            contentStream.beginText();
+            contentStream.setFont(PDType1Font.HELVETICA_BOLD, 18);
+            contentStream.newLineAtOffset(50, 750);
+            contentStream.showText("Courses Report");
+            contentStream.endText();
+
+            // Subtitle
+            contentStream.beginText();
+            contentStream.setFont(PDType1Font.HELVETICA, 10);
+            contentStream.newLineAtOffset(50, 730);
+            contentStream.showText("Generated: " + java.time.LocalDateTime.now());
+            contentStream.endText();
+
+            // Table headers
+            String[] headers = { "ID", "Code", "Course Name", "Level", "Teacher", "Hours", "Capacity", "Status" };
+            float[] columnWidths = { 40, 70, 150, 70, 130, 40, 60, 60 };
+            float margin = 50;
+            float yStart = 690;
+            float rowHeight = 15;
+            float headerY = yStart;
+
+            // Draw header background (gray rectangle)
+            contentStream.setNonStrokingColor(java.awt.Color.GRAY);
+            contentStream.addRect(margin, headerY - rowHeight, 490, rowHeight);
+            contentStream.fill();
+
+            // Draw header text (white)
+            contentStream.setNonStrokingColor(java.awt.Color.WHITE);
+            contentStream.beginText();
+            contentStream.setFont(PDType1Font.HELVETICA_BOLD, 9);
+            float xPosition = margin + 5;
+            float headerYText = headerY - 10;
+            for (int i = 0; i < headers.length; i++) {
+                contentStream.beginText();
+                contentStream.setFont(PDType1Font.HELVETICA_BOLD, 9);
+                contentStream.newLineAtOffset(xPosition, headerYText);
+                contentStream.showText(headers[i]);
+                contentStream.endText();
+                xPosition += columnWidths[i];
+            }
+
+            // Draw table data
+            contentStream.setNonStrokingColor(java.awt.Color.BLACK);
+            float currentY = headerY - rowHeight - 5;
+
+            for (int i = 0; i < filteredCourses.size(); i++) {
+                Course course = filteredCourses.get(i);
+
+                // Check if we need a new page
+                if (currentY < 50) {
+                    contentStream.close();
+                    page = new PDPage(PDRectangle.A4);
+                    document.addPage(page);
+                    contentStream = new PDPageContentStream(document, page);
+                    currentY = 750;
+                }
+
+                xPosition = margin + 5;
+                contentStream.beginText();
+                contentStream.setFont(PDType1Font.HELVETICA, 8);
+                contentStream.newLineAtOffset(xPosition, currentY);
+                contentStream.showText(String.valueOf(course.getId()));
+                contentStream.endText();
+
+                xPosition += columnWidths[0];
+                contentStream.beginText();
+                contentStream.setFont(PDType1Font.HELVETICA, 8);
+                contentStream.newLineAtOffset(xPosition, currentY);
+                contentStream.showText(course.getCourseCode());
+                contentStream.endText();
+
+                xPosition += columnWidths[1];
+                contentStream.beginText();
+                contentStream.setFont(PDType1Font.HELVETICA, 8);
+                contentStream.newLineAtOffset(xPosition, currentY);
+                contentStream.showText(course.getName());
+                contentStream.endText();
+
+                xPosition += columnWidths[2];
+                contentStream.beginText();
+                contentStream.setFont(PDType1Font.HELVETICA, 8);
+                contentStream.newLineAtOffset(xPosition, currentY);
+                contentStream.showText(course.getLevelName());
+                contentStream.endText();
+
+                xPosition += columnWidths[3];
+                contentStream.beginText();
+                contentStream.setFont(PDType1Font.HELVETICA, 8);
+                contentStream.newLineAtOffset(xPosition, currentY);
+                contentStream.showText(course.getTeacherName() != null ? course.getTeacherName() : "N/A");
+                contentStream.endText();
+
+                xPosition += columnWidths[4];
+                contentStream.beginText();
+                contentStream.setFont(PDType1Font.HELVETICA, 8);
+                contentStream.newLineAtOffset(xPosition, currentY);
+                contentStream.showText(String.valueOf(course.getHoursPerWeek()));
+                contentStream.endText();
+
+                xPosition += columnWidths[5];
+                contentStream.beginText();
+                contentStream.setFont(PDType1Font.HELVETICA, 8);
+                contentStream.newLineAtOffset(xPosition, currentY);
+                contentStream.showText(String.valueOf(course.getMaxCapacity()));
+                contentStream.endText();
+
+                xPosition += columnWidths[6];
+                contentStream.beginText();
+                contentStream.setFont(PDType1Font.HELVETICA, 8);
+                contentStream.newLineAtOffset(xPosition, currentY);
+                contentStream.showText(course.getStatus());
+                contentStream.endText();
+
+                currentY -= rowHeight;
+            }
+
+            contentStream.close();
+            document.save(file);
+            document.close();
+
+            showAlert(Alert.AlertType.INFORMATION, "Success",
+                    "Exported " + filteredCourses.size() + " courses to PDF!");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Export Error",
+                    "Failed to export PDF: " + e.getMessage());
+        }
     }
 }

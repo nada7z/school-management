@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefWidth="1100" prefHeight="750" stylesheets="@dashboard.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="schoolmanagement.smproject.levels.controller.LevelsController">
+<BorderPane prefHeight="750" prefWidth="1100" stylesheets="@dashboard.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="schoolmanagement.smproject.levels.controller.LevelsController">
     <left>
         <VBox spacing="25" styleClass="sidebar">
             <VBox alignment="CENTER" spacing="12" styleClass="logo-section">
@@ -18,13 +18,12 @@
             </VBox>
             <Separator styleClass="sidebar-separator" />
             <VBox spacing="6">
-                <Label alignment="CENTER" prefHeight="58.0" prefWidth="266.0" style="-fx-font-family: Segoe UI; -fx-text-fill: #EAF1FB; -fx-font-weight: bold; -fx-font-size: 18; -fx-background-color: #2F4C7A; -fx-background-radius: 20;" styleClass="menu-label" text="MENU" />
+                <Label alignment="CENTER" prefHeight="58.0" prefWidth="266.0" style="-fx-font-family: Segoe UI; -fx-text-fill: #EAF1FB; -fx-font-weight: bold; -fx-font-size: 18; -fx-background-radius: 20;" styleClass="menu-label" text="MENU" />
                 <Button fx:id="btnDashboard" onAction="#handleDashboard" styleClass="nav-button" text="📊 Dashboard" />
                 <Button fx:id="btnStudents" onAction="#handleStudents" styleClass="nav-button" text="👨‍🎓 Students" />
-                <Button fx:id="btnLevels" onAction="#handleLevels" styleClass="nav-button" text="🏫 Levels" />
                 <Button fx:id="btnTeachers" onAction="#handleTeachers" styleClass="nav-button" text="👨‍🏫 Teachers" />
                 <Button fx:id="btnCourses" onAction="#handleCourses" styleClass="nav-button" text="📚 Courses" />
-                <Button fx:id="btnGrades" onAction="#handleGrades" styleClass="nav-button" text="📝 Grades" />
+                <Button fx:id="btnGrades" onAction="#handleGrades" style="-fx-background-color: #2F4C7A; -fx-text-fill: white; -fx-font-weight: bold;" styleClass="nav-button" text="📝 Grades" />
             </VBox>
             <VBox VBox.vgrow="ALWAYS" />
             <Button onAction="#handleLogout" styleClass="logout-button" text="🚪 Logout" />

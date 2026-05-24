@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="15" stylesheets="@generateReport.css, @reports.css"
+    xmlns="http://javafx.com/javafx/26"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="schoolmanagement.smproject.reports.controller.GenerateReportController">
+
+    <padding>
+        <Insets bottom="25" left="30" right="30" top="25" />
+    </padding>
+
+    <!-- Title -->
+    <Label styleClass="modal-title" text="Generate Report" />
+
+    <Separator />
+
+    <!-- Report Name -->
+    <VBox spacing="5">
+        <Label styleClass="label" text="Report Title:" />
+        <TextField fx:id="txtReportName" promptText="e.g., Monthly Enrollment Report - May 2026"
+            styleClass="text-field" />
+    </VBox>
+
+    <!-- Report Type -->
+    <VBox spacing="5">
+        <Label styleClass="label" text="Report Type:" />
+        <ComboBox fx:id="cbReportType" promptText="Select report type" styleClass="combo-box" />
+    </VBox>
+
+    <!-- Date -->
+    <VBox spacing="5">
+        <Label styleClass="label" text="Report Date:" />
+        <DatePicker fx:id="dpReportDate" styleClass="date-picker" />
+    </VBox>
+
+    <!-- Report Content -->
+    <VBox spacing="5" VBox.vgrow="ALWAYS">
+        <Label styleClass="label" text="Report Content:" />
+        <TextArea fx:id="txtReportContent"
+            prefHeight="250"
+            promptText="Enter the report content here..."
+            styleClass="text-area"
+            wrapText="true" />
+    </VBox>
+
+    <!-- Buttons -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Cancel" onAction="#handleCancel" styleClass="btn-cancel" />
+        <Button text="Generate Report" onAction="#handleGenerate" styleClass="btn-primary"
+            fx:id="btnGenerate" />
+    </HBox>
+
+</VBox>

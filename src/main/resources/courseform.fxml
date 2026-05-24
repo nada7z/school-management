@@ -33,7 +33,7 @@
                 <Label alignment="CENTER" prefHeight="58.0" prefWidth="266.0" style="-fx-font-family: Segoe UI; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18; -fx-background-radius: 20;" styleClass="menu-label" text="MENU" />
                 
                 <Button fx:id="btnDashboard" onAction="#handleDashboard" styleClass="nav-button" text="📊 Dashboard" />
-                <Button fx:id="btnCourses" onAction="#handleCourses" style="-fx-background-color: #2F4C7A; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 23;" styleClass="nav-button" text="📚 Courses" />
+                <Button fx:id="btnCourses" onAction="#handleCourses" style="-fx-background-color: #2F4C7A; -fx-text-fill: white; -fx-font-weight: bold;" styleClass="nav-button" text="📚 Courses" />
                 <Button fx:id="btnStudents" onAction="#handleStudents" styleClass="nav-button" text="👨‍🎓 Students" />
                 <Button fx:id="btnTeachers" onAction="#handleTeachers" styleClass="nav-button" text="👨‍🏫 Teachers" />
                 <Button fx:id="btnLevels" onAction="#handleLevels" styleClass="nav-button" text="📝 Grades" />

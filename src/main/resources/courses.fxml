@@ -70,7 +70,7 @@
                         <TableColumn fx:id="colName" prefWidth="200" text="Course Name" />
                         <TableColumn fx:id="colLevel" prefWidth="100" text="Level" />
                         <TableColumn fx:id="colTeacher" prefWidth="180" text="Teacher" />
-                        <TableColumn fx:id="colHours" prefWidth="80" text="Hours" />
+                        <TableColumn fx:id="colHours" minWidth="80.0" prefWidth="80" text="Hours" />
                         <TableColumn fx:id="colCapacity" prefWidth="100" text="Capacity" />
                         <TableColumn fx:id="colStatus" prefWidth="110" text="Status" />
                         <TableColumn fx:id="colActions" prefWidth="120" text="Actions" />

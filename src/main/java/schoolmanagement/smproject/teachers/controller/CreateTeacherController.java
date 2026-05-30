@@ -14,15 +14,23 @@ import java.time.LocalDate;
 
 public class CreateTeacherController {
 
-    @FXML private Label userRoleLabel;
-    @FXML private Button btnDashboard, btnTeachers, btnCourses, btnStudents;
+    @FXML
+    private Label userRoleLabel;
+    @FXML
+    private Button btnDashboard, btnTeachers, btnCourses, btnStudents;
 
-    @FXML private TextField txtFirstName, txtLastName, txtEmail, txtPhone;
-    @FXML private TextField txtEmployeeId, txtSubject, txtQualification;
-    @FXML private TextField txtEmergencyName, txtEmergencyPhone;
-    @FXML private TextArea txtAddress;
-    @FXML private DatePicker dpDateOfBirth;
-    @FXML private ComboBox<String> cbGender, cbStatus;
+    @FXML
+    private TextField txtFirstName, txtLastName, txtEmail, txtPhone;
+    @FXML
+    private TextField txtEmployeeId, txtSubject, txtQualification;
+    @FXML
+    private TextField txtEmergencyName, txtEmergencyPhone;
+    @FXML
+    private TextArea txtAddress;
+    @FXML
+    private DatePicker dpDateOfBirth;
+    @FXML
+    private ComboBox<String> cbGender, cbStatus;
 
     @FXML
     public void initialize() {
@@ -33,7 +41,8 @@ public class CreateTeacherController {
 
     @FXML
     private void handleSaveTeacher() {
-        if (!validateForm()) return;
+        if (!validateForm())
+            return;
 
         try {
             Teacher teacher = new Teacher();
@@ -66,9 +75,12 @@ public class CreateTeacherController {
     private boolean validateForm() {
         StringBuilder errors = new StringBuilder();
 
-        if (txtFirstName.getText().trim().isEmpty()) errors.append("• First Name is required\n");
-        if (txtLastName.getText().trim().isEmpty()) errors.append("• Last Name is required\n");
-        if (txtSubject.getText().trim().isEmpty()) errors.append("• Subject Specialization is required\n");
+        if (txtFirstName.getText().trim().isEmpty())
+            errors.append("• First Name is required\n");
+        if (txtLastName.getText().trim().isEmpty())
+            errors.append("• Last Name is required\n");
+        if (txtSubject.getText().trim().isEmpty())
+            errors.append("• Subject Specialization is required\n");
 
         if (errors.length() > 0) {
             showAlert(Alert.AlertType.WARNING, "Validation Error", errors.toString());
@@ -79,9 +91,16 @@ public class CreateTeacherController {
 
     @FXML
     private void handleReset() {
-        txtFirstName.clear(); txtLastName.clear(); txtEmail.clear(); txtPhone.clear();
-        txtEmployeeId.clear(); txtSubject.clear(); txtQualification.clear();
-        txtEmergencyName.clear(); txtEmergencyPhone.clear(); txtAddress.clear();
+        txtFirstName.clear();
+        txtLastName.clear();
+        txtEmail.clear();
+        txtPhone.clear();
+        txtEmployeeId.clear();
+        txtSubject.clear();
+        txtQualification.clear();
+        txtEmergencyName.clear();
+        txtEmergencyPhone.clear();
+        txtAddress.clear();
         dpDateOfBirth.setValue(null);
         cbGender.getSelectionModel().clearSelection();
         cbStatus.getSelectionModel().select("Active");
@@ -89,38 +108,76 @@ public class CreateTeacherController {
     }
 
     @FXML
-    private void handleCancel() { handleTeachers(); }
+    private void handleCancel() {
+        handleTeachers();
+    }
 
     @FXML
-    private void handleDashboard() { loadView("/dashboard.fxml"); }
+    private void handleDashboard() {
+        loadView("/dashboard.fxml");
+    }
+
     @FXML
-    private void handleTeachers() { loadView("/teachers.fxml"); }
+    private void handleTeachers() {
+        loadView("/teachers.fxml");
+    }
+
     @FXML
-    private void handleCourses() { loadView("/courses.fxml"); }
+    private void handleCourses() {
+        loadView("/courses.fxml");
+    }
+
     @FXML
-    private void handleStudents() { loadView("/students.fxml"); }
+    private void handleStudents() {
+        loadView("/students.fxml");
+    }
+
     @FXML
-    private void handleGrades() { loadView("/grades.fxml"); }
+    private void handleGrades() {
+        loadView("/grades.fxml");
+    }
 
     @FXML
     private void handleLogout() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Confirm logout?");
-        if (alert.showAndWait().get() == ButtonType.YES) loadView("/login.fxml");
+        if (alert.showAndWait().get() == ButtonType.YES)
+            loadView("/login.fxml");
     }
 
     private void loadView(String fxmlPath) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
+
             Stage stage = (Stage) btnDashboard.getScene().getWindow();
+
+            boolean wasFullScreen = stage.isFullScreen();
+            boolean wasMaximized = stage.isMaximized();
+
+            double width = stage.getWidth();
+            double height = stage.getHeight();
+            double x = stage.getX();
+            double y = stage.getY();
+
             stage.setScene(new Scene(root));
+
+            stage.setX(x);
+            stage.setY(y);
+            stage.setWidth(width);
+            stage.setHeight(height);
+            stage.setMaximized(wasMaximized);
+            stage.setFullScreen(wasFullScreen);
+
         } catch (IOException e) {
-            showAlert(Alert.AlertType.ERROR, "Navigation Error", "Cannot load: " + fxmlPath);
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Navigation Error", "Could not load: " + fxmlPath);
         }
     }
 
     private void showAlert(Alert.AlertType type, String title, String msg) {
         Alert alert = new Alert(type);
-        alert.setTitle(title); alert.setContentText(msg); alert.showAndWait();
+        alert.setTitle(title);
+        alert.setContentText(msg);
+        alert.showAndWait();
     }
 }

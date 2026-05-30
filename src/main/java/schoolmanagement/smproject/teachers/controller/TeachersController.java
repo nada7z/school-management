@@ -35,25 +35,42 @@ import java.util.stream.Collectors;
 public class TeachersController {
 
     // === FXML ELEMENTS ===
-    @FXML private TextField txtSearch;
-    @FXML private ComboBox<String> cbSubjectFilter;
-    @FXML private ComboBox<String> cbStatusFilter;
-    @FXML private TableView<Teacher> teachersTable;
-    @FXML private TableColumn<Teacher, Integer> colId;
-    @FXML private TableColumn<Teacher, String> colName;
-    @FXML private TableColumn<Teacher, String> colEmail;
-    @FXML private TableColumn<Teacher, String> colPhone;
-    @FXML private TableColumn<Teacher, String> colSubject;
-    @FXML private TableColumn<Teacher, String> colQualification;
-    @FXML private TableColumn<Teacher, String> colStatus;
-    @FXML private TableColumn<Teacher, Void> colActions;
-    @FXML private Label lblTeacherCount;
-    @FXML private Label lblPageInfo;
-    @FXML private Button btnPrevious;
-    @FXML private Button btnNext;
+    @FXML
+    private TextField txtSearch;
+    @FXML
+    private ComboBox<String> cbSubjectFilter;
+    @FXML
+    private ComboBox<String> cbStatusFilter;
+    @FXML
+    private TableView<Teacher> teachersTable;
+    @FXML
+    private TableColumn<Teacher, Integer> colId;
+    @FXML
+    private TableColumn<Teacher, String> colName;
+    @FXML
+    private TableColumn<Teacher, String> colEmail;
+    @FXML
+    private TableColumn<Teacher, String> colPhone;
+    @FXML
+    private TableColumn<Teacher, String> colSubject;
+    @FXML
+    private TableColumn<Teacher, String> colQualification;
+    @FXML
+    private TableColumn<Teacher, String> colStatus;
+    @FXML
+    private TableColumn<Teacher, Void> colActions;
+    @FXML
+    private Label lblTeacherCount;
+    @FXML
+    private Label lblPageInfo;
+    @FXML
+    private Button btnPrevious;
+    @FXML
+    private Button btnNext;
 
     // Sidebar Navigation
-    @FXML private Button btnDashboard, btnStudents, btnTeachers, btnCourses, btnLevels, btnGrades;
+    @FXML
+    private Button btnDashboard, btnStudents, btnTeachers, btnCourses, btnLevels, btnGrades;
 
     // === STATE VARIABLES ===
     private List<Teacher> allTeachers = List.of();
@@ -85,11 +102,13 @@ public class TeachersController {
             protected void updateItem(String status, boolean empty) {
                 super.updateItem(status, empty);
                 if (empty || status == null) {
-                    setText(null); setGraphic(null);
+                    setText(null);
+                    setGraphic(null);
                 } else {
                     Label badge = new Label(status.toUpperCase());
                     badge.getStyleClass().addAll("status-badge", "status-" + status.toLowerCase());
-                    setText(null); setGraphic(badge);
+                    setText(null);
+                    setGraphic(badge);
                 }
             }
         });
@@ -119,7 +138,8 @@ public class TeachersController {
     }
 
     private void setupFilters() {
-        cbSubjectFilter.getItems().addAll("All Subjects", "Mathematics", "French", "Science", "History", "English", "Other");
+        cbSubjectFilter.getItems().addAll("All Subjects", "Mathematics", "French", "Science", "History", "English",
+                "Other");
         cbSubjectFilter.getSelectionModel().selectFirst();
 
         cbStatusFilter.getItems().addAll("All Status", "Active", "Inactive", "On Leave");
@@ -152,33 +172,36 @@ public class TeachersController {
         String statusFilter = cbStatusFilter.getValue();
 
         filteredTeachers = allTeachers.stream()
-            .filter(t -> {
-                boolean matchesSearch = searchTerm.isEmpty() || 
-                    t.getFullName().toLowerCase().contains(searchTerm) ||
-                    t.getEmail().toLowerCase().contains(searchTerm) ||
-                    t.getPhone().contains(searchTerm) ||
-                    (t.getSubjectSpecialization() != null && t.getSubjectSpecialization().toLowerCase().contains(searchTerm)) ||
-                    String.valueOf(t.getId()).contains(searchTerm);
-                
-                boolean matchesSubject = "All Subjects".equals(subjectFilter) || 
-                    subjectFilter.equals(t.getSubjectSpecialization());
-                boolean matchesStatus = "All Status".equals(statusFilter) || 
-                    statusFilter.equals(t.getStatus());
-                
-                return matchesSearch && matchesSubject && matchesStatus;
-            })
-            .collect(Collectors.toList());
+                .filter(t -> {
+                    boolean matchesSearch = searchTerm.isEmpty() ||
+                            t.getFullName().toLowerCase().contains(searchTerm) ||
+                            t.getEmail().toLowerCase().contains(searchTerm) ||
+                            t.getPhone().contains(searchTerm) ||
+                            (t.getSubjectSpecialization() != null
+                                    && t.getSubjectSpecialization().toLowerCase().contains(searchTerm))
+                            ||
+                            String.valueOf(t.getId()).contains(searchTerm);
+
+                    boolean matchesSubject = "All Subjects".equals(subjectFilter) ||
+                            subjectFilter.equals(t.getSubjectSpecialization());
+                    boolean matchesStatus = "All Status".equals(statusFilter) ||
+                            statusFilter.equals(t.getStatus());
+
+                    return matchesSearch && matchesSubject && matchesStatus;
+                })
+                .collect(Collectors.toList());
 
         currentPage = 1;
         updateTablePage();
         updatePaginationUI();
-        lblTeacherCount.setText("Showing " + filteredTeachers.size() + " teacher" + (filteredTeachers.size() != 1 ? "s" : ""));
+        lblTeacherCount
+                .setText("Showing " + filteredTeachers.size() + " teacher" + (filteredTeachers.size() != 1 ? "s" : ""));
     }
 
     private void updateTablePage() {
         int start = (currentPage - 1) * pageSize;
         int end = Math.min(start + pageSize, filteredTeachers.size());
-        
+
         if (start >= filteredTeachers.size()) {
             teachersTable.getItems().clear();
         } else {
@@ -197,7 +220,8 @@ public class TeachersController {
     // ✅ EXPORT FUNCTIONS
     // ==========================================
 
-    @FXML private void handleExportExcel() {
+    @FXML
+    private void handleExportExcel() {
         if (filteredTeachers.isEmpty()) {
             showAlert(Alert.AlertType.WARNING, "No Data", "No teachers to export.");
             return;
@@ -206,14 +230,15 @@ public class TeachersController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Export Teachers to Excel");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel Files", "*.xlsx"));
-        fileChooser.setInitialFileName("Teachers_" + LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE) + ".xlsx");
+        fileChooser
+                .setInitialFileName("Teachers_" + LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE) + ".xlsx");
 
         File file = fileChooser.showSaveDialog(teachersTable.getScene().getWindow());
         if (file != null) {
             try {
                 exportToExcel(file, filteredTeachers);
-                showAlert(Alert.AlertType.INFORMATION, "Success ✅", 
-                    "Excel exported successfully to:\n" + file.getAbsolutePath());
+                showAlert(Alert.AlertType.INFORMATION, "Success ✅",
+                        "Excel exported successfully to:\n" + file.getAbsolutePath());
             } catch (Exception e) {
                 e.printStackTrace();
                 showAlert(Alert.AlertType.ERROR, "Export Failed", "Failed to export Excel:\n" + e.getMessage());
@@ -221,7 +246,8 @@ public class TeachersController {
         }
     }
 
-    @FXML private void handleExportPDF() {
+    @FXML
+    private void handleExportPDF() {
         if (filteredTeachers.isEmpty()) {
             showAlert(Alert.AlertType.WARNING, "No Data", "No teachers to export.");
             return;
@@ -236,8 +262,8 @@ public class TeachersController {
         if (file != null) {
             try {
                 exportToPDF(file, filteredTeachers);
-                showAlert(Alert.AlertType.INFORMATION, "Success ✅", 
-                    "PDF exported successfully to:\n" + file.getAbsolutePath());
+                showAlert(Alert.AlertType.INFORMATION, "Success ✅",
+                        "PDF exported successfully to:\n" + file.getAbsolutePath());
             } catch (Exception e) {
                 e.printStackTrace();
                 showAlert(Alert.AlertType.ERROR, "Export Failed", "Failed to export PDF:\n" + e.getMessage());
@@ -266,7 +292,7 @@ public class TeachersController {
 
         // Create Header Row
         Row headerRow = sheet.createRow(0);
-        String[] headers = {"ID", "Full Name", "Email", "Phone", "Subject", "Qualification", "Status"};
+        String[] headers = { "ID", "Full Name", "Email", "Phone", "Subject", "Qualification", "Status" };
         for (int i = 0; i < headers.length; i++) {
             // ✅ Use fully qualified name for POI Cell to avoid ambiguity
             org.apache.poi.ss.usermodel.Cell cell = headerRow.createCell(i);
@@ -278,21 +304,30 @@ public class TeachersController {
         int rowNum = 1;
         for (Teacher teacher : teachers) {
             Row row = sheet.createRow(rowNum++);
-            
-            // ✅ Use fully qualified name for POI Cell
-            org.apache.poi.ss.usermodel.Cell cell0 = row.createCell(0); cell0.setCellValue(teacher.getId());
-            org.apache.poi.ss.usermodel.Cell cell1 = row.createCell(1); cell1.setCellValue(teacher.getFullName());
-            org.apache.poi.ss.usermodel.Cell cell2 = row.createCell(2); cell2.setCellValue(teacher.getEmail() != null ? teacher.getEmail() : "");
-            org.apache.poi.ss.usermodel.Cell cell3 = row.createCell(3); cell3.setCellValue(teacher.getPhone() != null ? teacher.getPhone() : "");
-            org.apache.poi.ss.usermodel.Cell cell4 = row.createCell(4); cell4.setCellValue(teacher.getSubjectSpecialization() != null ? teacher.getSubjectSpecialization() : "");
-            org.apache.poi.ss.usermodel.Cell cell5 = row.createCell(5); cell5.setCellValue(teacher.getQualification() != null ? teacher.getQualification() : "");
-            org.apache.poi.ss.usermodel.Cell cell6 = row.createCell(6); cell6.setCellValue(teacher.getStatus() != null ? teacher.getStatus() : "Active");
 
-            for (int i = 0; i < 7; i++) row.getCell(i).setCellStyle(cellStyle);
+            // ✅ Use fully qualified name for POI Cell
+            org.apache.poi.ss.usermodel.Cell cell0 = row.createCell(0);
+            cell0.setCellValue(teacher.getId());
+            org.apache.poi.ss.usermodel.Cell cell1 = row.createCell(1);
+            cell1.setCellValue(teacher.getFullName());
+            org.apache.poi.ss.usermodel.Cell cell2 = row.createCell(2);
+            cell2.setCellValue(teacher.getEmail() != null ? teacher.getEmail() : "");
+            org.apache.poi.ss.usermodel.Cell cell3 = row.createCell(3);
+            cell3.setCellValue(teacher.getPhone() != null ? teacher.getPhone() : "");
+            org.apache.poi.ss.usermodel.Cell cell4 = row.createCell(4);
+            cell4.setCellValue(teacher.getSubjectSpecialization() != null ? teacher.getSubjectSpecialization() : "");
+            org.apache.poi.ss.usermodel.Cell cell5 = row.createCell(5);
+            cell5.setCellValue(teacher.getQualification() != null ? teacher.getQualification() : "");
+            org.apache.poi.ss.usermodel.Cell cell6 = row.createCell(6);
+            cell6.setCellValue(teacher.getStatus() != null ? teacher.getStatus() : "Active");
+
+            for (int i = 0; i < 7; i++)
+                row.getCell(i).setCellStyle(cellStyle);
         }
 
         // Auto-size columns
-        for (int i = 0; i < headers.length; i++) sheet.autoSizeColumn(i);
+        for (int i = 0; i < headers.length; i++)
+            sheet.autoSizeColumn(i);
 
         try (FileOutputStream fos = new FileOutputStream(file)) {
             workbook.write(fos);
@@ -359,7 +394,8 @@ public class TeachersController {
             contentStream.setFont(fontRegular, 8);
             for (Teacher teacher : teachers) {
                 if (yPosition < 100) { // Add new page if needed
-                    if (contentStream != null) contentStream.close();
+                    if (contentStream != null)
+                        contentStream.close();
                     page = new PDPage();
                     document.addPage(page);
                     contentStream = new PDPageContentStream(document, page);
@@ -372,7 +408,8 @@ public class TeachersController {
                 contentStream.newLineAtOffset(180, 0);
                 contentStream.showText(teacher.getEmail() != null ? teacher.getEmail() : "");
                 contentStream.newLineAtOffset(180, 0);
-                contentStream.showText(teacher.getSubjectSpecialization() != null ? teacher.getSubjectSpecialization() : "");
+                contentStream
+                        .showText(teacher.getSubjectSpecialization() != null ? teacher.getSubjectSpecialization() : "");
                 contentStream.newLineAtOffset(150, 0);
                 contentStream.showText(teacher.getStatus() != null ? teacher.getStatus() : "Active");
                 contentStream.endText();
@@ -391,7 +428,8 @@ public class TeachersController {
             e.printStackTrace();
         } finally {
             try {
-                if (contentStream != null) contentStream.close();
+                if (contentStream != null)
+                    contentStream.close();
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -404,28 +442,45 @@ public class TeachersController {
     // EVENT HANDLERS
     // ==========================================
 
-    @FXML private void handleSearch() { applyFilters(); }
+    @FXML
+    private void handleSearch() {
+        applyFilters();
+    }
 
-    @FXML private void handleClearFilters() {
+    @FXML
+    private void handleClearFilters() {
         txtSearch.clear();
         cbSubjectFilter.getSelectionModel().selectFirst();
         cbStatusFilter.getSelectionModel().selectFirst();
     }
 
-    @FXML private void handleAddTeacher() { loadView("/createTeacher.fxml"); }
-
-    @FXML private void handlePrevious() {
-        if (currentPage > 1) { currentPage--; updateTablePage(); updatePaginationUI(); }
+    @FXML
+    private void handleAddTeacher() {
+        loadView("/createTeacher.fxml");
     }
 
-    @FXML private void handleNext() {
+    @FXML
+    private void handlePrevious() {
+        if (currentPage > 1) {
+            currentPage--;
+            updateTablePage();
+            updatePaginationUI();
+        }
+    }
+
+    @FXML
+    private void handleNext() {
         int totalPages = (int) Math.ceil(filteredTeachers.size() / (double) pageSize);
-        if (currentPage < totalPages) { currentPage++; updateTablePage(); updatePaginationUI(); }
+        if (currentPage < totalPages) {
+            currentPage++;
+            updateTablePage();
+            updatePaginationUI();
+        }
     }
 
     private void handleEdit(Teacher teacher) {
-        showAlert(Alert.AlertType.INFORMATION, "Edit Teacher", 
-            "Edit form for " + teacher.getFullName() + " coming soon!\n\nID: " + teacher.getId());
+        showAlert(Alert.AlertType.INFORMATION, "Edit Teacher",
+                "Edit form for " + teacher.getFullName() + " coming soon!\n\nID: " + teacher.getId());
     }
 
     private void handleDelete(Teacher teacher) {
@@ -433,12 +488,12 @@ public class TeachersController {
         alert.setTitle("Delete Teacher");
         alert.setHeaderText("Remove " + teacher.getFullName() + "?");
         alert.setContentText("This will NOT delete linked courses, but will remove teacher record.");
-        
+
         if (alert.showAndWait().get() == ButtonType.OK) {
             try {
                 TeacherRepository repo = new TeacherRepository();
                 boolean deleted = repo.deleteById(teacher.getId());
-                
+
                 if (deleted) {
                     loadTeachers();
                     showAlert(Alert.AlertType.INFORMATION, "Success", "Teacher deleted successfully.");
@@ -453,14 +508,37 @@ public class TeachersController {
     }
 
     // === NAVIGATION ===
-    @FXML private void handleDashboard() { loadView("/dashboard.fxml"); }
-    @FXML private void handleStudents() { loadView("/students.fxml"); }
-    @FXML private void handleTeachers() { /* Already here */ }
-    @FXML private void handleCourses() { loadView("/courses.fxml"); }
-    @FXML private void handleLevels() { loadView("/levels.fxml"); }
-    @FXML private void handleGrades() { loadView("/grades.fxml"); }
+    @FXML
+    private void handleDashboard() {
+        loadView("/dashboard.fxml");
+    }
 
-    @FXML private void handleLogout() {
+    @FXML
+    private void handleStudents() {
+        loadView("/students.fxml");
+    }
+
+    @FXML
+    private void handleTeachers() {
+        /* Already here */ }
+
+    @FXML
+    private void handleCourses() {
+        loadView("/courses.fxml");
+    }
+
+    @FXML
+    private void handleLevels() {
+        loadView("/levels.fxml");
+    }
+
+    @FXML
+    private void handleGrades() {
+        loadView("/grades.fxml");
+    }
+
+    @FXML
+    private void handleLogout() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Confirm logout?");
         if (alert.showAndWait().get() == ButtonType.YES) {
             loadView("/login.fxml");
@@ -472,9 +550,26 @@ public class TeachersController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
+
             Stage stage = (Stage) btnDashboard.getScene().getWindow();
+
+            boolean wasFullScreen = stage.isFullScreen();
+            boolean wasMaximized = stage.isMaximized();
+
+            double width = stage.getWidth();
+            double height = stage.getHeight();
+            double x = stage.getX();
+            double y = stage.getY();
+
             stage.setScene(new Scene(root));
-            stage.centerOnScreen();
+
+            stage.setX(x);
+            stage.setY(y);
+            stage.setWidth(width);
+            stage.setHeight(height);
+            stage.setMaximized(wasMaximized);
+            stage.setFullScreen(wasFullScreen);
+
         } catch (IOException e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Navigation Error", "Could not load: " + fxmlPath);

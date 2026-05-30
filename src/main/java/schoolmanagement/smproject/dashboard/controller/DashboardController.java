@@ -352,25 +352,28 @@ public class DashboardController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
 
-            // ✅ Get the current stage
-            Stage stage = (Stage) (btnDashboard != null ? btnDashboard.getScene().getWindow()
-                    : (userRoleLabel != null ? userRoleLabel.getScene().getWindow() : null));
+            Stage stage = (Stage) btnDashboard.getScene().getWindow();
 
-            if (stage != null) {
-                // ✅ Save the current full-screen state BEFORE changing the scene
-                boolean wasFullScreen = stage.isFullScreen();
+            boolean wasFullScreen = stage.isFullScreen();
+            boolean wasMaximized = stage.isMaximized();
 
-                // Load the new scene
-                stage.setScene(new Scene(root));
-                stage.centerOnScreen();
+            double width = stage.getWidth();
+            double height = stage.getHeight();
+            double x = stage.getX();
+            double y = stage.getY();
 
-                // ✅ Restore the full-screen state AFTER loading the new scene
-                stage.setFullScreen(wasFullScreen);
-            }
+            stage.setScene(new Scene(root));
+
+            stage.setX(x);
+            stage.setY(y);
+            stage.setWidth(width);
+            stage.setHeight(height);
+            stage.setMaximized(wasMaximized);
+            stage.setFullScreen(wasFullScreen);
+
         } catch (IOException e) {
             e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Navigation Error",
-                    "Could not load: " + fxmlPath + "\n\nError: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Navigation Error", "Could not load: " + fxmlPath);
         }
     }
 

@@ -20,15 +20,24 @@ import java.util.List;
 
 public class GradeEntryController {
 
-    @FXML private Label userRoleLabel;
-    @FXML private Button btnDashboard, btnStudents, btnTeachers, btnCourses, btnLevels, btnGrades;
-    @FXML private Label subjectTitle;
-    @FXML private TableView<GradeEntry> gradesTable;
-    @FXML private TableColumn<GradeEntry, String> colStudentName;
-    @FXML private TableColumn<GradeEntry, Double> colTest1;
-    @FXML private TableColumn<GradeEntry, Double> colTest2;
-    @FXML private TableColumn<GradeEntry, Double> colExam;
-    @FXML private TableColumn<GradeEntry, Double> colAverage;
+    @FXML
+    private Label userRoleLabel;
+    @FXML
+    private Button btnDashboard, btnStudents, btnTeachers, btnCourses, btnLevels, btnGrades;
+    @FXML
+    private Label subjectTitle;
+    @FXML
+    private TableView<GradeEntry> gradesTable;
+    @FXML
+    private TableColumn<GradeEntry, String> colStudentName;
+    @FXML
+    private TableColumn<GradeEntry, Double> colTest1;
+    @FXML
+    private TableColumn<GradeEntry, Double> colTest2;
+    @FXML
+    private TableColumn<GradeEntry, Double> colExam;
+    @FXML
+    private TableColumn<GradeEntry, Double> colAverage;
 
     private GradeRepository gradeRepo;
     private StudentRepository studentRepo;
@@ -60,7 +69,7 @@ public class GradeEntryController {
         gradesTable.setEditable(true);
 
         colStudentName.setCellValueFactory(data -> data.getValue().studentNameProperty());
-        
+
         // ✅ Test 1 Column with 0-20 validation
         colTest1.setCellValueFactory(data -> data.getValue().test1Property().asObject());
         colTest1.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
@@ -113,10 +122,11 @@ public class GradeEntryController {
 
     // ✅ VALIDATION: Ensure grade is between 0 and 20
     private boolean validateGrade(Double grade, String fieldName) {
-        if (grade == null) return true; // Allow null (empty)
+        if (grade == null)
+            return true; // Allow null (empty)
         if (grade < 0 || grade > 20) {
-            showAlert(Alert.AlertType.WARNING, "Invalid Grade", 
-                fieldName + " must be between 0 and 20.\n\nEntered: " + grade);
+            showAlert(Alert.AlertType.WARNING, "Invalid Grade",
+                    fieldName + " must be between 0 and 20.\n\nEntered: " + grade);
             return false;
         }
         return true;
@@ -139,14 +149,14 @@ public class GradeEntryController {
         try {
             List<Student> students = studentRepo.findByGradeLevel(currentLevel);
             List<Grade> existingGrades = gradeRepo.findByLevelAndSubject(currentLevelId, currentSubject);
-            
+
             gradeEntries.clear();
             for (Student student : students) {
                 GradeEntry entry = new GradeEntry(student.getFullName());
                 entry.setStudentId(student.getId());
                 entry.setLevel(currentLevel);
                 entry.setSubject(currentSubject);
-                
+
                 for (Grade grade : existingGrades) {
                     if (grade.getStudentId() == student.getId()) {
                         entry.setTest1(grade.getTest1());
@@ -158,13 +168,13 @@ public class GradeEntryController {
                 }
                 gradeEntries.add(entry);
             }
-            
+
             gradesTable.getItems().setAll(gradeEntries);
-            
+
         } catch (Exception e) {
             e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Database Error", 
-                "Failed to load grades: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Database Error",
+                    "Failed to load grades: " + e.getMessage());
         }
     }
 
@@ -173,13 +183,16 @@ public class GradeEntryController {
         try {
             // Validate all grades before saving
             for (GradeEntry entry : gradeEntries) {
-                if (!validateGrade(entry.getTest1(), "Test 1 for " + entry.getStudentName())) return;
-                if (!validateGrade(entry.getTest2(), "Test 2 for " + entry.getStudentName())) return;
-                if (!validateGrade(entry.getExam(), "Exam for " + entry.getStudentName())) return;
+                if (!validateGrade(entry.getTest1(), "Test 1 for " + entry.getStudentName()))
+                    return;
+                if (!validateGrade(entry.getTest2(), "Test 2 for " + entry.getStudentName()))
+                    return;
+                if (!validateGrade(entry.getExam(), "Exam for " + entry.getStudentName()))
+                    return;
             }
 
             int savedCount = 0;
-            
+
             for (GradeEntry entry : gradeEntries) {
                 if (entry.getTest1() != null || entry.getTest2() != null || entry.getExam() != null) {
                     Grade grade = new Grade();
@@ -190,21 +203,21 @@ public class GradeEntryController {
                     grade.setTest2(entry.getTest2());
                     grade.setExam(entry.getExam());
                     grade.setAcademicYear(academicYear);
-                    
+
                     gradeRepo.save(grade);
                     savedCount++;
                 }
             }
-            
-            showAlert(Alert.AlertType.INFORMATION, "Success ✅", 
-                "Grades saved successfully!\n" + savedCount + " student(s) updated.");
-            
+
+            showAlert(Alert.AlertType.INFORMATION, "Success ✅",
+                    "Grades saved successfully!\n" + savedCount + " student(s) updated.");
+
             loadGradesFromDatabase();
-            
+
         } catch (Exception e) {
             e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Error ❌", 
-                "Failed to save grades: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Error ❌",
+                    "Failed to save grades: " + e.getMessage());
         }
     }
 
@@ -221,12 +234,34 @@ public class GradeEntryController {
     }
 
     // === NAVIGATION ===
-    @FXML private void handleDashboard() { loadView("/dashboard.fxml"); }
-    @FXML private void handleStudents() { loadView("/students.fxml"); }
-    @FXML private void handleTeachers() { loadView("/teachers.fxml"); }
-    @FXML private void handleCourses() { loadView("/courses.fxml"); }
-    @FXML private void handleLevels() { loadView("/levels.fxml"); }
-    @FXML private void handleGrades() { }
+    @FXML
+    private void handleDashboard() {
+        loadView("/dashboard.fxml");
+    }
+
+    @FXML
+    private void handleStudents() {
+        loadView("/students.fxml");
+    }
+
+    @FXML
+    private void handleTeachers() {
+        loadView("/teachers.fxml");
+    }
+
+    @FXML
+    private void handleCourses() {
+        loadView("/courses.fxml");
+    }
+
+    @FXML
+    private void handleLevels() {
+        loadView("/levels.fxml");
+    }
+
+    @FXML
+    private void handleGrades() {
+    }
 
     @FXML
     private void handleLogout() {
@@ -241,9 +276,28 @@ public class GradeEntryController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
-            Stage stage = (Stage) (subjectTitle != null ? subjectTitle.getScene().getWindow() : btnGrades.getScene().getWindow());
+
+            Stage stage = (Stage) btnDashboard.getScene().getWindow();
+
+            boolean wasFullScreen = stage.isFullScreen();
+            boolean wasMaximized = stage.isMaximized();
+
+            double width = stage.getWidth();
+            double height = stage.getHeight();
+            double x = stage.getX();
+            double y = stage.getY();
+
             stage.setScene(new Scene(root));
+
+            stage.setX(x);
+            stage.setY(y);
+            stage.setWidth(width);
+            stage.setHeight(height);
+            stage.setMaximized(wasMaximized);
+            stage.setFullScreen(wasFullScreen);
+
         } catch (IOException e) {
+            e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Navigation Error", "Could not load: " + fxmlPath);
         }
     }

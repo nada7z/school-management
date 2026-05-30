@@ -32,19 +32,30 @@ import java.util.List;
 
 public class StudentBulletinController {
 
-    @FXML private Label userRoleLabel;
-    @FXML private Button btnDashboard, btnStudents, btnTeachers, btnCourses, btnLevels, btnGrades;
+    @FXML
+    private Label userRoleLabel;
+    @FXML
+    private Button btnDashboard, btnStudents, btnTeachers, btnCourses, btnLevels, btnGrades;
 
-    @FXML private Label lblStudentName, lblStudentId, lblClassroom, lblAcademicYear;
-    @FXML private Label lblTotalCoeff, lblTotalPoints, lblOverallAverage;
-    @FXML private Label lblSubjectCount, lblStatusBadge, lblDecisionMessage;
-    
-    @FXML private TableView<Grade> gradesTable;
-    @FXML private TableColumn<Grade, Integer> colIndex;
-    @FXML private TableColumn<Grade, String> colSubject;
-    @FXML private TableColumn<Grade, Double> colGrade;
-    @FXML private TableColumn<Grade, Integer> colCoefficient;
-    @FXML private TableColumn<Grade, Double> colProduct;
+    @FXML
+    private Label lblStudentName, lblStudentId, lblClassroom, lblAcademicYear;
+    @FXML
+    private Label lblTotalCoeff, lblTotalPoints, lblOverallAverage;
+    @FXML
+    private Label lblSubjectCount, lblStatusBadge, lblDecisionMessage;
+
+    @FXML
+    private TableView<Grade> gradesTable;
+    @FXML
+    private TableColumn<Grade, Integer> colIndex;
+    @FXML
+    private TableColumn<Grade, String> colSubject;
+    @FXML
+    private TableColumn<Grade, Double> colGrade;
+    @FXML
+    private TableColumn<Grade, Integer> colCoefficient;
+    @FXML
+    private TableColumn<Grade, Double> colProduct;
 
     private Student currentStudent;
     private GradeRepository gradeRepo;
@@ -57,34 +68,34 @@ public class StudentBulletinController {
     }
 
     public void setStudent(Student student) {
-        this.currentStudent = student; 
+        this.currentStudent = student;
         loadBulletin();
     }
 
     private void setupTableColumns() {
         gradesTable.setEditable(false); // Read-only
-        
+
         colIndex.setCellValueFactory(data -> new javafx.beans.property.ReadOnlyObjectWrapper<>(
-            gradesTable.getItems().indexOf(data.getValue()) + 1));
-        
+                gradesTable.getItems().indexOf(data.getValue()) + 1));
+
         colSubject.setCellValueFactory(new PropertyValueFactory<>("subject"));
         colGrade.setCellValueFactory(new PropertyValueFactory<>("average"));
         colCoefficient.setCellValueFactory(new PropertyValueFactory<>("coefficient"));
-        
+
         colProduct.setCellValueFactory(data -> new javafx.beans.property.ReadOnlyObjectWrapper<>(
-            data.getValue().getAverage() != null && data.getValue().getCoefficient() > 0 
-                ? data.getValue().getAverage() * data.getValue().getCoefficient() 
-                : 0.0
-        ));
+                data.getValue().getAverage() != null && data.getValue().getCoefficient() > 0
+                        ? data.getValue().getAverage() * data.getValue().getCoefficient()
+                        : 0.0));
     }
 
     private void loadBulletin() {
-        if (currentStudent == null) return;
+        if (currentStudent == null)
+            return;
 
         lblStudentName.setText(currentStudent.getFullName());
         lblStudentId.setText("MAT-" + currentStudent.getId());
-        lblClassroom.setText(currentStudent.getGradeLevel() + 
-            (currentStudent.getClassroom() != null ? "-" + currentStudent.getClassroom() : ""));
+        lblClassroom.setText(currentStudent.getGradeLevel() +
+                (currentStudent.getClassroom() != null ? "-" + currentStudent.getClassroom() : ""));
         lblAcademicYear.setText(academicYear);
 
         try {
@@ -112,7 +123,7 @@ public class StudentBulletinController {
         }
 
         double average = totalCoeff > 0 ? totalPoints / totalCoeff : 0;
-        
+
         lblTotalCoeff.setText(String.valueOf(totalCoeff));
         lblTotalPoints.setText(String.format("%.2f", totalPoints));
         lblOverallAverage.setText(String.format("%.2f / 20", average));
@@ -135,7 +146,8 @@ public class StudentBulletinController {
     // ✅ EXPORT FUNCTIONS
     // ==========================================
 
-    @FXML private void handleExportExcel() {
+    @FXML
+    private void handleExportExcel() {
         if (gradesTable.getItems().isEmpty()) {
             showAlert(Alert.AlertType.WARNING, "No Data", "No grades to export.");
             return;
@@ -144,15 +156,15 @@ public class StudentBulletinController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Export Bulletin to Excel");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel Files", "*.xlsx"));
-        fileChooser.setInitialFileName("Bulletin_" + currentStudent.getFullName().replace(" ", "_") + 
-            "_" + LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE) + ".xlsx");
+        fileChooser.setInitialFileName("Bulletin_" + currentStudent.getFullName().replace(" ", "_") +
+                "_" + LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE) + ".xlsx");
 
         File file = fileChooser.showSaveDialog(gradesTable.getScene().getWindow());
         if (file != null) {
             try {
                 exportToExcel(file);
-                showAlert(Alert.AlertType.INFORMATION, "Success ✅", 
-                    "Excel exported successfully to:\n" + file.getAbsolutePath());
+                showAlert(Alert.AlertType.INFORMATION, "Success ✅",
+                        "Excel exported successfully to:\n" + file.getAbsolutePath());
             } catch (Exception e) {
                 e.printStackTrace();
                 showAlert(Alert.AlertType.ERROR, "Export Failed", "Failed to export Excel:\n" + e.getMessage());
@@ -160,7 +172,8 @@ public class StudentBulletinController {
         }
     }
 
-    @FXML private void handleExportPDF() {
+    @FXML
+    private void handleExportPDF() {
         if (gradesTable.getItems().isEmpty()) {
             showAlert(Alert.AlertType.WARNING, "No Data", "No grades to export.");
             return;
@@ -169,15 +182,15 @@ public class StudentBulletinController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Export Bulletin to PDF");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
-        fileChooser.setInitialFileName("Bulletin_" + currentStudent.getFullName().replace(" ", "_") + 
-            "_" + LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE) + ".pdf");
+        fileChooser.setInitialFileName("Bulletin_" + currentStudent.getFullName().replace(" ", "_") +
+                "_" + LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE) + ".pdf");
 
         File file = fileChooser.showSaveDialog(gradesTable.getScene().getWindow());
         if (file != null) {
             try {
                 exportToPDF(file);
-                showAlert(Alert.AlertType.INFORMATION, "Success ✅", 
-                    "PDF exported successfully to:\n" + file.getAbsolutePath());
+                showAlert(Alert.AlertType.INFORMATION, "Success ✅",
+                        "PDF exported successfully to:\n" + file.getAbsolutePath());
             } catch (Exception e) {
                 e.printStackTrace();
                 showAlert(Alert.AlertType.ERROR, "Export Failed", "Failed to export PDF:\n" + e.getMessage());
@@ -206,10 +219,10 @@ public class StudentBulletinController {
 
         // Create Header Row
         Row headerRow = sheet.createRow(0);
-        String[] headers = {"#", "Matière", "Note / 20", "Coef", "Produit"};
+        String[] headers = { "#", "Matière", "Note / 20", "Coef", "Produit" };
         for (int i = 0; i < headers.length; i++) {
             // ✅ Use fully qualified name or rely on POI imports if specific
-            org.apache.poi.ss.usermodel.Cell cell = headerRow.createCell(i); 
+            org.apache.poi.ss.usermodel.Cell cell = headerRow.createCell(i);
             cell.setCellValue(headers[i]);
             cell.setCellStyle(headerStyle);
         }
@@ -218,23 +231,30 @@ public class StudentBulletinController {
         int rowNum = 1;
         for (Grade grade : gradesTable.getItems()) {
             Row row = sheet.createRow(rowNum++);
-            
+
             double note = grade.getAverage() != null ? grade.getAverage() : 0.0;
             int coef = grade.getCoefficient() > 0 ? grade.getCoefficient() : 1;
             double produit = note * coef;
 
             // ✅ Use fully qualified name for POI Cell to avoid ambiguity
-            org.apache.poi.ss.usermodel.Cell cell0 = row.createCell(0); cell0.setCellValue(rowNum - 1);
-            org.apache.poi.ss.usermodel.Cell cell1 = row.createCell(1); cell1.setCellValue(grade.getSubject());
-            org.apache.poi.ss.usermodel.Cell cell2 = row.createCell(2); cell2.setCellValue(note);
-            org.apache.poi.ss.usermodel.Cell cell3 = row.createCell(3); cell3.setCellValue(coef);
-            org.apache.poi.ss.usermodel.Cell cell4 = row.createCell(4); cell4.setCellValue(produit);
+            org.apache.poi.ss.usermodel.Cell cell0 = row.createCell(0);
+            cell0.setCellValue(rowNum - 1);
+            org.apache.poi.ss.usermodel.Cell cell1 = row.createCell(1);
+            cell1.setCellValue(grade.getSubject());
+            org.apache.poi.ss.usermodel.Cell cell2 = row.createCell(2);
+            cell2.setCellValue(note);
+            org.apache.poi.ss.usermodel.Cell cell3 = row.createCell(3);
+            cell3.setCellValue(coef);
+            org.apache.poi.ss.usermodel.Cell cell4 = row.createCell(4);
+            cell4.setCellValue(produit);
 
-            for (int i = 0; i < 5; i++) row.getCell(i).setCellStyle(cellStyle);
+            for (int i = 0; i < 5; i++)
+                row.getCell(i).setCellStyle(cellStyle);
         }
 
         // Auto-size columns
-        for (int i = 0; i < headers.length; i++) sheet.autoSizeColumn(i);
+        for (int i = 0; i < headers.length; i++)
+            sheet.autoSizeColumn(i);
 
         try (FileOutputStream fos = new FileOutputStream(file)) {
             workbook.write(fos);
@@ -340,19 +360,48 @@ public class StudentBulletinController {
     // NAVIGATION & UTILS
     // ==========================================
 
-    @FXML private void handlePrint() { 
-        showAlert(Alert.AlertType.INFORMATION, "Print", "Print dialog coming soon!"); 
+    @FXML
+    private void handlePrint() {
+        showAlert(Alert.AlertType.INFORMATION, "Print", "Print dialog coming soon!");
     }
 
-    @FXML private void handleBack() { loadView("/students.fxml"); }
-    @FXML private void handleDashboard() { loadView("/dashboard.fxml"); }
-    @FXML private void handleStudents() { loadView("/students.fxml"); }
-    @FXML private void handleTeachers() { loadView("/teachers.fxml"); }
-    @FXML private void handleCourses() { loadView("/courses.fxml"); }
-    @FXML private void handleLevels() { loadView("/levels.fxml"); }
-    @FXML private void handleGrades() { loadView("/grades.fxml"); }
+    @FXML
+    private void handleBack() {
+        loadView("/students.fxml");
+    }
 
-    @FXML private void handleLogout() {
+    @FXML
+    private void handleDashboard() {
+        loadView("/dashboard.fxml");
+    }
+
+    @FXML
+    private void handleStudents() {
+        loadView("/students.fxml");
+    }
+
+    @FXML
+    private void handleTeachers() {
+        loadView("/teachers.fxml");
+    }
+
+    @FXML
+    private void handleCourses() {
+        loadView("/courses.fxml");
+    }
+
+    @FXML
+    private void handleLevels() {
+        loadView("/levels.fxml");
+    }
+
+    @FXML
+    private void handleGrades() {
+        loadView("/grades.fxml");
+    }
+
+    @FXML
+    private void handleLogout() {
         if (new Alert(Alert.AlertType.CONFIRMATION, "Confirm logout?").showAndWait().get() == ButtonType.YES) {
             loadView("/login.fxml");
         }
@@ -362,15 +411,37 @@ public class StudentBulletinController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
-            Stage stage = (Stage) lblStudentName.getScene().getWindow();
+
+            Stage stage = (Stage) btnDashboard.getScene().getWindow();
+
+            boolean wasFullScreen = stage.isFullScreen();
+            boolean wasMaximized = stage.isMaximized();
+
+            double width = stage.getWidth();
+            double height = stage.getHeight();
+            double x = stage.getX();
+            double y = stage.getY();
+
             stage.setScene(new Scene(root));
+
+            stage.setX(x);
+            stage.setY(y);
+            stage.setWidth(width);
+            stage.setHeight(height);
+            stage.setMaximized(wasMaximized);
+            stage.setFullScreen(wasFullScreen);
+
         } catch (IOException e) {
+            e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Navigation Error", "Could not load: " + fxmlPath);
         }
     }
 
     private void showAlert(Alert.AlertType type, String title, String msg) {
         Alert alert = new Alert(type);
-        alert.setTitle(title); alert.setHeaderText(null); alert.setContentText(msg); alert.showAndWait();
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
+        alert.showAndWait();
     }
 }

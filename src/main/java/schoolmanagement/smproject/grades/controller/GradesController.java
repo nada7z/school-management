@@ -15,30 +15,49 @@ import java.io.IOException;
 
 public class GradesController {
 
-    @FXML private Label userRoleLabel;
-    @FXML private Button btnDashboard, btnStudents, btnTeachers, btnCourses, btnLevels, btnGrades;
+    @FXML
+    private Label userRoleLabel;
+    @FXML
+    private Button btnDashboard, btnStudents, btnTeachers, btnCourses, btnLevels, btnGrades;
 
     @FXML
-    private void handleCE1() { navigateToSubjects("CE1", 1); }
+    private void handleCE1() {
+        navigateToSubjects("CE1", 1);
+    }
+
     @FXML
-    private void handleCE2() { navigateToSubjects("CE2", 2); }
+    private void handleCE2() {
+        navigateToSubjects("CE2", 2);
+    }
+
     @FXML
-    private void handleCE3() { navigateToSubjects("CE3", 3); }
+    private void handleCE3() {
+        navigateToSubjects("CE3", 3);
+    }
+
     @FXML
-    private void handleCE4() { navigateToSubjects("CE4", 4); }
+    private void handleCE4() {
+        navigateToSubjects("CE4", 4);
+    }
+
     @FXML
-    private void handleCE5() { navigateToSubjects("CE5", 5); }
+    private void handleCE5() {
+        navigateToSubjects("CE5", 5);
+    }
+
     @FXML
-    private void handleCE6() { navigateToSubjects("CE6", 6); }
+    private void handleCE6() {
+        navigateToSubjects("CE6", 6);
+    }
 
     private void navigateToSubjects(String levelName, int levelId) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/subjects.fxml"));
             Parent root = loader.load();
-            
+
             SubjectsController controller = loader.getController();
             controller.setLevel(levelName, levelId);
-            
+
             Stage stage = (Stage) btnGrades.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("School MS ➜ " + levelName + " Subjects");
@@ -48,12 +67,34 @@ public class GradesController {
         }
     }
 
-    @FXML private void handleDashboard() { loadView("/dashboard.fxml"); }
-    @FXML private void handleStudents() { loadView("/students.fxml"); }
-    @FXML private void handleTeachers() { loadView("/teachers.fxml"); }
-    @FXML private void handleCourses() { loadView("/courses.fxml"); }
-    @FXML private void handleLevels() { loadView("/levels.fxml"); }
-    @FXML private void handleGrades() { /* Already here */ }
+    @FXML
+    private void handleDashboard() {
+        loadView("/dashboard.fxml");
+    }
+
+    @FXML
+    private void handleStudents() {
+        loadView("/students.fxml");
+    }
+
+    @FXML
+    private void handleTeachers() {
+        loadView("/teachers.fxml");
+    }
+
+    @FXML
+    private void handleCourses() {
+        loadView("/courses.fxml");
+    }
+
+    @FXML
+    private void handleLevels() {
+        loadView("/levels.fxml");
+    }
+
+    @FXML
+    private void handleGrades() {
+        /* Already here */ }
 
     @FXML
     private void handleLogout() {
@@ -67,9 +108,28 @@ public class GradesController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
-            Stage stage = (Stage) btnGrades.getScene().getWindow();
+
+            Stage stage = (Stage) btnDashboard.getScene().getWindow();
+
+            boolean wasFullScreen = stage.isFullScreen();
+            boolean wasMaximized = stage.isMaximized();
+
+            double width = stage.getWidth();
+            double height = stage.getHeight();
+            double x = stage.getX();
+            double y = stage.getY();
+
             stage.setScene(new Scene(root));
+
+            stage.setX(x);
+            stage.setY(y);
+            stage.setWidth(width);
+            stage.setHeight(height);
+            stage.setMaximized(wasMaximized);
+            stage.setFullScreen(wasFullScreen);
+
         } catch (IOException e) {
+            e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Navigation Error", "Could not load: " + fxmlPath);
         }
     }

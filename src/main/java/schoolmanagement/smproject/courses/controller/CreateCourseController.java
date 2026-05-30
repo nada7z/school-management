@@ -18,15 +18,23 @@ import java.util.List;
 
 public class CreateCourseController {
 
-    @FXML private Label userRoleLabel;
-    @FXML private Button btnDashboard, btnCourses, btnStudents, btnTeachers, btnLevels;
+    @FXML
+    private Label userRoleLabel;
+    @FXML
+    private Button btnDashboard, btnCourses, btnStudents, btnTeachers, btnLevels;
 
-    @FXML private TextField txtCourseCode, txtCourseName;
-    @FXML private TextArea txtDescription;
-    @FXML private ComboBox<Level> cbLevel;
-    @FXML private ComboBox<Teacher> cbTeacher;
-    @FXML private Spinner<Integer> spnHours, spnCapacity;
-    @FXML private ComboBox<String> cbStatus;
+    @FXML
+    private TextField txtCourseCode, txtCourseName;
+    @FXML
+    private TextArea txtDescription;
+    @FXML
+    private ComboBox<Level> cbLevel;
+    @FXML
+    private ComboBox<Teacher> cbTeacher;
+    @FXML
+    private Spinner<Integer> spnHours, spnCapacity;
+    @FXML
+    private ComboBox<String> cbStatus;
 
     @FXML
     public void initialize() {
@@ -57,7 +65,8 @@ public class CreateCourseController {
                 @Override
                 protected void updateItem(Teacher teacher, boolean empty) {
                     super.updateItem(teacher, empty);
-                    setText(empty || teacher == null ? null : teacher.getFullName() + " • " + teacher.getSubjectSpecialization());
+                    setText(empty || teacher == null ? null
+                            : teacher.getFullName() + " • " + teacher.getSubjectSpecialization());
                 }
             });
             cbTeacher.setButtonCell(new ListCell<>() {
@@ -91,7 +100,8 @@ public class CreateCourseController {
 
     @FXML
     private void handleSaveCourse() {
-        if (!validateForm()) return;
+        if (!validateForm())
+            return;
 
         try {
             Course course = new Course();
@@ -99,10 +109,10 @@ public class CreateCourseController {
             course.setName(txtCourseName.getText().trim());
             course.setDescription(txtDescription.getText().trim());
             course.setLevelId(cbLevel.getValue().getId());
-            
+
             Teacher selectedTeacher = cbTeacher.getValue();
             course.setTeacherId(selectedTeacher != null ? selectedTeacher.getId() : null);
-            
+
             course.setHoursPerWeek(spnHours.getValue());
             course.setMaxCapacity(spnCapacity.getValue());
             course.setStatus(cbStatus.getValue());
@@ -157,15 +167,29 @@ public class CreateCourseController {
     }
 
     @FXML
-    private void handleDashboard() { loadView("/dashboard.fxml"); }
+    private void handleDashboard() {
+        loadView("/dashboard.fxml");
+    }
+
     @FXML
-    private void handleCourses() { loadView("/courses.fxml"); }
+    private void handleCourses() {
+        loadView("/courses.fxml");
+    }
+
     @FXML
-    private void handleStudents() { loadView("/students.fxml"); }
+    private void handleStudents() {
+        loadView("/students.fxml");
+    }
+
     @FXML
-    private void handleTeachers() { loadView("/teachers.fxml"); }
+    private void handleTeachers() {
+        loadView("/teachers.fxml");
+    }
+
     @FXML
-    private void handleLevels() { loadView("/levels.fxml"); }
+    private void handleLevels() {
+        loadView("/levels.fxml");
+    }
 
     @FXML
     private void handleLogout() {
@@ -179,10 +203,29 @@ public class CreateCourseController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
+
             Stage stage = (Stage) btnDashboard.getScene().getWindow();
+
+            boolean wasFullScreen = stage.isFullScreen();
+            boolean wasMaximized = stage.isMaximized();
+
+            double width = stage.getWidth();
+            double height = stage.getHeight();
+            double x = stage.getX();
+            double y = stage.getY();
+
             stage.setScene(new Scene(root));
+
+            stage.setX(x);
+            stage.setY(y);
+            stage.setWidth(width);
+            stage.setHeight(height);
+            stage.setMaximized(wasMaximized);
+            stage.setFullScreen(wasFullScreen);
+
         } catch (IOException e) {
-            showAlert(Alert.AlertType.ERROR, "Navigation Error", "Cannot load: " + fxmlPath);
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Navigation Error", "Could not load: " + fxmlPath);
         }
     }
 

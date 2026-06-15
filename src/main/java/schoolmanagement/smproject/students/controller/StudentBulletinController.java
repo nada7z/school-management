@@ -6,17 +6,18 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import schoolmanagement.smproject.students.entity.Student;
 import schoolmanagement.smproject.grades.entity.Grade;
 import schoolmanagement.smproject.grades.repository.GradeRepository;
 
-// ✅ Excel Imports (Specific classes to avoid 'Cell' conflict)
+// Excel Imports
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-// ✅ PDF Imports
+// PDF Imports
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -35,7 +36,7 @@ public class StudentBulletinController {
     @FXML
     private Label userRoleLabel;
     @FXML
-    private Button btnDashboard, btnStudents, btnTeachers, btnCourses, btnLevels, btnGrades;
+    private Button btnDashboard, btnStudents, btnTeachers, btnCourses, btnLevels, btnGrades, btnReports;
 
     @FXML
     private Label lblStudentName, lblStudentId, lblClassroom, lblAcademicYear;
@@ -75,14 +76,14 @@ public class StudentBulletinController {
     private void setupTableColumns() {
         gradesTable.setEditable(false); // Read-only
 
-        colIndex.setCellValueFactory(data -> new javafx.beans.property.ReadOnlyObjectWrapper<>(
+        colIndex.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(
                 gradesTable.getItems().indexOf(data.getValue()) + 1));
 
         colSubject.setCellValueFactory(new PropertyValueFactory<>("subject"));
         colGrade.setCellValueFactory(new PropertyValueFactory<>("average"));
         colCoefficient.setCellValueFactory(new PropertyValueFactory<>("coefficient"));
 
-        colProduct.setCellValueFactory(data -> new javafx.beans.property.ReadOnlyObjectWrapper<>(
+        colProduct.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(
                 data.getValue().getAverage() != null && data.getValue().getCoefficient() > 0
                         ? data.getValue().getAverage() * data.getValue().getCoefficient()
                         : 0.0));
@@ -133,12 +134,12 @@ public class StudentBulletinController {
             lblStatusBadge.setText("ADMIS(E)");
             lblStatusBadge.getStyleClass().setAll("status-badge", "status-admitted");
             lblDecisionMessage.setText(String.format("Moyenne obtenue : %.2f / 20 — Félicitations ! 🎉", average));
-            lblOverallAverage.setStyle("-fx-text-fill: #10b981;");
+            lblOverallAverage.setStyle("-fx-text-fill: #10b981;"); // Emerald Green
         } else {
             lblStatusBadge.setText("NON ADMIS(E)");
             lblStatusBadge.getStyleClass().setAll("status-badge", "status-failed");
             lblDecisionMessage.setText(String.format("Moyenne obtenue : %.2f / 20 — Efforts requis 📚", average));
-            lblOverallAverage.setStyle("-fx-text-fill: #ef4444;");
+            lblOverallAverage.setStyle("-fx-text-fill: #ef4444;"); // Red
         }
     }
 
@@ -198,12 +199,10 @@ public class StudentBulletinController {
         }
     }
 
-    // 🔹 Excel Implementation
     private void exportToExcel(File file) throws IOException {
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Bulletin");
 
-        // Header Style
         CellStyle headerStyle = workbook.createCellStyle();
         Font headerFont = workbook.createFont();
         headerFont.setBold(true);
@@ -213,56 +212,42 @@ public class StudentBulletinController {
         headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         headerStyle.setBorderBottom(BorderStyle.THIN);
 
-        // Data Style
         CellStyle cellStyle = workbook.createCellStyle();
         cellStyle.setBorderBottom(BorderStyle.THIN);
 
-        // Create Header Row
         Row headerRow = sheet.createRow(0);
         String[] headers = { "#", "Matière", "Note / 20", "Coef", "Produit" };
         for (int i = 0; i < headers.length; i++) {
-            // ✅ Use fully qualified name or rely on POI imports if specific
             org.apache.poi.ss.usermodel.Cell cell = headerRow.createCell(i);
             cell.setCellValue(headers[i]);
             cell.setCellStyle(headerStyle);
         }
 
-        // Create Data Rows
         int rowNum = 1;
         for (Grade grade : gradesTable.getItems()) {
             Row row = sheet.createRow(rowNum++);
-
             double note = grade.getAverage() != null ? grade.getAverage() : 0.0;
             int coef = grade.getCoefficient() > 0 ? grade.getCoefficient() : 1;
             double produit = note * coef;
 
-            // ✅ Use fully qualified name for POI Cell to avoid ambiguity
-            org.apache.poi.ss.usermodel.Cell cell0 = row.createCell(0);
-            cell0.setCellValue(rowNum - 1);
-            org.apache.poi.ss.usermodel.Cell cell1 = row.createCell(1);
-            cell1.setCellValue(grade.getSubject());
-            org.apache.poi.ss.usermodel.Cell cell2 = row.createCell(2);
-            cell2.setCellValue(note);
-            org.apache.poi.ss.usermodel.Cell cell3 = row.createCell(3);
-            cell3.setCellValue(coef);
-            org.apache.poi.ss.usermodel.Cell cell4 = row.createCell(4);
-            cell4.setCellValue(produit);
+            row.createCell(0).setCellValue(rowNum - 1);
+            row.createCell(1).setCellValue(grade.getSubject());
+            row.createCell(2).setCellValue(note);
+            row.createCell(3).setCellValue(coef);
+            row.createCell(4).setCellValue(produit);
 
             for (int i = 0; i < 5; i++)
                 row.getCell(i).setCellStyle(cellStyle);
         }
 
-        // Auto-size columns
         for (int i = 0; i < headers.length; i++)
             sheet.autoSizeColumn(i);
-
         try (FileOutputStream fos = new FileOutputStream(file)) {
             workbook.write(fos);
         }
         workbook.close();
     }
 
-    // 🔹 PDF Implementation
     private void exportToPDF(File file) throws IOException {
         PDDocument document = new PDDocument();
         PDPage page = new PDPage();
@@ -276,7 +261,6 @@ public class StudentBulletinController {
             float yPosition = page.getMediaBox().getHeight() - margin;
             float tableWidth = page.getMediaBox().getWidth() - 2 * margin;
 
-            // Title
             contentStream.beginText();
             contentStream.setFont(fontBold, 18);
             contentStream.newLineAtOffset(margin, yPosition);
@@ -284,19 +268,17 @@ public class StudentBulletinController {
             contentStream.endText();
             yPosition -= 30;
 
-            // Student Info
             contentStream.setFont(fontRegular, 11);
             contentStream.beginText();
             contentStream.newLineAtOffset(margin, yPosition);
-            contentStream.showText("Nom: " + currentStudent.getFullName() + "      |      ");
-            contentStream.showText("Matricule: " + currentStudent.getId());
+            contentStream.showText(cleanText(
+                    "Nom: " + currentStudent.getFullName() + "      |       Matricule: " + currentStudent.getId()));
             contentStream.newLineAtOffset(0, -20);
-            contentStream.showText("Classe: " + lblClassroom.getText() + "      |      ");
-            contentStream.showText("Année: " + academicYear);
+            contentStream
+                    .showText(cleanText("Classe: " + lblClassroom.getText() + "      |       Année: " + academicYear));
             contentStream.endText();
             yPosition -= 40;
 
-            // Table Header
             contentStream.setStrokingColor(0.2f, 0.4f, 0.6f);
             contentStream.setLineWidth(1.5f);
             contentStream.addRect(margin, yPosition - 25, tableWidth, 25);
@@ -317,7 +299,6 @@ public class StudentBulletinController {
             contentStream.setNonStrokingColor(0, 0, 0);
             yPosition -= 30;
 
-            // Table Rows
             contentStream.setFont(fontRegular, 9);
             for (Grade grade : gradesTable.getItems()) {
                 double note = grade.getAverage() != null ? grade.getAverage() : 0.0;
@@ -326,7 +307,7 @@ public class StudentBulletinController {
 
                 contentStream.beginText();
                 contentStream.newLineAtOffset(margin + 10, yPosition - 12);
-                contentStream.showText(grade.getSubject());
+                contentStream.showText(cleanText(grade.getSubject()));
                 contentStream.newLineAtOffset(200, 0);
                 contentStream.showText(String.format("%.2f", note));
                 contentStream.newLineAtOffset(60, 0);
@@ -338,14 +319,12 @@ public class StudentBulletinController {
             }
 
             yPosition -= 30;
-
-            // Summary
             contentStream.setFont(fontBold, 12);
             contentStream.beginText();
             contentStream.newLineAtOffset(margin, yPosition);
-            contentStream.showText("Moyenne Générale: " + lblOverallAverage.getText());
+            contentStream.showText(cleanText("Moyenne Générale: " + lblOverallAverage.getText()));
             contentStream.newLineAtOffset(0, -20);
-            contentStream.showText("Décision: " + lblStatusBadge.getText());
+            contentStream.showText(cleanText("Décision: " + lblStatusBadge.getText()));
             contentStream.endText();
 
         } catch (Exception e) {
@@ -359,16 +338,6 @@ public class StudentBulletinController {
     // ==========================================
     // NAVIGATION & UTILS
     // ==========================================
-
-    @FXML
-    private void handlePrint() {
-        showAlert(Alert.AlertType.INFORMATION, "Print", "Print dialog coming soon!");
-    }
-
-    @FXML
-    private void handleBack() {
-        loadView("/students.fxml");
-    }
 
     @FXML
     private void handleDashboard() {
@@ -401,6 +370,11 @@ public class StudentBulletinController {
     }
 
     @FXML
+    private void handleReports() {
+        loadView("/reports.fxml");
+    }
+
+    @FXML
     private void handleLogout() {
         if (new Alert(Alert.AlertType.CONFIRMATION, "Confirm logout?").showAndWait().get() == ButtonType.YES) {
             loadView("/login.fxml");
@@ -413,17 +387,14 @@ public class StudentBulletinController {
             Parent root = loader.load();
 
             Stage stage = (Stage) btnDashboard.getScene().getWindow();
-
             boolean wasFullScreen = stage.isFullScreen();
             boolean wasMaximized = stage.isMaximized();
-
             double width = stage.getWidth();
             double height = stage.getHeight();
             double x = stage.getX();
             double y = stage.getY();
 
             stage.setScene(new Scene(root));
-
             stage.setX(x);
             stage.setY(y);
             stage.setWidth(width);
@@ -435,6 +406,14 @@ public class StudentBulletinController {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Navigation Error", "Could not load: " + fxmlPath);
         }
+    }
+
+    // ✅ Normalizes French accents so PDFBox doesn't crash when rendering Helvetica
+    private String cleanText(String text) {
+        if (text == null)
+            return "";
+        return java.text.Normalizer.normalize(text, java.text.Normalizer.Form.NFD)
+                .replaceAll("[^\\x00-\\x7F]", "");
     }
 
     private void showAlert(Alert.AlertType type, String title, String msg) {

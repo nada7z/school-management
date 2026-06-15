@@ -24,9 +24,9 @@
                 <Label alignment="CENTER" prefHeight="58.0" prefWidth="266.0" style="-fx-font-family: Segoe UI; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 17;" styleClass="menu-label" text="MENU" />
                 <Button fx:id="btnDashboard" onAction="#handleDashboard" style="-fx-text-fill: white;" styleClass="nav-button" text="📊 Dashboard" />
                 <Button fx:id="btnStudents" onAction="#handleStudents" style="-fx-text-fill: white;" styleClass="nav-button" text="👨‍🎓 Students" />
-                <Button fx:id="btnTeachers" onAction="#handleTeachers" style="-fx-text-fill: white;" styleClass="nav-button" text="👨‍ Teachers" />
+                <Button fx:id="btnTeachers" onAction="#handleTeachers" style="-fx-text-fill: white;" styleClass="nav-button" text="👨‍🏫 Teachers" />
                 <Button fx:id="btnCourses" onAction="#handleCourses" style="-fx-text-fill: white;" styleClass="nav-button" text="📚 Courses" />
-                <Button fx:id="btnGrades" onAction="#handleGrades" style="-fx-background-color: #2F4C7A; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 23;" styleClass="nav-button" text="📝 Grades" />
+                <Button fx:id="btnGrades" onAction="#handleGrades" style="-fx-background-color: #2F4C7A; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 13;" styleClass="nav-button" text="📝 Grades" />
             <Button onAction="#handleReport" style="-fx-text-fill: white;" styleClass="nav-button" text="📊 Reports" />
             </VBox>
             <VBox VBox.vgrow="ALWAYS" />

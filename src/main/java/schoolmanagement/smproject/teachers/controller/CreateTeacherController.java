@@ -151,6 +151,11 @@ public class CreateTeacherController {
     }
 
     @FXML
+    private void handleReport() {
+        loadView("/reports.fxml");
+    }
+
+    @FXML
     private void handleLogout() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Confirm logout?");
         if (alert.showAndWait().get() == ButtonType.YES)

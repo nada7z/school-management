@@ -47,8 +47,7 @@
                 <!-- Header & Actions -->
                 <HBox alignment="CENTER_LEFT" spacing="16">
                     <VBox>
-                        <Label styleClass="page-title" text="📊 Reports Center" />
-                        <Label styleClass="page-subtitle" text="Generate, manage, and export school reports" />
+                        <Label style="-fx-font-size: 30; -fx-font-weight: bold;" styleClass="page-title" text="📊 Reports Center" />
                     </VBox>
                     <Region HBox.hgrow="ALWAYS" />
                     <Button onAction="#handleExportPDF" style="-fx-background-color: #263F6B; -fx-text-fill: white; -fx-background-radius: 8; -fx-padding: 8 16; -fx-font-weight: bold;" text="📄 PDF" />

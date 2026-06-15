@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.AreaChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="750" prefWidth="1100" stylesheets="@d2.css"
+    xmlns="http://javafx.com/javafx/26"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="schoolmanagement.smproject.dashboard.controller.DashboardController">
+
+    <!-- LEFT SIDEBAR -->
+    <left>
+        <VBox styleClass="sidebar">
+
+            <!-- Logo Section -->
+            <VBox alignment="CENTER" styleClass="logo-section">
+                <Label styleClass="logo-icon" text="🎓" />
+                <Label styleClass="logo-title" text="School MS" />
+                <Label fx:id="userRoleLabel" styleClass="user-badge" text="ADMIN" />
+            </VBox>
+
+            <!-- Nav label -->
+            <Label styleClass="nav-section-label" text="NAVIGATION" />
+
+            <!-- Navigation Buttons -->
+            <VBox styleClass="nav-group">
+                <Button fx:id="btnDashboard" onAction="#handleDashboard"
+                    styleClass="nav-button nav-button-active" text="📊  Dashboard" />
+                <Button fx:id="btnStudents" onAction="#handleStudents" styleClass="nav-button"
+                    text="👨‍🎓  Students" />
+                <Button fx:id="btnTeachers" onAction="#handleTeachers" styleClass="nav-button"
+                    text="👨‍🏫  Teachers" />
+                <Button fx:id="btnCourses" onAction="#handleCourses" styleClass="nav-button"
+                    text="📚  Courses" />
+                <Button fx:id="btnGrades" onAction="#handleGrades" styleClass="nav-button"
+                    text="📝  Grades" />
+                <Button onAction="#handleReport" styleClass="nav-button" text="📊  Reports" />
+            </VBox>
+
+            <!-- Spacer -->
+            <Region VBox.vgrow="ALWAYS" />
+
+            <!-- Logout -->
+            <VBox styleClass="logout-section">
+                <Separator styleClass="sidebar-separator" />
+                <Button onAction="#handleLogout" styleClass="logout-button" text="🚪  Logout" />
+            </VBox>
+
+        </VBox>
+    </left>
+
+    <!-- MAIN CONTENT -->
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="main-scroll">
+            <VBox styleClass="main-container">
+
+                <!-- Top Header Bar -->
+                <HBox styleClass="top-header" alignment="CENTER_LEFT">
+                    <VBox HBox.hgrow="ALWAYS">
+                        <Label fx:id="welcomeLabel" styleClass="page-title"
+                            text="Welcome back, Admin!" />
+                        <Label styleClass="page-subtitle"
+                            text="Here's what's happening with your school today" />
+                    </VBox>
+                </HBox>
+
+                <!-- Stats Row -->
+                <HBox styleClass="stats-row" alignment="CENTER">
+
+                    <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                        <HBox styleClass="stat-card-inner" alignment="CENTER_LEFT">
+                            <Label styleClass="stat-icon stat-icon-blue" text="🎓" />
+                            <VBox styleClass="stat-text">
+                                <Label fx:id="totalStudentsLabel" styleClass="stat-value" text="0" />
+                                <Label styleClass="stat-label" text="Total Students" />
+                            </VBox>
+                        </HBox>
+                        <Label styleClass="stat-accent stat-accent-blue" text="" />
+                    </VBox>
+
+                    <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                        <HBox styleClass="stat-card-inner" alignment="CENTER_LEFT">
+                            <Label styleClass="stat-icon stat-icon-green" text="👨‍🏫" />
+                            <VBox styleClass="stat-text">
+                                <Label fx:id="totalTeachersLabel" styleClass="stat-value" text="0" />
+                                <Label styleClass="stat-label" text="Total Teachers" />
+                            </VBox>
+                        </HBox>
+                        <Label styleClass="stat-accent stat-accent-green" text="" />
+                    </VBox>
+
+                    <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                        <HBox styleClass="stat-card-inner" alignment="CENTER_LEFT">
+                            <Label styleClass="stat-icon stat-icon-purple" text="📚" />
+                            <VBox styleClass="stat-text">
+                                <Label fx:id="totalCoursesLabel" styleClass="stat-value" text="0" />
+                                <Label styleClass="stat-label" text="Active Courses" />
+                            </VBox>
+                        </HBox>
+                        <Label styleClass="stat-accent stat-accent-purple" text="" />
+                    </VBox>
+
+                    <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                        <HBox styleClass="stat-card-inner" alignment="CENTER_LEFT">
+                            <Label styleClass="stat-icon stat-icon-amber" text="📊" />
+                            <VBox styleClass="stat-text">
+                                <Label fx:id="attendanceLabel" styleClass="stat-value" text="0%" />
+                                <Label styleClass="stat-label" text="Avg Attendance" />
+                            </VBox>
+                        </HBox>
+                        <Label styleClass="stat-accent stat-accent-amber" text="" />
+                    </VBox>
+
+                </HBox>
+
+                <!-- Quick Actions + Recent Activity Row -->
+                <HBox styleClass="bottom-row" alignment="TOP_LEFT">
+
+                    <!-- Quick Actions -->
+                    <VBox styleClass="panel" HBox.hgrow="ALWAYS">
+                        <Label styleClass="panel-title" text="Quick Actions" />
+                        <Separator styleClass="panel-divider" />
+                        <VBox styleClass="actions-grid">
+                            <HBox styleClass="actions-row">
+                                <Button onAction="#handleAddStudent"
+                                    styleClass="action-btn action-btn-blue" text="➕  Add Student"
+                                    HBox.hgrow="ALWAYS" />
+                                <Button onAction="#handleAddTeacher"
+                                    styleClass="action-btn action-btn-green" text="➕  Add Teacher"
+                                    HBox.hgrow="ALWAYS" />
+                            </HBox>
+                            <HBox styleClass="actions-row">
+                                <Button onAction="#handleCreateCourse"
+                                    styleClass="action-btn action-btn-purple"
+                                    text="📝  Create Course" HBox.hgrow="ALWAYS" />
+                                <Button onAction="#handleReport"
+                                    styleClass="action-btn action-btn-amber"
+                                    text="📄  Generate Report" HBox.hgrow="ALWAYS" />
+                            </HBox>
+                        </VBox>
+                    </VBox>
+
+                    <!-- Recent Activity -->
+                    <VBox fx:id="activityContainer" styleClass="panel" HBox.hgrow="ALWAYS">
+                        <Label styleClass="panel-title" text="Recent Activity" />
+                        <Separator styleClass="panel-divider" />
+                        <!-- Activity cards injected dynamically by DashboardController -->
+                    </VBox>
+
+                </HBox>
+
+                <!-- Performance Chart -->
+                <VBox styleClass="panel chart-panel">
+                    <HBox alignment="CENTER_LEFT">
+                        <VBox HBox.hgrow="ALWAYS">
+                            <Label styleClass="panel-title" text="Global Performance" />
+                            <Label styleClass="page-subtitle"
+                                text="Yearly student enrollment evaluation" />
+                        </VBox>
+                    </HBox>
+                    <Separator styleClass="panel-divider" />
+                    <AreaChart fx:id="performanceChart" styleClass="performance-chart"
+                        prefHeight="260">
+                        <xAxis>
+                            <CategoryAxis fx:id="chartXAxis" label="Month" side="BOTTOM" />
+                        </xAxis>
+                        <yAxis>
+                            <NumberAxis fx:id="chartYAxis" label="Students" side="LEFT" />
+                        </yAxis>
+                    </AreaChart>
+                </VBox>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

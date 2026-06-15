@@ -28,6 +28,7 @@
                 <Button fx:id="btnTeachers" onAction="#handleTeachers" style="-fx-text-fill: white;" styleClass="nav-button" text="👨‍🏫 Teachers" />
                 <Button fx:id="btnCourses" onAction="#handleCourses" style="-fx-text-fill: white;" styleClass="nav-button" text="📚 Courses" />
                 <Button fx:id="btnGrades" onAction="#handleGrades" style="-fx-background-color: #2F4C7A; -fx-text-fill: white; -fx-font-weight: bold;" styleClass="nav-button" text="📝 Grades" />
+            <Button onAction="#handleReport" style="-fx-text-fill: white;" styleClass="nav-button" text="📊 Reports" />
             </VBox>
             <VBox VBox.vgrow="ALWAYS" />
             <Button onAction="#handleLogout" style="-fx-font-weight: bold;" styleClass="logout-button" text="🚪  Logout" />
@@ -59,6 +60,9 @@
                         <TableColumn fx:id="colExam" prefWidth="120" text="Exam " />
                         <TableColumn fx:id="colAverage" prefWidth="120" text="Average" />
                     </columns>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
                 </TableView>
             </VBox>
 

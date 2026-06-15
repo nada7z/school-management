@@ -106,7 +106,7 @@
                 </HBox>
 
                 <!-- Quick Actions -->
-                <VBox spacing="18" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 20;">
+                <VBox prefHeight="288.0" prefWidth="725.0" spacing="18" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 20;">
                     <Label alignment="CENTER" style="-fx-font-family: Segoe UI; -fx-text-fill: #4a7bc2; -fx-font-weight: bold; -fx-padding: 10;" styleClass="section-title" text="Quick Actions">
                         <font><Font name="Agency FB" size="17.0" /></font>
                     </Label>
@@ -132,10 +132,19 @@
                             </graphic>
                         </Button>
                     </HBox>
+               <HBox alignment="CENTER" spacing="18">
+                  <children>
+                     <Button onAction="#handleAttendance" prefHeight="51.0" prefWidth="290.0" style="-fx-background-color: #efe9fb; -fx-font-family: Segoe UI; -fx-font-weight: bold; -fx-font-size: 13; -fx-background-radius: 10; -fx-effect: null;" styleClass="action-btn" text=" Attendance ">
+                        <graphic>
+                           <Label style="-fx-text-fill: #7a6ccf;" styleClass="action-icon" text="✅" />
+                        </graphic>
+                     </Button>
+                  </children>
+               </HBox>
                 </VBox>
 
                 <!-- Recent Activity Section -->
-                <VBox fx:id="activityContainer" spacing="18" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 20;">
+                <VBox fx:id="activityContainer" prefHeight="80.0" spacing="18" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 20;">
                     <Label alignment="CENTER" style="-fx-font-family: Segoe UI; -fx-text-fill: #4a7bc2; -fx-font-weight: bold;" styleClass="section-title" text="Recent Activity">
                         <font><Font size="17.0" /></font>
                     </Label>

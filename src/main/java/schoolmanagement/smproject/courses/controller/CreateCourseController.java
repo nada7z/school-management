@@ -36,6 +36,8 @@ public class CreateCourseController {
     @FXML
     private ComboBox<String> cbStatus;
 
+    private Course editingCourse = null;
+
     @FXML
     public void initialize() {
         setupSpinners();
@@ -104,7 +106,8 @@ public class CreateCourseController {
             return;
 
         try {
-            Course course = new Course();
+            Course course = editingCourse != null ? editingCourse : new Course();
+
             course.setCourseCode(txtCourseCode.getText().trim().toUpperCase());
             course.setName(txtCourseName.getText().trim());
             course.setDescription(txtDescription.getText().trim());
@@ -118,10 +121,17 @@ public class CreateCourseController {
             course.setStatus(cbStatus.getValue());
 
             CourseRepository repo = new CourseRepository();
-            repo.save(course);
 
-            showAlert(Alert.AlertType.INFORMATION, "Success", "Course created successfully!");
-            handleReset();
+            if (editingCourse == null) {
+                repo.save(course);
+                showAlert(Alert.AlertType.INFORMATION, "Success", "Course created successfully!");
+            } else {
+                repo.update(course);
+                showAlert(Alert.AlertType.INFORMATION, "Success", "Course updated successfully!");
+            }
+
+            handleCourses();
+
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Error", "Failed to save course: " + e.getMessage());
@@ -197,6 +207,28 @@ public class CreateCourseController {
         if (alert.showAndWait().get() == ButtonType.YES) {
             loadView("/login.fxml");
         }
+    }
+
+    public void setCourseForEdit(Course course) {
+        this.editingCourse = course;
+
+        txtCourseCode.setText(course.getCourseCode());
+        txtCourseName.setText(course.getName());
+        txtDescription.setText(course.getDescription());
+
+        cbLevel.getItems().stream()
+                .filter(level -> level.getId() == course.getLevelId())
+                .findFirst()
+                .ifPresent(level -> cbLevel.getSelectionModel().select(level));
+
+        cbTeacher.getItems().stream()
+                .filter(teacher -> course.getTeacherId() != null && teacher.getId() == course.getTeacherId())
+                .findFirst()
+                .ifPresent(teacher -> cbTeacher.getSelectionModel().select(teacher));
+
+        spnHours.getValueFactory().setValue(course.getHoursPerWeek());
+        spnCapacity.getValueFactory().setValue(course.getMaxCapacity());
+        cbStatus.getSelectionModel().select(course.getStatus());
     }
 
     private void loadView(String fxmlPath) {

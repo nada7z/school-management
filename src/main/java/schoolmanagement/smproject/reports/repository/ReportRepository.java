@@ -137,6 +137,43 @@ public class ReportRepository {
         return reports;
     }
 
+    public Report update(Report report) {
+        String sql = """
+                UPDATE reports SET
+                    report_type = ?,
+                    report_title = ?,
+                    academic_year = ?,
+                    term = ?,
+                    report_date = ?,
+                    generated_by = ?,
+                    status = ?,
+                    summary_data = ?,
+                    file_path = ?
+                WHERE id = ?
+                """;
+
+        try (Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, report.getReportType());
+            stmt.setString(2, report.getReportName());
+            stmt.setString(3, report.getAcademicYear());
+            stmt.setString(4, report.getTerm());
+            stmt.setObject(5, report.getGeneratedDate());
+            stmt.setString(6, report.getGeneratedBy());
+            stmt.setString(7, report.getStatus());
+            stmt.setString(8, report.getSummaryData());
+            stmt.setString(9, report.getFilePath());
+            stmt.setInt(10, report.getId());
+
+            stmt.executeUpdate();
+            return report;
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to update report: " + e.getMessage(), e);
+        }
+    }
+
     @FunctionalInterface
     private interface StatementSetter {
         void apply(PreparedStatement stmt) throws SQLException;

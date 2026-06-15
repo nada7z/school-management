@@ -31,6 +31,8 @@ public class CreateTeacherController {
     private DatePicker dpDateOfBirth;
     @FXML
     private ComboBox<String> cbGender, cbStatus;
+    @FXML
+    private Teacher editingTeacher = null;
 
     @FXML
     public void initialize() {
@@ -45,7 +47,8 @@ public class CreateTeacherController {
             return;
 
         try {
-            Teacher teacher = new Teacher();
+            Teacher teacher = editingTeacher != null ? editingTeacher : new Teacher();
+
             teacher.setEmployeeId(txtEmployeeId.getText().trim());
             teacher.setFirstName(txtFirstName.getText().trim());
             teacher.setLastName(txtLastName.getText().trim());
@@ -59,13 +62,23 @@ public class CreateTeacherController {
             teacher.setStatus(cbStatus.getValue());
             teacher.setEmergencyContactName(txtEmergencyName.getText().trim());
             teacher.setEmergencyContactPhone(txtEmergencyPhone.getText().trim());
-            teacher.setHireDate(LocalDate.now());
+
+            if (editingTeacher == null) {
+                teacher.setHireDate(LocalDate.now());
+            }
 
             TeacherRepository repo = new TeacherRepository();
-            repo.save(teacher);
 
-            showAlert(Alert.AlertType.INFORMATION, "Success", "Teacher added successfully!");
-            handleReset();
+            if (editingTeacher == null) {
+                repo.save(teacher);
+                showAlert(Alert.AlertType.INFORMATION, "Success", "Teacher added successfully!");
+            } else {
+                repo.update(teacher);
+                showAlert(Alert.AlertType.INFORMATION, "Success", "Teacher updated successfully!");
+            }
+
+            handleTeachers();
+
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Error", "Failed to save teacher: " + e.getMessage());
@@ -142,6 +155,24 @@ public class CreateTeacherController {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Confirm logout?");
         if (alert.showAndWait().get() == ButtonType.YES)
             loadView("/login.fxml");
+    }
+
+    public void setTeacherForEdit(Teacher teacher) {
+        this.editingTeacher = teacher;
+
+        txtEmployeeId.setText(teacher.getEmployeeId());
+        txtFirstName.setText(teacher.getFirstName());
+        txtLastName.setText(teacher.getLastName());
+        txtEmail.setText(teacher.getEmail());
+        txtPhone.setText(teacher.getPhone());
+        dpDateOfBirth.setValue(teacher.getDateOfBirth());
+        cbGender.getSelectionModel().select(teacher.getGender());
+        txtAddress.setText(teacher.getAddress());
+        txtSubject.setText(teacher.getSubjectSpecialization());
+        txtQualification.setText(teacher.getQualification());
+        cbStatus.getSelectionModel().select(teacher.getStatus());
+        txtEmergencyName.setText(teacher.getEmergencyContactName());
+        txtEmergencyPhone.setText(teacher.getEmergencyContactPhone());
     }
 
     private void loadView(String fxmlPath) {

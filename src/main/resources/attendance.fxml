@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
@@ -13,7 +14,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="750" prefWidth="1100" stylesheets="@dashboard.css, @reports.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="schoolmanagement.smproject.reports.controller.ReportsController">
+<BorderPane prefHeight="750" prefWidth="1100" stylesheets="@dashboard.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="schoolmanagement.smproject.attendance.controller.AttendanceController">
 
     <!-- LEFT SIDEBAR -->
     <left>
@@ -24,15 +25,14 @@
                 <Label fx:id="userRoleLabel" styleClass="user-badge" text="ADMIN" />
             </VBox>
             <Separator styleClass="sidebar-separator" />
-            <VBox spacing="6">
+            <VBox prefHeight="333.0" prefWidth="240.0" spacing="6">
                 <Label alignment="CENTER" prefHeight="58.0" prefWidth="266.0" style="-fx-font-family: Segoe UI; -fx-text-fill: #EAF1FB; -fx-font-weight: bold; -fx-font-size: 18; -fx-background-radius: 20;" styleClass="menu-label" text="MENU" />
                 <Button fx:id="btnDashboard" onAction="#handleDashboard" style="-fx-text-fill: white;" styleClass="nav-button" text="📊 Dashboard" />
                 <Button fx:id="btnStudents" onAction="#handleStudents" style="-fx-text-fill: white;" styleClass="nav-button" text="👨‍🎓 Students" />
                 <Button fx:id="btnTeachers" onAction="#handleTeachers" style="-fx-text-fill: white;" styleClass="nav-button" text="👨‍🏫 Teachers" />
                 <Button fx:id="btnCourses" onAction="#handleCourses" style="-fx-text-fill: white;" styleClass="nav-button" text="📚 Courses" />
                 <Button fx:id="btnGrades" onAction="#handleGrades" style="-fx-text-fill: white;" styleClass="nav-button" text="📝 Grades" />
-                <!-- Highlighted Reports Button -->
-                <Button fx:id="btnReports" onAction="#handleReports" style="-fx-background-color: #2F4C7A; -fx-text-fill: white; -fx-font-weight: bold;" styleClass="nav-button" text="📊 Reports" />
+            <Button onAction="#handleReport" style="-fx-text-fill: white;" styleClass="nav-button" text="📊 Reports" />
             </VBox>
             <VBox VBox.vgrow="ALWAYS" />
             <Button onAction="#handleLogout" style="-fx-font-weight: bold;" styleClass="logout-button" text="🚪  Logout" />
@@ -47,32 +47,32 @@
                 <!-- Header & Actions -->
                 <HBox alignment="CENTER_LEFT" spacing="16">
                     <VBox>
-                        <Label styleClass="page-title" text="📊 Reports Center" />
-                        <Label styleClass="page-subtitle" text="Generate, manage, and export school reports" />
+                        <Label styleClass="page-title" text="✅ Attendance Tracking" />
+                        <Label styleClass="page-subtitle" text="Manage daily attendance for students and teachers" />
                     </VBox>
                     <Region HBox.hgrow="ALWAYS" />
-                    <Button onAction="#handleExportPDF" style="-fx-background-color: #263F6B; -fx-text-fill: white; -fx-background-radius: 8; -fx-padding: 8 16; -fx-font-weight: bold;" text="📄 PDF" />
                     <Button onAction="#handleExportExcel" style="-fx-background-color: #263F6B; -fx-text-fill: white; -fx-background-radius: 8; -fx-padding: 8 16; -fx-font-weight: bold;" text="📊 Excel" />
-                    <Button onAction="#handleGenerateReport" style="-fx-background-color: #3fa37a; -fx-text-fill: white; -fx-background-radius: 8; -fx-padding: 8 16; -fx-font-weight: bold;" text="➕ Generate Report" />
+                    <Button onAction="#handleExportPDF" style="-fx-background-color: #263F6B; -fx-text-fill: white; -fx-background-radius: 8; -fx-padding: 8 16; -fx-font-weight: bold;" text="📄 PDF" />
+                    <Button onAction="#handleSaveAll" style="-fx-background-color: #3fa37a; -fx-text-fill: white; -fx-background-radius: 8; -fx-padding: 8 16; -fx-font-weight: bold;" text="💾 Save All" />
                 </HBox>
 
                 <!-- Stats Cards -->
                 <HBox alignment="CENTER" spacing="22" styleClass="stats-grid">
                     <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
                         <HBox alignment="CENTER" spacing="18" style="-fx-background-color: white; -fx-background-radius: 15;">
-                            <Label alignment="CENTER" prefHeight="40.0" prefWidth="40.0" style="-fx-font-size: 20; -fx-text-fill: #4a7bc2; -fx-background-color: #e7eff9; -fx-background-radius: 15;" text="📊" />
+                            <Label alignment="CENTER" prefHeight="40.0" prefWidth="40.0" style="-fx-font-size: 20; -fx-text-fill: #3fa37a; -fx-background-color: #e6f4ee; -fx-background-radius: 15;" text="✅" />
                             <VBox>
-                                <Label fx:id="lblTotalReports" styleClass="stat-value" text="0" />
-                                <Label styleClass="stat-label" text="Total Reports" />
+                                <Label fx:id="lblPresentCount" styleClass="stat-value" text="0" />
+                                <Label styleClass="stat-label" text="Present Today" />
                             </VBox>
                         </HBox>
                     </VBox>
                     <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
                         <HBox alignment="CENTER" spacing="18" style="-fx-background-color: white; -fx-background-radius: 15;">
-                            <Label alignment="CENTER" prefHeight="40.0" prefWidth="40.0" style="-fx-font-size: 20; -fx-text-fill: #3fa37a; -fx-background-color: #e6f4ee; -fx-background-radius: 15;" text="✅" />
+                            <Label alignment="CENTER" prefHeight="40.0" prefWidth="40.0" style="-fx-font-size: 20; -fx-text-fill: #D32F2F; -fx-background-color: #FFCCCC; -fx-background-radius: 15;" text="❌" />
                             <VBox>
-                                <Label fx:id="lblFinalized" styleClass="stat-value" text="0" />
-                                <Label styleClass="stat-label" text="Finalized" />
+                                <Label fx:id="lblAbsentCount" styleClass="stat-value" text="0" />
+                                <Label styleClass="stat-label" text="Absent Today" />
                             </VBox>
                         </HBox>
                     </VBox>
@@ -80,53 +80,42 @@
                         <HBox alignment="CENTER" spacing="18" style="-fx-background-color: white; -fx-background-radius: 15;">
                             <Label alignment="CENTER" prefHeight="40.0" prefWidth="40.0" style="-fx-font-size: 20; -fx-text-fill: #d39b3c; -fx-background-color: #f9f1e3; -fx-background-radius: 15;" text="⏳" />
                             <VBox>
-                                <Label fx:id="lblDrafts" styleClass="stat-value" text="0" />
-                                <Label styleClass="stat-label" text="Drafts" />
+                                <Label fx:id="lblLateCount" styleClass="stat-value" text="0" />
+                                <Label styleClass="stat-label" text="Late Today" />
                             </VBox>
                         </HBox>
                     </VBox>
                     <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
                         <HBox alignment="CENTER" spacing="18" style="-fx-background-color: white; -fx-background-radius: 15;">
-                            <Label alignment="CENTER" prefHeight="40.0" prefWidth="40.0" style="-fx-font-size: 20; -fx-text-fill: #8b6fd6; -fx-background-color: #efe9fb; -fx-background-radius: 15;" text="📅" />
+                            <Label alignment="CENTER" prefHeight="40.0" prefWidth="40.0" style="-fx-font-size: 20; -fx-text-fill: #4a7bc2; -fx-background-color: #e7eff9; -fx-background-radius: 15;" text="📊" />
                             <VBox>
-                                <Label fx:id="lblThisMonth" styleClass="stat-value" text="0" />
-                                <Label styleClass="stat-label" text="Generated This Month" />
+                                <Label fx:id="lblAttendanceRate" styleClass="stat-value" text="0%" />
+                                <Label styleClass="stat-label" text="Attendance Rate" />
                             </VBox>
                         </HBox>
                     </VBox>
                 </HBox>
 
-                <!-- Quick Actions Panel -->
-                <VBox spacing="16" styleClass="form-section">
-                    <Label style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #4a7bc2;" text="Quick Report Generation" />
-                    <HBox alignment="CENTER" spacing="18">
-                        <Button onAction="#handleGenerateEnrollmentReport" styleClass="quick-action-btn" text="📈 Enrollment Report" />
-                        <Button onAction="#handleGenerateAttendanceReport" styleClass="quick-action-btn" text="📅 Attendance Report" />
-                        <Button onAction="#handleGenerateParentReport" styleClass="quick-action-btn" text="👨‍👩‍👧 Parent Directory" />
-                        <Button onAction="#handleGenerateGradeReport" styleClass="quick-action-btn" text="📝 Grade Distribution" />
-                    </HBox>
-                </VBox>
-
                 <!-- Filters -->
                 <HBox alignment="CENTER_LEFT" spacing="12" styleClass="form-section">
-                    <ComboBox fx:id="cbReportType" prefWidth="180" promptText="All Types" styleClass="combo-box" />
-                    <ComboBox fx:id="cbAcademicYear" prefWidth="150" promptText="All Years" styleClass="combo-box" />
-                    <TextField fx:id="txtSearch" promptText="🔍 Search reports by name..." style="-fx-padding: 8; -fx-background-radius: 8;" styleClass="text-field" HBox.hgrow="ALWAYS" />
+                    <DatePicker fx:id="dpDate" promptText="Select Date" style="-fx-padding: 8; -fx-background-radius: 8;" />
+                    <ComboBox fx:id="cbType" prefWidth="150" promptText="Select Type" styleClass="combo-box" />
+                    <TextField fx:id="txtSearch" promptText="🔍 Search by name or ID..." style="-fx-padding: 8; -fx-background-radius: 8;" styleClass="text-field" HBox.hgrow="ALWAYS" />
+                    <ComboBox fx:id="cbStatusFilter" prefWidth="130" promptText="All Status" styleClass="combo-box" />
                     <Button onAction="#handleSearch" style="-fx-background-color: #263F6B; -fx-background-radius: 8; -fx-padding: 8 16; -fx-font-weight: bold; -fx-text-fill: white;" text="Search" />
                     <Button onAction="#handleClearFilters" style="-fx-background-color: #263F6B; -fx-background-radius: 8; -fx-padding: 8 16; -fx-text-fill: white; -fx-font-weight: bold;" text="Clear" />
                 </HBox>
 
-                <!-- Reports Table -->
+                <!-- Table -->
                 <VBox styleClass="form-section" VBox.vgrow="ALWAYS">
-                    <TableView fx:id="reportsTable" styleClass="custom-table">
+                    <TableView fx:id="attendanceTable" styleClass="custom-table">
                         <columns>
                             <TableColumn fx:id="colId" prefWidth="60" text="ID" />
-                            <TableColumn fx:id="colReportType" prefWidth="120" text="Type" />
-                            <TableColumn fx:id="colReportName" prefWidth="300" text="Report Name" />
-                            <TableColumn fx:id="colAcademicYear" prefWidth="120" text="Academic Year" />
-                            <TableColumn fx:id="colGeneratedDate" prefWidth="120" text="Generated Date" />
-                            <TableColumn fx:id="colStatus" prefWidth="100" text="Status" />
-                            <TableColumn fx:id="colActions" prefWidth="160" text="Actions" />
+                            <TableColumn fx:id="colName" prefWidth="220" text="Full Name" />
+                            <TableColumn fx:id="colClassOrSubject" prefWidth="180" text="Class / Subject" />
+                            <TableColumn fx:id="colStatus" prefWidth="150" text="Status" />
+                            <TableColumn fx:id="colRemarks" prefWidth="250" text="Remarks" />
+                            <TableColumn fx:id="colActions" prefWidth="100" text="Actions" />
                         </columns>
                   <columnResizePolicy>
                      <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -134,9 +123,13 @@
                     </TableView>
                 </VBox>
 
-                <!-- Footer Info -->
-                <HBox alignment="CENTER_LEFT">
-                    <Label fx:id="lblReportCount" styleClass="page-subtitle" text="Showing 0 reports" />
+                <!-- Pagination -->
+                <HBox alignment="CENTER" spacing="12">
+                    <Label fx:id="lblRecordCount" styleClass="page-subtitle" text="Showing 0 records" />
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Button fx:id="btnPrevious" onAction="#handlePrevious" style="-fx-background-color: #263F6B; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 16; -fx-background-radius: 8;" text="⬅ Previous" />
+                    <Label fx:id="lblPageInfo" style="-fx-font-weight: bold;" text="Page 1 of 1" />
+                    <Button fx:id="btnNext" onAction="#handleNext" style="-fx-background-color: #263F6B; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 16; -fx-background-radius: 8;" text="Next ➡" />
                 </HBox>
 
             </VBox>

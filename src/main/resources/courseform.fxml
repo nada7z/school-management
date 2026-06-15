@@ -37,6 +37,7 @@
                 <Button fx:id="btnStudents" onAction="#handleStudents" styleClass="nav-button" text="👨‍🎓 Students" />
                 <Button fx:id="btnTeachers" onAction="#handleTeachers" styleClass="nav-button" text="👨‍🏫 Teachers" />
                 <Button fx:id="btnLevels" onAction="#handleLevels" styleClass="nav-button" text="📝 Grades" />
+            <Button onAction="#handleReport" style="-fx-text-fill: white;" styleClass="nav-button" text="📊 Reports" />
             </VBox>
             <VBox VBox.vgrow="ALWAYS" />
             <Button onAction="#handleLogout" styleClass="logout-button" text="🚪 Logout" />

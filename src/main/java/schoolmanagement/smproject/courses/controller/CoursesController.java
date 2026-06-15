@@ -272,8 +272,20 @@ public class CoursesController {
     }
 
     private void handleEdit(Course course) {
-        showAlert(Alert.AlertType.INFORMATION, "Edit Course",
-                "Edit form for " + course.getName() + " coming soon!\n\nCode: " + course.getCourseCode());
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/courseform.fxml"));
+            Parent root = loader.load();
+
+            CreateCourseController controller = loader.getController();
+            controller.setCourseForEdit(course);
+
+            Stage stage = (Stage) coursesTable.getScene().getWindow();
+            stage.setScene(new Scene(root));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "Could not open edit form: " + e.getMessage());
+        }
     }
 
     private void handleDelete(Course course) {

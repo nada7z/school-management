@@ -333,6 +333,11 @@ public class DashboardController {
     }
 
     @FXML
+    private void handleAttendance() {
+        loadView("/attendance.fxml");
+    }
+
+    @FXML
     private void handleLogout() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Logout");

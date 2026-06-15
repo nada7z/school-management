@@ -1,60 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<VBox spacing="20" stylesheets="@reports.css" xmlns="http://javafx.com/javafx/26"
-    xmlns:fx="http://javafx.com/fxml/1"
-    fx:controller="schoolmanagement.smproject.reports.controller.ViewReportController">
+<VBox spacing="20" stylesheets="@dashboard.css, @reports.css"
+    xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="schoolmanagement.smproject.reports.controller.ViewReportController"
+    styleClass="modal-background">
 
     <padding>
-        <Insets bottom="20" left="20" right="20" top="20" />
+        <Insets bottom="20" left="25" right="25" top="20" />
     </padding>
 
-    <!-- Header -->
     <HBox alignment="CENTER_LEFT" spacing="12">
         <Label fx:id="lblReportTitle" styleClass="modal-title" text="📊 Report Details" />
         <Region HBox.hgrow="ALWAYS" />
         <Button onAction="#handleClose" styleClass="btn-close" text="✕" />
     </HBox>
-
     <Separator />
 
-    <!-- Report Info -->
     <VBox spacing="16" styleClass="info-section">
         <HBox spacing="20">
-            <VBox>
-                <Label styleClass="info-label" text="Report Type:" />
+            <VBox HBox.hgrow="ALWAYS">
+                <Label styleClass="info-label" text="Report Type" />
                 <Label fx:id="lblReportType" styleClass="info-value" text="Enrollment Report" />
             </VBox>
-            <VBox>
-                <Label styleClass="info-label" text="Academic Year:" />
+            <VBox HBox.hgrow="ALWAYS">
+                <Label styleClass="info-label" text="Academic Year" />
                 <Label fx:id="lblAcademicYear" styleClass="info-value" text="2025-2026" />
             </VBox>
-            <VBox>
-                <Label styleClass="info-label" text="Generated:" />
+            <VBox HBox.hgrow="ALWAYS">
+                <Label styleClass="info-label" text="Generated Date" />
                 <Label fx:id="lblGeneratedDate" styleClass="info-value" text="2026-05-24" />
             </VBox>
-            <VBox>
-                <Label styleClass="info-label" text="Status:" />
-                <Label fx:id="lblStatus" styleClass="info-value status-final" text="Final" />
+            <VBox HBox.hgrow="ALWAYS">
+                <Label styleClass="info-label" text="Status" />
+                <Label fx:id="lblStatus" styleClass="info-value status-badge status-final"
+                    text="Final" />
             </VBox>
         </HBox>
     </VBox>
 
-    <!-- Report Content -->
-    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
-        <TextArea fx:id="txtReportContent" editable="false" styleClass="report-content"
-            wrapText="true" />
-    </ScrollPane>
+    <VBox spacing="8" VBox.vgrow="ALWAYS">
+        <Label styleClass="label" text="Report Content" />
+        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+            style="-fx-background-color: transparent; -fx-background: transparent;">
+            <TextArea fx:id="txtReportContent" editable="false" styleClass="report-content"
+                wrapText="true" prefHeight="300" />
+        </ScrollPane>
+    </VBox>
 
-    <!-- Action Buttons -->
     <HBox alignment="CENTER_RIGHT" spacing="12">
         <Button onAction="#handleExportPDF" styleClass="btn-outline" text="📄 Export PDF" />
         <Button onAction="#handleExportExcel" styleClass="btn-outline" text="📊 Export Excel" />
-        <Button onAction="#handlePrint" styleClass="btn-primary" text="🖨️ Print" />
-        <Button onAction="#handleClose" styleClass="btn-secondary" text="Close" />
+        <Button onAction="#handlePrint" styleClass="btn-secondary" text="🖨️ Print" />
+        <Button onAction="#handleClose" styleClass="btn-primary" text="Close" />
     </HBox>
-
 </VBox>

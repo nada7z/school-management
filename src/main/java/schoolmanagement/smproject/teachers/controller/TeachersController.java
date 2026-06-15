@@ -479,8 +479,20 @@ public class TeachersController {
     }
 
     private void handleEdit(Teacher teacher) {
-        showAlert(Alert.AlertType.INFORMATION, "Edit Teacher",
-                "Edit form for " + teacher.getFullName() + " coming soon!\n\nID: " + teacher.getId());
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/teachersform.fxml"));
+            Parent root = loader.load();
+
+            CreateTeacherController controller = loader.getController();
+            controller.setTeacherForEdit(teacher);
+
+            Stage stage = (Stage) teachersTable.getScene().getWindow();
+            stage.setScene(new Scene(root));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "Could not open edit form: " + e.getMessage());
+        }
     }
 
     private void handleDelete(Teacher teacher) {
